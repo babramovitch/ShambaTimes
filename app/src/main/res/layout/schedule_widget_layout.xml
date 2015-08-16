@@ -1,0 +1,244 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_material_light"
+    android:padding="@dimen/widget_margin">
+
+
+    <LinearLayout
+        android:id="@+id/time"
+        style="@style/widget_textview"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/appwidget_time"
+            style="@style/widget_textview"
+            android:textColor="@color/black"
+            android:gravity="center" />
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/pagoda_widget"
+        style="@style/widget_container"
+        android:background="@color/pagoda_color"
+        android:layout_below="@id/time">
+
+        <TextView
+            android:id="@+id/pagoda_title"
+            android:layout_alignParentTop="true"
+            android:text="@string/stage_name_pagoda"
+            style="@style/widget_title"/>
+
+        <TextView
+            android:id="@+id/pagoda_artist"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/pagoda_title"
+            style="@style/widget_textview"/>
+
+        <TextView
+            android:id="@+id/pagoda_time"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/pagoda_artist"
+            style="@style/widget_textview"/>
+
+        <ImageView
+            android:id="@+id/pagoda_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingRight="15dp"
+            android:layout_alignTop="@id/pagoda_artist"
+            android:layout_alignBottom="@id/pagoda_time"
+            android:src="@drawable/favorite_outline_white"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/forest_widget"
+        style="@style/widget_container"
+        android:background="@color/fractal_forest_color"
+        android:layout_below="@id/pagoda_widget">
+
+        <TextView
+            android:id="@+id/forest_title"
+            android:layout_alignParentTop="true"
+            android:text="@string/stage_name_forest"
+            style="@style/widget_title"/>
+
+        <TextView
+            android:id="@+id/forest_artist"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/forest_title"
+            style="@style/widget_textview"/>
+
+        <TextView
+            android:id="@+id/forest_time"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/forest_artist"
+            style="@style/widget_textview"/>
+
+
+        <ImageView
+            android:id="@+id/forest_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingRight="15dp"
+            android:layout_alignTop="@id/forest_artist"
+            android:layout_alignBottom="@id/forest_time"
+            android:src="@drawable/favorite_outline_white"/>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/grove_widget"
+        style="@style/widget_container"
+        android:background="@color/grove_color"
+        android:layout_below="@id/forest_widget">
+
+        <TextView
+            android:id="@+id/grove_title"
+            android:layout_alignParentTop="true"
+            android:text="@string/stage_name_grove"
+            style="@style/widget_title"/>
+
+        <TextView
+            android:id="@+id/grove_artist"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/grove_title"
+            style="@style/widget_textview"/>
+
+        <TextView
+            android:id="@+id/grove_time"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/grove_artist"
+            style="@style/widget_textview"/>
+
+
+        <ImageView
+            android:id="@+id/grove_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingRight="15dp"
+            android:layout_alignTop="@id/grove_artist"
+            android:layout_alignBottom="@id/grove_time"
+            android:src="@drawable/favorite_outline_white"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/living_room_widget"
+        style="@style/widget_container"
+        android:background="@color/living_room_color"
+        android:layout_below="@id/grove_widget">
+
+        <TextView
+            android:id="@+id/living_room_title"
+            android:layout_alignParentTop="true"
+            android:text="@string/stage_name_living_room"
+            style="@style/widget_title"/>
+
+        <TextView
+            android:id="@+id/living_room_artist"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/living_room_title"
+            style="@style/widget_textview"/>
+
+        <TextView
+            android:id="@+id/living_room_time"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/living_room_artist"
+            style="@style/widget_textview"/>
+
+        <ImageView
+            android:id="@+id/living_room_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingRight="15dp"
+            android:layout_alignTop="@id/living_room_artist"
+            android:layout_alignBottom="@id/living_room_time"
+            android:src="@drawable/favorite_outline_white"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/village_widget"
+        style="@style/widget_container"
+        android:background="@color/village_color"
+        android:layout_below="@id/living_room_widget">
+
+        <TextView
+            android:id="@+id/village_title"
+            android:layout_alignParentTop="true"
+            android:text="@string/stage_name_village"
+            style="@style/widget_title"/>
+
+        <TextView
+            android:id="@+id/village_artist"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/village_title"
+            style="@style/widget_textview"/>
+
+
+        <TextView
+            android:id="@+id/village_time"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/village_artist"
+            style="@style/widget_textview"/>
+
+        <ImageView
+            android:id="@+id/village_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingRight="15dp"
+            android:layout_alignTop="@id/village_artist"
+            android:layout_alignBottom="@id/village_time"
+            android:src="@drawable/favorite_outline_white"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/amphitheatre_widget"
+        style="@style/widget_container"
+        android:background="@color/amphitheatre_color"
+        android:layout_below="@id/village_widget">
+
+        <TextView
+            android:id="@+id/amphitheatre_title"
+            android:layout_alignParentTop="true"
+            android:text="@string/stage_name_amphitheatre"
+            style="@style/widget_title"/>
+
+        <TextView
+            android:id="@+id/amphitheatre_artist"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/amphitheatre_title"
+            style="@style/widget_textview"/>
+
+        <TextView
+            android:id="@+id/amphitheatre_time"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/amphitheatre_artist"
+            style="@style/widget_textview"/>
+
+        <ImageView
+            android:id="@+id/amphitheatre_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/amphitheatre_artist"
+            android:layout_alignBottom="@id/amphitheatre_time"
+            android:paddingRight="15dp"
+            android:src="@drawable/favorite_outline_white"/>
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#f2a</color>
+    <color name="colorPrimaryDark">#32a</color>
+    <color name="windowBackgroundColor">#a32</color>
+
+    <color name="white">#fff</color>
+    <color name="black">#000</color>
+
+    <!-- 558B2F  #4CAF50 -->
+
+    <color name="pagoda_color">#EF6C00</color>
+    <color name="fractal_forest_color">#46A100</color>
+    <color name="grove_color">#3F51B5</color>
+    <color name="living_room_color">#9C27B0</color>
+    <color name="village_color">#FF2432</color>
+    <color name="amphitheatre_color">#00B38C</color>
+
+    <color name="living_room_color_pressed">#F5E9F7</color>
+    <color name="fractal_forest_color_pressed">#ECF6E6</color>
+    <color name="pagoda_color_pressed">#FDF0E6</color>
+    <color name="village_color_pressed">#FFE9EA</color>
+    <color name="amphitheatre_color_pressed">#E6F7F4</color>
+    <color name="grove_color_pressed">#ECEEF8</color>
+
+    <color name="pagoda_color_light">#F5A766</color>
+    <color name="fractal_forest_color_light">#7EBD4D</color>
+    <color name="grove_color_light">#7985CB</color>
+    <color name="living_room_color_light">#BA68C8</color>
+    <color name="village_color_light">#FF6670</color>
+    <color name="amphitheatre_color_light">#4DCAAE</color>
+
+
+    <array name="stage_colors">
+        <item>@color/pagoda_color</item>
+        <item>@color/fractal_forest_color</item>
+        <item>@color/grove_color</item>
+        <item>@color/living_room_color</item>
+        <item>@color/village_color</item>
+        <item>@color/amphitheatre_color</item>
+    </array>
+
+</resources>

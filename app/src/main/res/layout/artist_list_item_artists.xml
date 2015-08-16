@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/artistLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:layout_marginBottom="5dp"
+    android:background="@drawable/list_forest_selector"
+    android:gravity="center_vertical"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="1dp" />
+
+    <TextView
+        android:id="@+id/artistName"
+        style="@style/ListViewMedium"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/separator"
+        android:layout_toLeftOf="@+id/list_favorited"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:text="Artist Name"
+
+        />
+
+
+    <TextView
+        android:id="@+id/artistStage"
+        style="@style/ListViewSmall"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/artistName"
+        android:layout_toLeftOf="@id/list_favorited"
+        android:text="Stage" />
+
+    <TextView
+        android:id="@+id/artistDay"
+        style="@style/ListViewSmall"
+        android:layout_width="60dp"
+        android:layout_below="@id/artistStage"
+        android:text="Saturday"
+
+        />
+
+    <TextView
+        android:id="@+id/artistTime"
+        style="@style/ListViewSmall"
+        android:layout_alignBaseline="@id/artistDay"
+        android:layout_alignBottom="@id/artistDay"
+        android:layout_marginLeft="5dp"
+        android:layout_toEndOf="@+id/artistDay"
+        android:layout_toLeftOf="@id/list_favorited"
+        android:layout_toRightOf="@+id/artistDay"
+        android:text="Artist Schedule" />
+
+    <TextView
+        android:id="@+id/artistStartTimePosition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+
+    <ImageView
+        android:id="@id/list_favorited"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="5dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="20dp"
+        android:src="@drawable/favorite_outline" />
+
+
+</RelativeLayout>
