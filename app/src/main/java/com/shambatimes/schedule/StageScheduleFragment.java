@@ -15,6 +15,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import de.greenrobot.event.EventBus;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
+import com.shambatimes.schedule.events.SearchSelectedEvent;
 import com.shambatimes.schedule.myapplication.R;
 
 
@@ -94,12 +95,9 @@ public class StageScheduleFragment extends Fragment {
     }
 
     private void changeColor(int newColor) {
-
-
         tabs.setIndicatorColor(newColor);
         currentColor = newColor;
         EventBus.getDefault().postSticky(new ActionBarColorEvent(currentColor));
-
     }
 
     private PagerAdapter buildAdapter() {
@@ -112,6 +110,10 @@ public class StageScheduleFragment extends Fragment {
         stageAdapter.setDate(date);
     }
 
+    public void onEventMainThread(SearchSelectedEvent event) {
+        pager.setCurrentItem(event.getArtist().getStage(), false);
+        changeColor(stageColors[event.getArtist().getStage()]);
+    }
 
     @Override
     public void onStart() {

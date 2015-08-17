@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.MyViewPager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,20 +15,19 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.shambatimes.schedule.Util.DateUtils;
 
 import de.greenrobot.event.EventBus;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DatabaseLoadFinishedEvent;
+import com.shambatimes.schedule.events.SearchSelectedEvent;
 import com.shambatimes.schedule.events.UpdateScheduleByTimeEvent;
 import com.shambatimes.schedule.myapplication.R;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-
 
 
 public class TimeScheduleFragment extends Fragment {
@@ -61,14 +59,14 @@ public class TimeScheduleFragment extends Fragment {
         Bundle args = getArguments();
         int time;
 
-        if(args != null) {
+        if (args != null) {
             time = args.getInt("TIME", 0);
-        }else{
+        } else {
 
-            if(DateUtils.isPrePostFestival()){
+            if (DateUtils.isPrePostFestival()) {
                 time = 0;
                 date = 0;
-            }else{
+            } else {
                 time = DateUtils.getCurrentTimePosition();
                 date = DateUtils.getCurrentDay();
             }
@@ -76,7 +74,7 @@ public class TimeScheduleFragment extends Fragment {
 
         pager = (MyViewPager) result.findViewById(R.id.pager);
         pager.setAdapter(buildAdapter());
-        pager.setCurrentItem(time,false);
+        pager.setCurrentItem(time, false);
 
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -135,23 +133,21 @@ public class TimeScheduleFragment extends Fragment {
 
     /**
      * I'm using this so I can get the widest possible room for the stage artist title
-     *
+     * <p/>
      * Computes the widest view in an adapter, best used when you need to wrap_content on a ListView, please be careful
      * and don't use it on an adapter that is extremely numerous in items or it will take a long time.
      *
      * @param context Some context
      * @param adapter The adapter to process
      * @return The pixel width of the widest View
-     *
+     * <p/>
      * http://stackoverflow.com/a/13959716/2408033
-     *
-     *
      */
-    public static int getWidestView(Context context,  ArrayAdapter<String>  adapter) {
+    public static int getWidestView(Context context, ArrayAdapter<String> adapter) {
         int maxWidth = 0;
         View view = null;
         FrameLayout fakeParent = new FrameLayout(context);
-        for (int i=0, count=adapter.getCount(); i<count; i++) {
+        for (int i = 0, count = adapter.getCount(); i < count; i++) {
             view = adapter.getView(i, view, fakeParent);
             view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
             int width = view.getMeasuredWidth();
@@ -163,7 +159,6 @@ public class TimeScheduleFragment extends Fragment {
     }
 
 
-
     private PagerAdapter buildAdapter() {
         timeAdapter = new TimeAdapter(getActivity(), getChildFragmentManager(), date);
         return timeAdapter;
@@ -171,7 +166,7 @@ public class TimeScheduleFragment extends Fragment {
 
     public void onEventMainThread(DatabaseLoadFinishedEvent event) {
         EventBus.getDefault().removeStickyEvent(event);
-        if(pager!= null) {
+        if (pager != null) {
             int currentPage = pager.getCurrentItem();
             pager.setAdapter(buildAdapter());
             pager.setCurrentItem(currentPage);
@@ -184,48 +179,67 @@ public class TimeScheduleFragment extends Fragment {
             pager.setCurrentItem(event.getPosition(), false);
     }
 
+    public void onEventMainThread(SearchSelectedEvent event) {
+
+        Artist artist = event.getArtist();
+        if (pager.getCurrentItem() != artist.getStartPosition() || date != artist.getDay()) {
+            date = artist.getDay();
+            pager.setAdapter(buildAdapter());
+            pager.setCurrentItem(artist.getStartPosition(), false);
+        }
+
+        date = artist.getDay();
+
+        resetListViewValues();
+
+    }
+
     public void onEventMainThread(ChangeDateEvent event) {
 
         //The adapter needs to be reset when we change to/from Sunday due to the page counts differing
         //What happens if I just try to change the content is the first page looks good, but then
         //as you page, the content becomes wrong until it properly refreshes.
-        if (date == 3 && event.getPosition() != 3){
+        if (date == 3 && event.getPosition() != 3) {
             date = event.getPosition();
             int currentPage = pager.getCurrentItem();
             pager.setAdapter(buildAdapter());
-            pager.setCurrentItem(currentPage+2);
-        }else if(date != 3 && event.getPosition() == 3 ) {
+            pager.setCurrentItem(currentPage + 2);
+        } else if (date != 3 && event.getPosition() == 3) {
             date = event.getPosition();
             int currentPage = pager.getCurrentItem();
             pager.setAdapter(buildAdapter());
-            pager.setCurrentItem(currentPage-2);
+            pager.setCurrentItem(currentPage - 2);
         }
 
         date = event.getPosition();
 
+        resetListViewValues();
+    }
+
+    private void resetListViewValues(){
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
                 R.layout.list_item, android.R.id.text1, generateListTimes());
 
         listView.setAdapter(adapter);
 
-        if(timeAdapter!=null) {
-            timeAdapter.setDate(event.getPosition());
+        if (timeAdapter != null) {
+            timeAdapter.setDate(date);
         }
     }
 
-    public void dataLoaded(){
+    public void dataLoaded() {
         timeAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         EventBus.getDefault().registerSticky(this);
 
     }
 
     @Override
-    public void onStop(){
+    public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
     }

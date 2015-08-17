@@ -24,21 +24,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.crashlytics.android.Crashlytics;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ArtistListLoadDoneEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DatabaseLoadFinishedEvent;
+import com.shambatimes.schedule.events.SearchSelectedEvent;
 import com.shambatimes.schedule.events.SearchTextEvent;
 import com.shambatimes.schedule.events.ToggleToStageEvent;
 import com.shambatimes.schedule.events.ToggleToTimeEvent;
@@ -46,9 +49,9 @@ import com.shambatimes.schedule.events.UpdateScheduleByTimeEvent;
 import com.shambatimes.schedule.myapplication.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
-import io.fabric.sdk.android.Fabric;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -82,6 +85,11 @@ public class MainActivity extends ActionBarActivity {
 
     private String scheduleBy = "Schedule by Time";
     private SharedPreferences prefs;
+
+    private Menu menu;
+
+    ArrayAdapter<Artist> searchAdapter;
+    Handler handler = new Handler();
 
 
     @Override
@@ -210,6 +218,82 @@ public class MainActivity extends ActionBarActivity {
         }
 
 
+        searchAdapter = new ArrayAdapter<Artist>(this, R.layout.artist_list_item_stage) {
+            private Filter filter;
+
+            @Override
+            public View getView(final int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    convertView = getLayoutInflater().inflate(R.layout.artist_list_item_stage, parent, false);
+                }
+
+                TextView venueName = (TextView) convertView
+                        .findViewById(R.id.artistName);
+                TextView venueAddress = (TextView) convertView
+                        .findViewById(R.id.artistTime);
+
+                final Artist venue = this.getItem(position);
+                convertView.setTag(venue);
+
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        // searchResultTrigger = true;
+                        currentDay = venue.getDay();
+
+                        scheduleSpinner.setSelection(venue.getDay());
+
+                        currentDay = venue.getDay();
+                        MenuItem item = menu.findItem(R.id.global_search);
+
+                        View actionView = (View) menu.findItem(R.id.global_search).getActionView();
+                        AutoCompleteTextView textView = (AutoCompleteTextView) actionView.findViewById(R.id.search_box);
+
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+
+                        item.collapseActionView();
+
+                        EventBus.getDefault().post(new SearchSelectedEvent(venue));
+                        //searchResultTrigger = false;
+
+
+                    }
+                });
+
+                CharSequence name = null;
+                CharSequence address = null;
+
+                name = venue.getAristName();
+                address = venue.getStageName();
+
+
+                venueName.setText(name);
+                venueAddress.setText(address);
+
+                return convertView;
+
+            }
+
+            @Override
+            public Filter getFilter() {
+                if (filter == null) {
+                    filter = new artistFilter();
+                }
+                return filter;
+            }
+        };
+
+
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.actionbar_search, null);
+
+
+        AutoCompleteTextView textView = (AutoCompleteTextView) v.findViewById(R.id.search_box);
+
+        textView.setAdapter(searchAdapter);
+
     }
 
     private void prepareAndLoadDatabase() {
@@ -242,6 +326,11 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    public void onEventMainThread(DatabaseLoadFinishedEvent event) {
+        EventBus.getDefault().removeStickyEvent(event);
+        searchAdapter.addAll(shambhala.getArtists());
+    }
+
 
     private void fetchArtistDataForQuickLoad() {
         new Thread(new Runnable() {
@@ -262,7 +351,6 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -272,7 +360,9 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+
+        this.menu = menu;
+
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
         final MenuItem searchItem = menu.findItem(R.id.action_search);
@@ -314,13 +404,23 @@ public class MainActivity extends ActionBarActivity {
 
         }
 
+        View actionView = menu.findItem(R.id.global_search).getActionView();
+        AutoCompleteTextView searchTextView = (AutoCompleteTextView) actionView.findViewById(R.id.search_box);
+        searchTextView.setAdapter(searchAdapter);
+
         return true;
     }
 
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem searchItem = menu.findItem(R.id.action_search);
+        MenuItem globalSearchItem = menu.findItem(R.id.global_search);
+
         if (searchItem != null) {
             searchItem.setVisible(!isDrawerOpen && currentFragment == FRAGMENT_ARTISTS);
+        }
+
+        if (globalSearchItem != null) {
+            globalSearchItem.setVisible(!isDrawerOpen && (currentFragment == FRAGMENT_TIME || currentFragment == FRAGMENT_STAGE));
         }
         return true;
     }
@@ -334,8 +434,22 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
 
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.global_search) {
+            View actionView = menu.findItem(R.id.global_search).getActionView();
+            if (actionView != null) {
+                final AutoCompleteTextView searchTextView = (AutoCompleteTextView) actionView.findViewById(R.id.search_box);
+                searchTextView.setText("");
+                searchTextView.requestFocus();
+
+                //Keyboard isn't raising unless I delay the command, even with the requestFocus above.
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(searchTextView, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                }, 200);
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -344,8 +458,6 @@ public class MainActivity extends ActionBarActivity {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, final int position, long id) {
-
-
             //Prevents the navigation drawer stutter when switching fragments.
             final Handler mDrawerHandler = new Handler();
             mDrawerHandler.postDelayed(new Runnable() {
@@ -618,6 +730,45 @@ public class MainActivity extends ActionBarActivity {
         savedInstanceState.putString("TITLE", scheduleBy);
         savedInstanceState.putInt("CURRENT_TIME", currentTimePosition);
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+
+    private class artistFilter extends Filter {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Artist> list = shambhala.getArtists();
+            FilterResults result = new FilterResults();
+            String substr = constraint.toString().toLowerCase();
+            // if no constraint is given, return the whole list
+            if (substr == null || substr.length() == 0) {
+                result.values = list;
+                result.count = list.size();
+            } else {
+                // iterate over the list of venues and find if the venue matches the constraint. if it does, add to the result list
+                final ArrayList<Artist> retList = new ArrayList<Artist>();
+                for (Artist artist : list) {
+                    if (artist.getAristName().toLowerCase().contains(constraint)) {
+                        retList.add(artist);
+                    }
+                }
+                result.values = retList;
+                result.count = retList.size();
+            }
+            return result;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            searchAdapter.clear();
+            if (results.count > 0) {
+                for (Artist artist : (ArrayList<Artist>) results.values) {
+                    searchAdapter.add(artist);
+                }
+            }
+        }
+
     }
 
 }

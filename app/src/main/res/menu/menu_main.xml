@@ -11,16 +11,11 @@
         android:title="Search"/>
 
     <item
-        android:id="@+id/toggle_view"
-        android:orderInCategory="100"
-        android:title="toggle_view"
-        android:visible="false"
-        app:showAsAction="never" />
+        android:id="@+id/global_search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="Search"
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionLayout="@layout/actionbar_search"
+        />
 
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        android:visible="false"
-        app:showAsAction="never" />
 </menu>
