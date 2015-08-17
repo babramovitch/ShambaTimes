@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -30,6 +31,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -87,6 +89,7 @@ public class MainActivity extends ActionBarActivity {
     private SharedPreferences prefs;
 
     private Menu menu;
+    private int[] gradientColors = {0, 0, 0};
 
     ArrayAdapter<Artist> searchAdapter;
     Handler handler = new Handler();
@@ -218,33 +221,60 @@ public class MainActivity extends ActionBarActivity {
         }
 
 
-        searchAdapter = new ArrayAdapter<Artist>(this, R.layout.artist_list_item_stage) {
+        //TODO - Remove duplication and see if the recyclerview adapter in ArtistFragment can be reused
+        searchAdapter = new ArrayAdapter<Artist>(this, R.layout.artist_list_item_artists) {
             private Filter filter;
+
+            private String[] dayOfWeek = {"Thursday", "Friday", "Saturday", "Sunday"};
+            private String[] stageNames = getResources().getStringArray(R.array.stages);
+
+
+            int[] favoriteDrawables = {R.drawable.favorite_pagoda,
+                    R.drawable.favorite_forest,
+                    R.drawable.favorite_grove,
+                    R.drawable.favorite_living_room,
+                    R.drawable.favorite_village,
+                    R.drawable.favorite_amphitheatre};
+
+            int[] favoriteOutlineDrawables = {R.drawable.favorite_outline_pagoda,
+                    R.drawable.favorite_outline_forest,
+                    R.drawable.favorite_outline_grove,
+                    R.drawable.favorite_outline_living_room,
+                    R.drawable.favorite_outline_village,
+                    R.drawable.favorite_outline_amphitheatre};
 
             @Override
             public View getView(final int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
-                    convertView = getLayoutInflater().inflate(R.layout.artist_list_item_stage, parent, false);
+                    convertView = getLayoutInflater().inflate(R.layout.artist_list_item_artists, parent, false);
                 }
 
-                TextView venueName = (TextView) convertView
-                        .findViewById(R.id.artistName);
-                TextView venueAddress = (TextView) convertView
-                        .findViewById(R.id.artistTime);
+                TextView artistName = (TextView) convertView.findViewById(R.id.artistName);
+                TextView artistDay = (TextView) convertView.findViewById(R.id.artistDay);
+                TextView artistTime = (TextView) convertView.findViewById(R.id.artistTime);
+                TextView artistStage = (TextView) convertView.findViewById(R.id.artistStage);
+                ImageView artistFavorite = (ImageView) convertView.findViewById(R.id.list_favorited);
+                View artistDivider = (View) convertView.findViewById(R.id.separator);
 
-                final Artist venue = this.getItem(position);
-                convertView.setTag(venue);
+
+                final Artist artist = this.getItem(position);
+
+                if (artist.isFavorite()) {
+                    artistFavorite.setImageResource(favoriteDrawables[artist.getStage()]);
+                } else {
+                    artistFavorite.setImageResource(favoriteOutlineDrawables[artist.getStage()]);
+                }
+
+                convertView.setTag(artist);
 
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
-                        // searchResultTrigger = true;
-                        currentDay = venue.getDay();
+                        currentDay = artist.getDay();
+                        scheduleSpinner.setSelection(artist.getDay());
 
-                        scheduleSpinner.setSelection(venue.getDay());
-
-                        currentDay = venue.getDay();
+                        currentDay = artist.getDay();
                         MenuItem item = menu.findItem(R.id.global_search);
 
                         View actionView = (View) menu.findItem(R.id.global_search).getActionView();
@@ -255,22 +285,16 @@ public class MainActivity extends ActionBarActivity {
 
                         item.collapseActionView();
 
-                        EventBus.getDefault().post(new SearchSelectedEvent(venue));
-                        //searchResultTrigger = false;
-
+                        EventBus.getDefault().post(new SearchSelectedEvent(artist));
 
                     }
                 });
 
-                CharSequence name = null;
-                CharSequence address = null;
-
-                name = venue.getAristName();
-                address = venue.getStageName();
-
-
-                venueName.setText(name);
-                venueAddress.setText(address);
+                artistName.setText(artist.getAristName());
+                artistDay.setText(dayOfWeek[artist.getDay()]);
+                artistStage.setText(stageNames[artist.getStage()]);
+                artistTime.setText(artist.getStartTimeString() + " to " + artist.getEndTimeString());
+                artistDivider.setBackground(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, gradientColors));
 
                 return convertView;
 
@@ -573,6 +597,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void onEventMainThread(ActionBarColorEvent event) {
         actionBarColor = event.getColor();
+        gradientColors[1] = event.getColor();
         Drawable colorDrawable = new ColorDrawable(actionBarColor);
         getSupportActionBar().setBackgroundDrawable(colorDrawable);
     }
