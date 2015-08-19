@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cocosw.undobar.UndoBarController;
+import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
@@ -45,6 +46,7 @@ public class FavoriteScheduleFragment extends Fragment implements UndoBarControl
     private String[] stageNames;
     int[] stageColors;
     int[] colors = {0, 0, 0};
+    int scrollColor;
     ArrayList<Artist> artists;
 
     ArtistRecyclerAdapter adapter;
@@ -79,6 +81,14 @@ public class FavoriteScheduleFragment extends Fragment implements UndoBarControl
 
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new FlipInBottomXAnimator());
+
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recycler, int newState) {
+                super.onScrollStateChanged(recycler, newState);
+                EdgeChanger.setEdgeGlowColor(recyclerView, scrollColor);
+            }
+        });
 
 
         return (result);
@@ -276,6 +286,7 @@ public class FavoriteScheduleFragment extends Fragment implements UndoBarControl
 
     public void onEventMainThread(ActionBarColorEvent event) {
         colors[1] = event.getColor();
+        scrollColor = event.getColor();
     }
 
 

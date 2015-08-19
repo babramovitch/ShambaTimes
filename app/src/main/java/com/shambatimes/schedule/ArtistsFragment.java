@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 
 import com.shambatimes.schedule.events.SearchTextEvent;
@@ -33,6 +34,7 @@ public class ArtistsFragment extends Fragment {
 
     private ArtistRecyclerAdapter adapter;
     int[] colors = {0, 0, 0};
+    int scrollColor;
 
     ArrayList<Artist> artists;
     RecyclerView recyclerView;
@@ -51,6 +53,14 @@ public class ArtistsFragment extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
         recyclerView.setItemAnimator(new FlipInBottomXAnimator());
+
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recycler, int newState) {
+                super.onScrollStateChanged(recycler, newState);
+                EdgeChanger.setEdgeGlowColor(recyclerView, scrollColor);
+            }
+        });
 
         artists = (ArrayList<Artist>) Artist.find(Artist.class, null, null, null, "lower(artist_Name) asc", null);
 
@@ -219,6 +229,7 @@ public class ArtistsFragment extends Fragment {
 
     public void onEventMainThread(ActionBarColorEvent event) {
         colors[1] = event.getColor();
+        scrollColor = event.getColor();
     }
 
     @Override

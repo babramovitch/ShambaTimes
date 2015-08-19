@@ -16,9 +16,12 @@ import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
+import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.Util.DateUtils;
 
 import de.greenrobot.event.EventBus;
+
+import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DatabaseLoadFinishedEvent;
 import com.shambatimes.schedule.events.SearchSelectedEvent;
@@ -111,6 +114,8 @@ public class TimeScheduleFragment extends Fragment {
             }
         });
 
+
+
         return (result);
     }
 
@@ -171,6 +176,11 @@ public class TimeScheduleFragment extends Fragment {
             pager.setAdapter(buildAdapter());
             pager.setCurrentItem(currentPage);
         }
+    }
+
+    public void onEventMainThread(ActionBarColorEvent event) {
+        EdgeChanger.setEdgeGlowColor(pager, event.getColor());
+        EdgeChanger.setEdgeGlowColor(listView, event.getColor());
     }
 
     public void onEventMainThread(UpdateScheduleByTimeEvent event) {

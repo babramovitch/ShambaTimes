@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import com.astuetz.PagerSlidingTabStrip;
 
 import de.greenrobot.event.EventBus;
+
+import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.SearchSelectedEvent;
@@ -97,7 +99,7 @@ public class StageScheduleFragment extends Fragment {
     private void changeColor(int newColor, int stage) {
         tabs.setIndicatorColor(newColor);
         currentColor = newColor;
-        //ColorUtil.setEdgeGlowColor(pager, newColor);
+        EdgeChanger.setEdgeGlowColor(pager, newColor);
         EventBus.getDefault().postSticky(new ActionBarColorEvent(currentColor, stage));
     }
 

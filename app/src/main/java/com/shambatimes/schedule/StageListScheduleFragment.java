@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.shambatimes.schedule.Util.ColorUtil;
+import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
@@ -307,8 +307,7 @@ public class StageListScheduleFragment extends Fragment {
         listView.setDivider(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
         listView.setDividerHeight(1);
 
-        ColorUtil.setEdgeGlowColor(listView, event.getColor());
-
+        EdgeChanger.setEdgeGlowColor(listView, event.getColor());
 
     }
 
