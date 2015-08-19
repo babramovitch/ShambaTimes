@@ -126,7 +126,7 @@ public class TimeCardScheduleFragment extends Fragment {
                 LinearLayout childView = (LinearLayout) parent.getChildAt(position);
                 CardView cardView = (CardView) childView.getChildAt(0);
                 RelativeLayout relativeLayout = (RelativeLayout) cardView.getChildAt(0);
-                TextView artistNameTextView = (TextView) relativeLayout.getChildAt(1);
+                TextView artistNameTextView = (TextView) relativeLayout.getChildAt(0);
 
                 EventBus.getDefault().post(new ToggleToStageEvent(position, artistNameTextView.getText().toString()));
 
@@ -140,7 +140,7 @@ public class TimeCardScheduleFragment extends Fragment {
                 LinearLayout childView = (LinearLayout) parent.getChildAt(position);
                 CardView cardView = (CardView) childView.getChildAt(0);
                 RelativeLayout relativeLayout = (RelativeLayout) cardView.getChildAt(0);
-                TextView artistNameTextView = (TextView) relativeLayout.getChildAt(1);
+                TextView artistNameTextView = (TextView) relativeLayout.getChildAt(0);
 
                 EventBus.getDefault().post(new ToggleToStageEvent(position, artistNameTextView.getText().toString()));
 
