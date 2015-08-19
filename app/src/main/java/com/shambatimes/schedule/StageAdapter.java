@@ -51,4 +51,6 @@ public class StageAdapter extends FragmentStatePagerAdapter {
         this.date = date;
     }
 
+    public void setName(String name) { this.name = name; }
+
 }

@@ -180,7 +180,7 @@ public class TimeScheduleFragment extends Fragment {
     }
 
     public void onEventMainThread(SearchSelectedEvent event) {
-
+        EventBus.getDefault().removeStickyEvent(SearchSelectedEvent.class);
         Artist artist = event.getArtist();
         if (pager.getCurrentItem() != artist.getStartPosition() || date != artist.getDay()) {
             date = artist.getDay();

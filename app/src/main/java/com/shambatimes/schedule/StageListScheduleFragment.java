@@ -15,9 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
+import com.shambatimes.schedule.events.SearchSelectedEvent;
 import com.shambatimes.schedule.events.ToggleToTimeEvent;
 import com.shambatimes.schedule.myapplication.R;
 
@@ -142,7 +144,6 @@ public class StageListScheduleFragment extends Fragment {
 
         listView.setAdapter(adapter);
 
-
         //Select the record that you pressed to enter the screen.
         if (!searchName.equals("")) {
             View view;
@@ -152,7 +153,9 @@ public class StageListScheduleFragment extends Fragment {
                 textView = (TextView) view.findViewById(R.id.artistName);
 
                 if (textView.getText().toString().equals(searchName)) {
+                    listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
                     listView.setSelection(i);
+                    listView.setItemChecked(i, true);
                     break;
                 }
             }
@@ -304,6 +307,9 @@ public class StageListScheduleFragment extends Fragment {
         listView.setDivider(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
         listView.setDividerHeight(1);
 
+        ColorUtil.setEdgeGlowColor(listView, event.getColor());
+
+
     }
 
     public void onEventMainThread(ChangeDateEvent event) {
@@ -312,6 +318,50 @@ public class StageListScheduleFragment extends Fragment {
         adapter = new ArtistAdapter(getActivity(), artists);
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        //Select the record from when you did a search and the date change here resets the value set in oncreate :'(
+        if (!searchName.equals("")) {
+            View view;
+            TextView textView;
+            for (int i = 0; i < listView.getCount(); i++) {
+                view = listView.getAdapter().getView(i, null, null);
+                textView = (TextView) view.findViewById(R.id.artistName);
+
+                if (textView.getText().toString().equals(searchName)) {
+                    listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+                    listView.setSelection(i);
+                    listView.setItemChecked(i, true);
+                    searchName = "";
+                    break;
+                }
+            }
+        }
+
+    }
+
+    public void onEventMainThread(SearchSelectedEvent event) {
+
+           //Select the record if you're already on the screen, but the date hasn't changed
+           //NOTE: This will be overridden by the date change if the date changed)
+
+            View view;
+            TextView textView;
+            for (int i = 0; i < listView.getCount(); i++) {
+                view = listView.getAdapter().getView(i, null, null);
+                textView = (TextView) view.findViewById(R.id.artistName);
+
+                if (textView.getText().toString().equals(event.getArtist().getAristName())) {
+                    EventBus.getDefault().removeStickyEvent(SearchSelectedEvent.class);
+                    listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+                    listView.setSelection(i);
+                    listView.setItemChecked(i, true);
+                    listView.smoothScrollToPosition(i);
+                    searchName = "";
+                    break;
+                }
+            }
+
+
     }
 
     public void onEventMainThread(DataChangedEvent event) {

@@ -33,6 +33,7 @@ import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,6 +80,7 @@ public class MainActivity extends ActionBarActivity {
 
     //Items that require a saved state
     private int actionBarColor = 0xFF666666;
+    private int actionBarStage = 0;
     private int currentFragment = FRAGMENT_TIME;
     private int currentDay = -1;
     private int currentTimePosition;
@@ -216,7 +218,7 @@ public class MainActivity extends ActionBarActivity {
                 toolbar.setTitle(scheduleBy);
             }
 
-            EventBus.getDefault().postSticky(new ActionBarColorEvent(actionBarColor));
+            EventBus.getDefault().postSticky(new ActionBarColorEvent(actionBarColor,actionBarStage));
 
         }
 
@@ -253,9 +255,9 @@ public class MainActivity extends ActionBarActivity {
                 TextView artistDay = (TextView) convertView.findViewById(R.id.artistDay);
                 TextView artistTime = (TextView) convertView.findViewById(R.id.artistTime);
                 TextView artistStage = (TextView) convertView.findViewById(R.id.artistStage);
-                ImageView artistFavorite = (ImageView) convertView.findViewById(R.id.list_favorited);
+                final ImageView artistFavorite = (ImageView) convertView.findViewById(R.id.list_favorited);
                 View artistDivider = (View) convertView.findViewById(R.id.separator);
-
+                RelativeLayout artistLayout = (RelativeLayout) convertView.findViewById(R.id.artistLayout);
 
                 final Artist artist = this.getItem(position);
 
@@ -264,6 +266,26 @@ public class MainActivity extends ActionBarActivity {
                 } else {
                     artistFavorite.setImageResource(favoriteOutlineDrawables[artist.getStage()]);
                 }
+
+                artistFavorite.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if (artist.isFavorite()) {
+                            artistFavorite.setImageResource(favoriteOutlineDrawables[artist.getStage()]);
+                            artist.setFavorite(false);
+                            artist.save();
+
+                        } else {
+                            artistFavorite.setImageResource(favoriteDrawables[artist.getStage()]);
+                            artist.setFavorite(true);
+                            artist.save();
+                        }
+
+                        MainActivity.shambhala.updateArtistById(artist.getId());
+
+                    }
+                });
 
                 convertView.setTag(artist);
 
@@ -285,7 +307,7 @@ public class MainActivity extends ActionBarActivity {
 
                         item.collapseActionView();
 
-                        EventBus.getDefault().post(new SearchSelectedEvent(artist));
+                        EventBus.getDefault().postSticky(new SearchSelectedEvent(artist));
 
                     }
                 });
@@ -295,6 +317,7 @@ public class MainActivity extends ActionBarActivity {
                 artistStage.setText(stageNames[artist.getStage()]);
                 artistTime.setText(artist.getStartTimeString() + " to " + artist.getEndTimeString());
                 artistDivider.setBackground(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, gradientColors));
+                artistLayout.setBackgroundResource(getBackgroundSelector());
 
                 return convertView;
 
@@ -318,6 +341,35 @@ public class MainActivity extends ActionBarActivity {
 
         textView.setAdapter(searchAdapter);
 
+    }
+
+    public int getBackgroundSelector() {
+
+        int color = R.drawable.list_pagoda_selector;
+
+        switch (actionBarStage) {
+
+            case 0:
+                color = R.drawable.list_pagoda_selector;
+                break;
+            case 1:
+                color = R.drawable.list_forest_selector;
+                break;
+            case 2:
+                color = R.drawable.list_grove_selector;
+                break;
+            case 3:
+                color = R.drawable.list_living_room_selector;
+                break;
+            case 4:
+                color = R.drawable.list_village_selector;
+                break;
+            case 5:
+                color = R.drawable.list_amphitheatre_selector;
+                break;
+        }
+
+        return color;
     }
 
     private void prepareAndLoadDatabase() {
@@ -597,7 +649,17 @@ public class MainActivity extends ActionBarActivity {
 
     public void onEventMainThread(ActionBarColorEvent event) {
         actionBarColor = event.getColor();
+        actionBarStage = event.getStage();
         gradientColors[1] = event.getColor();
+
+//        View actionView = menu.findItem(R.id.global_search).getActionView();
+//        if (actionView != null) {
+//            final AutoCompleteTextView searchTextView = (AutoCompleteTextView) actionView.findViewById(R.id.search_box);
+//            //searchTextView.setDropDownBackgroundDrawable(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, gradientColors));
+//            //searchTextView.setDropDownBackgroundResource(getResources().getColor(actionBarColor));
+//            searchTextView.setHighlightColor(actionBarColor);
+//        }
+
         Drawable colorDrawable = new ColorDrawable(actionBarColor);
         getSupportActionBar().setBackgroundDrawable(colorDrawable);
     }

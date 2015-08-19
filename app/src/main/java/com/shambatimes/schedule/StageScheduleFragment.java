@@ -78,7 +78,7 @@ public class StageScheduleFragment extends Fragment {
 
             @Override
             public void onPageSelected(int i) {
-                changeColor(stageColors[i]);
+                changeColor(stageColors[i],i);
             }
 
             @Override
@@ -89,15 +89,16 @@ public class StageScheduleFragment extends Fragment {
 
         tabs.setViewPager(pager);
 
-        changeColor(stageColors[stageSetTo]);
+        changeColor(stageColors[stageSetTo],stageSetTo);
 
         return (result);
     }
 
-    private void changeColor(int newColor) {
+    private void changeColor(int newColor, int stage) {
         tabs.setIndicatorColor(newColor);
         currentColor = newColor;
-        EventBus.getDefault().postSticky(new ActionBarColorEvent(currentColor));
+        //ColorUtil.setEdgeGlowColor(pager, newColor);
+        EventBus.getDefault().postSticky(new ActionBarColorEvent(currentColor, stage));
     }
 
     private PagerAdapter buildAdapter() {
@@ -111,8 +112,11 @@ public class StageScheduleFragment extends Fragment {
     }
 
     public void onEventMainThread(SearchSelectedEvent event) {
+        stageAdapter.setName(event.getArtist().getAristName());
         pager.setCurrentItem(event.getArtist().getStage(), false);
-        changeColor(stageColors[event.getArtist().getStage()]);
+        stageAdapter.setName("");
+
+        changeColor(stageColors[event.getArtist().getStage()], event.getArtist().getStage());
     }
 
     @Override
