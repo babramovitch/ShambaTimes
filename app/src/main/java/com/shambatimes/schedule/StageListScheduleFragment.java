@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
@@ -74,12 +75,11 @@ public class StageListScheduleFragment extends Fragment {
         date = getArguments().getInt(DATE_POSITION, 0);
         stage = getArguments().getInt(STAGE_POSITION, 0);
         searchName = getArguments().getString(SEARCH_NAME, "");
+        artists = MainActivity.shambhala.getArtistsByDayAndStage(date, stage);
 
         //ArrayList<Artist> artists =
         //        (ArrayList<Artist>) Artist.find(Artist.class, "day = ? and stage = ?", "" + date, "" + stage);
 
-
-        artists = MainActivity.shambhala.getArtistsByDayAndStage(date, stage);
 
         listView = (ListView) result.findViewById(R.id.listView_schedule);
 
@@ -87,33 +87,6 @@ public class StageListScheduleFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-            }
-        });
-
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-                                           int pos, long id) {
-
-                TextView textView = (TextView) arg1.findViewById(R.id.artistStartTimePosition);
-                DateTime startTime = convertStringTimeToPosition(textView.getText().toString());
-
-                DateTime baseTime = convertStringTimeToPosition("11:00");
-//                if(date != 3) {
-//                     baseTime = convertStringTimeToPosition("11:00");
-//                }else{
-//                     baseTime = convertStringTimeToPosition("12:00");
-//                }
-
-                Minutes minutesToStart = Minutes.minutesBetween(baseTime, startTime);
-
-                int startPosition = minutesToStart.getMinutes() / 30;
-
-                if (startPosition < 0) startPosition += 48;
-
-                EventBus.getDefault().post(new ToggleToTimeEvent(startPosition));
-
-                return true;
             }
         });
 
@@ -144,26 +117,53 @@ public class StageListScheduleFragment extends Fragment {
 
         listView.setAdapter(adapter);
 
-        //Select the record that you pressed to enter the screen.
-        if (!searchName.equals("")) {
-            View view;
-            TextView textView;
-            for (int i = 0; i < listView.getCount(); i++) {
-                view = listView.getAdapter().getView(i, null, null);
-                textView = (TextView) view.findViewById(R.id.artistName);
-
-                if (textView.getText().toString().equals(searchName)) {
-                    listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-                    listView.setSelection(i);
-                    listView.setItemChecked(i, true);
-                    break;
-                }
-            }
-        }
-
+        updateSelectedListViewItems(false);
 
         return (result);
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().registerSticky(this);
+    }
+
+    private void updateSelectedListViewItems(boolean resetSearchName) {
+
+        //TODO Currently hardcoded to 1 (friday) for testing.
+        Artist currentlyPlayingArtist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(1, DateUtils.getCurrentTimePosition(), stage);
+        View view;
+        TextView artistNameTextView;
+
+        listView.clearChoices();
+
+        for (int i = 0; i < listView.getCount(); i++) {
+
+            view = listView.getAdapter().getView(i, null, null);
+            artistNameTextView = (TextView) view.findViewById(R.id.artistName);
+
+            if (!searchName.equals("") && artistNameTextView.getText().toString().equals(searchName)) {
+                EventBus.getDefault().removeStickyEvent(SearchSelectedEvent.class);
+                listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+                listView.setSelection(i);
+                listView.setItemChecked(i, true);
+                listView.smoothScrollToPosition(i);
+
+                if (resetSearchName) {
+                    searchName = "";
+                }
+
+                if (currentlyPlayingArtist == null) {
+                    break; //exit loop as there's nothing left to select
+                }
+
+            } else if (currentlyPlayingArtist != null && artistNameTextView.getText().toString().equals(currentlyPlayingArtist.getAristName())) {
+                listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+                listView.setItemChecked(i, true);
+            }
+        }
+    }
+
 
     private DateTime convertStringTimeToPosition(String stringTime) {
 
@@ -271,7 +271,7 @@ public class StageListScheduleFragment extends Fragment {
     }
 
 
-    public int getPressedColor(int stage) {
+    private int getPressedColor(int stage) {
 
         int color = R.drawable.list_pagoda_selector;
 
@@ -313,54 +313,13 @@ public class StageListScheduleFragment extends Fragment {
 
     public void onEventMainThread(ChangeDateEvent event) {
         date = event.getPosition();
-        artists = MainActivity.shambhala.getArtistsByDayAndStage(date, stage);
-        adapter = new ArtistAdapter(getActivity(), artists);
-        listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-
-        //Select the record from when you did a search and the date change here resets the value set in oncreate :'(
-        if (!searchName.equals("")) {
-            View view;
-            TextView textView;
-            for (int i = 0; i < listView.getCount(); i++) {
-                view = listView.getAdapter().getView(i, null, null);
-                textView = (TextView) view.findViewById(R.id.artistName);
-
-                if (textView.getText().toString().equals(searchName)) {
-                    listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-                    listView.setSelection(i);
-                    listView.setItemChecked(i, true);
-                    searchName = "";
-                    break;
-                }
-            }
-        }
-
+        rebuildAdapter();
+        updateSelectedListViewItems(true);
     }
 
     public void onEventMainThread(SearchSelectedEvent event) {
-
-           //Select the record if you're already on the screen, but the date hasn't changed
-           //NOTE: This will be overridden by the date change if the date changed)
-
-            View view;
-            TextView textView;
-            for (int i = 0; i < listView.getCount(); i++) {
-                view = listView.getAdapter().getView(i, null, null);
-                textView = (TextView) view.findViewById(R.id.artistName);
-
-                if (textView.getText().toString().equals(event.getArtist().getAristName())) {
-                    EventBus.getDefault().removeStickyEvent(SearchSelectedEvent.class);
-                    listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-                    listView.setSelection(i);
-                    listView.setItemChecked(i, true);
-                    listView.smoothScrollToPosition(i);
-                    searchName = "";
-                    break;
-                }
-            }
-
-
+        searchName=event.getArtist().getAristName();
+        updateSelectedListViewItems(true);
     }
 
     public void onEventMainThread(DataChangedEvent event) {
@@ -369,18 +328,18 @@ public class StageListScheduleFragment extends Fragment {
 
         if (event.isChanged()) {
             MainActivity.shambhala.updateArtistById(event.getArtistId());
-            artists = MainActivity.shambhala.getArtistsByDayAndStage(date, stage);
-            adapter = new ArtistAdapter(getActivity(), artists);
-            listView.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
+            rebuildAdapter();
+            updateSelectedListViewItems(false);
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().registerSticky(this);
+    private void rebuildAdapter(){
+        artists = MainActivity.shambhala.getArtistsByDayAndStage(date, stage);
+        adapter = new ArtistAdapter(getActivity(), artists);
+        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
+
 
     @Override
     public void onStop() {

@@ -652,14 +652,6 @@ public class MainActivity extends ActionBarActivity {
         actionBarStage = event.getStage();
         gradientColors[1] = event.getColor();
 
-//        View actionView = menu.findItem(R.id.global_search).getActionView();
-//        if (actionView != null) {
-//            final AutoCompleteTextView searchTextView = (AutoCompleteTextView) actionView.findViewById(R.id.search_box);
-//            //searchTextView.setDropDownBackgroundDrawable(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, gradientColors));
-//            //searchTextView.setDropDownBackgroundResource(getResources().getColor(actionBarColor));
-//            searchTextView.setHighlightColor(actionBarColor);
-//        }
-
         Drawable colorDrawable = new ColorDrawable(actionBarColor);
         getSupportActionBar().setBackgroundDrawable(colorDrawable);
     }
@@ -855,7 +847,6 @@ public class MainActivity extends ActionBarActivity {
                 }
             }
         }
-
     }
 
 }
