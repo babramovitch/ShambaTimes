@@ -85,8 +85,6 @@ public class MainActivity extends ActionBarActivity {
     private int currentDay = -1;
     private int currentTimePosition;
 
-    private TimeScheduleFragment timeScheduleFragment;
-
     private String scheduleBy = "Schedule by Time";
     private SharedPreferences prefs;
 
@@ -114,27 +112,83 @@ public class MainActivity extends ActionBarActivity {
 
         prepareAndLoadDatabase();
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
-        String[] left_list = {"Schedule by Time", "Schedule by Stage", "My Schedule", "Artist List"};
-
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.item_row, left_list));
-
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
         if (savedInstanceState == null) {
             currentTimePosition = DateUtils.getCurrentTimePosition();
             actionBarColor = getResources().getColor(R.color.pagoda_color);
             replaceFragment(R.id.content_frame, new TimeScheduleFragment(), "TIME", false);
         } else {
             actionBarColor = savedInstanceState.getInt("COLOR");
+            actionBarStage = savedInstanceState.getInt("STAGE");
             currentFragment = savedInstanceState.getInt("POSITION");
             currentDay = savedInstanceState.getInt("DAY");
             scheduleBy = savedInstanceState.getString("TITLE");
             currentTimePosition = savedInstanceState.getInt("CURRENT_TIME");
         }
+
+        setupNavigationDrawer();
+        setupToolbar();
+
+    }
+
+    private void prepareAndLoadDatabase() {
+
+        if (prefs.contains("database_loaded")) {
+            new Thread(new Runnable() {
+                public void run() {
+                    DatabaseScheduleUpdates.scheduleUpdate1(MainActivity.this);
+                    fetchAllArtists();
+                    EventBus.getDefault().postSticky(new DatabaseLoadFinishedEvent());
+                }
+            }).start();
+
+        } else if (!prefs.contains("database_load_started")) {
+
+            Toast.makeText(this, "Preparing Database", Toast.LENGTH_LONG).show();
+
+            new Thread(new Runnable() {
+                public void run() {
+
+                    prefs.edit().putBoolean("database_load_started", true).apply();
+                    ArtistGenerator artistList = new ArtistGenerator(MainActivity.this);
+                    shambhala.setArtists(artistList.getArtists());
+                    prefs.edit().putBoolean("database_loaded", true).apply();
+                    prefs.edit().putBoolean("update_one_complete", true).apply(); //Original sources have been corrected, only existing users need this.
+                    EventBus.getDefault().postSticky(new DatabaseLoadFinishedEvent());
+
+                }
+            }).start();
+        }
+    }
+
+    private void fetchArtistDataForQuickLoad() {
+        new Thread(new Runnable() {
+            public void run() {
+                ArrayList<Artist> artists = (ArrayList<Artist>) Artist.find(Artist.class, null, null, null, "artist_Name asc", null);
+                EventBus.getDefault().postSticky(new ArtistListLoadDoneEvent(artists));
+            }
+        }).start();
+    }
+
+    private void fetchAllArtists() {
+        new Thread(new Runnable() {
+            public void run() {
+                ArrayList<Artist> artistList = (ArrayList) Artist.listAll(Artist.class);
+                shambhala.setArtists(artistList);
+            }
+        }).start();
+    }
+
+    private void setupNavigationDrawer() {
+
+        String[] left_list = {"Schedule by Time", "Schedule by Stage", "My Schedule", "Artist List"};
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.item_row, left_list));
+
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_closed) {
 
@@ -160,68 +214,93 @@ public class MainActivity extends ActionBarActivity {
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView parent, View view, final int position, long id) {
+            //Prevents the navigation drawer stutter when switching fragments.
+            final Handler mDrawerHandler = new Handler();
+            mDrawerHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    selectItem(position);
+                }
+            }, 300);
+            mDrawerLayout.closeDrawer(mDrawerList);
+        }
+    }
+
+    private void setupToolbar() {
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         if (toolbar != null) {
-
-            //Setting up the spinner in the actionbar
-            //See: http://stackoverflow.com/questions/15193598/actionbar-spinner-customisation
-
-            scheduleSpinner = (Spinner) new Spinner(this);
-            scheduleSpinner.setTag("spinner_nav");
-
-            if (scheduleSpinner != null) {
-
-                adapterBaseScheduleDays = new AdapterBaseScheduleDays(this, R.layout.schedule_spinner, getResources().getStringArray(R.array.days));
-                scheduleSpinner.setAdapter(adapterBaseScheduleDays);
-                scheduleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                        currentDay = position;
-
-                        if (currentDay == 3) {
-                            Constants.REFERENCE_TIME = Constants.SUNDAY_REFERENCE_TIME;
-                        } else {
-                            Constants.REFERENCE_TIME = Constants.GENERAL_REFERENCE_TIME;
-                        }
-
-                        EventBus.getDefault().postSticky(new ChangeDateEvent(position));
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parentView) {
-                    }
-
-                });
-            }
-
-
-            if (currentDay != -1) {
-                scheduleSpinner.setSelection(currentDay);
-            } else {
-
-                int day = DateUtils.getCurrentDay();
-                if (day != -1) {
-                    scheduleSpinner.setSelection(day);
-                }
-
-            }
 
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-            if (currentFragment != FRAGMENT_ARTISTS) {
-                toolbar.addView(scheduleSpinner);
-            } else {
-                toolbar.setTitle(scheduleBy);
-            }
+            setupGlobalSearch();
+            setupScheduleSpinner();
+            EventBus.getDefault().postSticky(new ActionBarColorEvent(actionBarColor, actionBarStage));
+        }
+    }
 
-            EventBus.getDefault().postSticky(new ActionBarColorEvent(actionBarColor,actionBarStage));
+    private void setupScheduleSpinner() {
+
+        //Setting up the spinner in the actionbar
+        //See: http://stackoverflow.com/questions/15193598/actionbar-spinner-customisation
+
+        scheduleSpinner = new Spinner(this);
+        scheduleSpinner.setTag("spinner_nav");
+
+        if (scheduleSpinner != null) {
+
+            adapterBaseScheduleDays = new AdapterBaseScheduleDays(this, R.layout.schedule_spinner, getResources().getStringArray(R.array.days));
+            scheduleSpinner.setAdapter(adapterBaseScheduleDays);
+            scheduleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                    currentDay = position;
+
+                    if (currentDay == 3) {
+                        Constants.REFERENCE_TIME = Constants.SUNDAY_REFERENCE_TIME;
+                    } else {
+                        Constants.REFERENCE_TIME = Constants.GENERAL_REFERENCE_TIME;
+                    }
+
+                    EventBus.getDefault().postSticky(new ChangeDateEvent(position));
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parentView) {
+                }
+
+            });
+        }
+
+        if (currentDay != -1) {
+            scheduleSpinner.setSelection(currentDay);
+        } else {
+
+            int day = DateUtils.getCurrentDay();
+            if (day != -1) {
+                scheduleSpinner.setSelection(day);
+            }
 
         }
 
+        if (currentFragment != FRAGMENT_ARTISTS) {
+            toolbar.addView(scheduleSpinner);
+        } else {
+            toolbar.setTitle(scheduleBy);
+        }
+
+    }
+
+    private void setupGlobalSearch() {
 
         //TODO - Remove duplication and see if the recyclerview adapter in ArtistFragment can be reused
         searchAdapter = new ArrayAdapter<Artist>(this, R.layout.artist_list_item_artists) {
@@ -324,14 +403,11 @@ public class MainActivity extends ActionBarActivity {
             }
         };
 
-
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.actionbar_search, null);
 
-
-        AutoCompleteTextView textView = (AutoCompleteTextView) v.findViewById(R.id.search_box);
-
-        textView.setAdapter(searchAdapter);
+        AutoCompleteTextView globalSearch = (AutoCompleteTextView) v.findViewById(R.id.search_box);
+        globalSearch.setAdapter(searchAdapter);
 
     }
 
@@ -362,68 +438,6 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return color;
-    }
-
-    private void prepareAndLoadDatabase() {
-
-        //TODO asynchronously load / create the database.
-        if (prefs.contains("database_loaded")) {
-            new Thread(new Runnable() {
-                public void run() {
-
-                    DatabaseScheduleUpdates.scheduleUpdate1(MainActivity.this);
-                    fetchAllArtists();
-
-                    EventBus.getDefault().postSticky(new DatabaseLoadFinishedEvent());
-                }
-            }).start();
-
-        } else if (!prefs.contains("database_load_started")) {
-            Toast.makeText(this, "Preparing Database", Toast.LENGTH_LONG).show();
-            new Thread(new Runnable() {
-                public void run() {
-                    prefs.edit().putBoolean("database_load_started", true).apply();
-                    ArtistGenerator artistList = new ArtistGenerator(MainActivity.this);
-                    shambhala.setArtists(artistList.getArtists());
-                    prefs.edit().putBoolean("database_loaded", true).apply();
-                    prefs.edit().putBoolean("update_one_complete", true).apply(); //Original sources have been corrected, only existing users need this.
-                    EventBus.getDefault().postSticky(new DatabaseLoadFinishedEvent());
-
-                }
-            }).start();
-        }
-    }
-
-    public void onEventMainThread(DatabaseLoadFinishedEvent event) {
-        EventBus.getDefault().removeStickyEvent(event);
-        searchAdapter.addAll(shambhala.getArtists());
-    }
-
-
-    private void fetchArtistDataForQuickLoad() {
-        new Thread(new Runnable() {
-            public void run() {
-                ArrayList<Artist> artists = (ArrayList<Artist>) Artist.find(Artist.class, null, null, null, "artist_Name asc", null);
-                EventBus.getDefault().postSticky(new ArtistListLoadDoneEvent(artists));
-            }
-        }).start();
-    }
-
-    private void fetchAllArtists() {
-        new Thread(new Runnable() {
-            public void run() {
-                ArrayList<Artist> artistList = (ArrayList) Artist.listAll(Artist.class);
-                shambhala.setArtists(artistList);
-            }
-        }).start();
-    }
-
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
     }
 
     @Override
@@ -523,21 +537,6 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView parent, View view, final int position, long id) {
-            //Prevents the navigation drawer stutter when switching fragments.
-            final Handler mDrawerHandler = new Handler();
-            mDrawerHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    selectItem(position);
-                }
-            }, 300);
-            mDrawerLayout.closeDrawer(mDrawerList);
-        }
-    }
-
     /**
      * Swaps fragments in the main content view
      */
@@ -633,11 +632,26 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         EventBus.getDefault().registerSticky(this);
     }
 
+    public void onEventMainThread(UpdateScheduleByTimeEvent event) {
+        currentTimePosition = event.getPosition();
+    }
+
+    public void onEventMainThread(DatabaseLoadFinishedEvent event) {
+        EventBus.getDefault().removeStickyEvent(event);
+        searchAdapter.addAll(shambhala.getArtists());
+    }
 
     public void onEventMainThread(ActionBarColorEvent event) {
         actionBarColor = event.getColor();
@@ -647,7 +661,6 @@ public class MainActivity extends ActionBarActivity {
         Drawable colorDrawable = new ColorDrawable(actionBarColor);
         getSupportActionBar().setBackgroundDrawable(colorDrawable);
     }
-
 
     public void onEventMainThread(ToggleToStageEvent event) {
         int position = event.getStage();
@@ -698,11 +711,11 @@ public class MainActivity extends ActionBarActivity {
         adapterBaseScheduleDays.notifyDataSetChanged();
     }
 
-    private void collapseGlobalSearchActionView(){
+    private void collapseGlobalSearchActionView() {
 
         View actionView = (View) menu.findItem(R.id.global_search).getActionView();
 
-        if(actionView != null) {
+        if (actionView != null) {
 
             AutoCompleteTextView textView = (AutoCompleteTextView) actionView.findViewById(R.id.search_box);
             MenuItem item = menu.findItem(R.id.global_search);
@@ -714,9 +727,6 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public void onEventMainThread(UpdateScheduleByTimeEvent event) {
-        currentTimePosition = event.getPosition();
-    }
 
     private void replaceFragment(int id, Fragment fragment, String tag, boolean addToBackStack) {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -815,6 +825,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putInt("COLOR", actionBarColor);
+        savedInstanceState.putInt("STAGE", actionBarStage);
         savedInstanceState.putInt("POSITION", currentFragment);
         savedInstanceState.putInt("DAY", currentDay);
         savedInstanceState.putString("TITLE", scheduleBy);
