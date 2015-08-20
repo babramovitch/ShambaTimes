@@ -295,17 +295,9 @@ public class MainActivity extends ActionBarActivity {
 
                         currentDay = artist.getDay();
                         scheduleSpinner.setSelection(artist.getDay());
-
                         currentDay = artist.getDay();
-                        MenuItem item = menu.findItem(R.id.global_search);
 
-                        View actionView = (View) menu.findItem(R.id.global_search).getActionView();
-                        AutoCompleteTextView textView = (AutoCompleteTextView) actionView.findViewById(R.id.search_box);
-
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
-
-                        item.collapseActionView();
+                        collapseGlobalSearchActionView();
 
                         EventBus.getDefault().postSticky(new SearchSelectedEvent(artist));
 
@@ -661,6 +653,8 @@ public class MainActivity extends ActionBarActivity {
         int position = event.getStage();
         String name = event.getName();
 
+        collapseGlobalSearchActionView();
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         StageScheduleFragment stageSchedule = (StageScheduleFragment) fragmentManager.findFragmentByTag("STAGE");
 
@@ -680,9 +674,10 @@ public class MainActivity extends ActionBarActivity {
         adapterBaseScheduleDays.notifyDataSetChanged();
     }
 
-
     public void onEventMainThread(ToggleToTimeEvent event) {
         int position = event.getTime();
+
+        collapseGlobalSearchActionView();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         TimeScheduleFragment timeSchedule = (TimeScheduleFragment) fragmentManager.findFragmentByTag("TIME");
@@ -701,6 +696,22 @@ public class MainActivity extends ActionBarActivity {
 
 
         adapterBaseScheduleDays.notifyDataSetChanged();
+    }
+
+    private void collapseGlobalSearchActionView(){
+
+        View actionView = (View) menu.findItem(R.id.global_search).getActionView();
+
+        if(actionView != null) {
+
+            AutoCompleteTextView textView = (AutoCompleteTextView) actionView.findViewById(R.id.search_box);
+            MenuItem item = menu.findItem(R.id.global_search);
+
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+
+            item.collapseActionView();
+        }
     }
 
     public void onEventMainThread(UpdateScheduleByTimeEvent event) {
