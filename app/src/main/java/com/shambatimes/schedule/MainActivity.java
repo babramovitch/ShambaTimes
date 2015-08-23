@@ -42,6 +42,7 @@ import android.widget.Toast;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ArtistListLoadDoneEvent;
+import com.shambatimes.schedule.events.DataChangedEvent;
 import com.shambatimes.schedule.events.ShowHideAutoCompleteSearchClearButtonEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DatabaseLoadFinishedEvent;
@@ -369,7 +370,7 @@ public class MainActivity extends ActionBarActivity {
                             artist.save();
                         }
 
-                        MainActivity.shambhala.updateArtistById(artist.getId());
+                        EventBus.getDefault().post(new DataChangedEvent(true, artist.getId()));
 
                     }
                 });

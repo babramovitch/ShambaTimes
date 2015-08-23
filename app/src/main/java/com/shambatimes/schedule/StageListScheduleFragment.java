@@ -321,8 +321,18 @@ public class StageListScheduleFragment extends Fragment {
 
         if (event.isChanged()) {
             MainActivity.shambhala.updateArtistById(event.getArtistId());
+
+            //Get the current position, and how far it's scrolled.  After rebuilding adapter
+            //set the selection back to these values and it won't move.
+            long currentPosition = listView.getFirstVisiblePosition();
+            View v = listView.getChildAt(0);
+            int top = (v == null) ? 0 : (v.getTop() - listView.getPaddingTop());
+
             rebuildAdapter();
+
+            listView.setSelectionFromTop((int) currentPosition,top);
             updateSelectedListViewItems(false);
+
         }
     }
 
