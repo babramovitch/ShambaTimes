@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -28,7 +29,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.ImageView;
@@ -42,6 +42,7 @@ import android.widget.Toast;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ArtistListLoadDoneEvent;
+import com.shambatimes.schedule.events.ShowHideAutoCompleteSearchClearButtonEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DatabaseLoadFinishedEvent;
 import com.shambatimes.schedule.events.SearchSelectedEvent;
@@ -50,11 +51,13 @@ import com.shambatimes.schedule.events.ToggleToStageEvent;
 import com.shambatimes.schedule.events.ToggleToTimeEvent;
 import com.shambatimes.schedule.events.UpdateScheduleByTimeEvent;
 import com.shambatimes.schedule.myapplication.R;
+import com.shambatimes.schedule.views.ClearableAutoCompleteTextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import info.hoang8f.android.segmented.SegmentedGroup;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -67,6 +70,7 @@ public class MainActivity extends ActionBarActivity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private boolean isDrawerOpen = false;
+    private boolean isSearchExpanded = false;
 
 
     private final int FRAGMENT_TIME = 0;
@@ -92,6 +96,8 @@ public class MainActivity extends ActionBarActivity {
     private int[] gradientColors = {0, 0, 0};
 
     ArrayAdapter<Artist> searchAdapter;
+    private String searchText;
+    ClearableAutoCompleteTextView searchTextView;
     Handler handler = new Handler();
 
 
@@ -123,6 +129,8 @@ public class MainActivity extends ActionBarActivity {
             currentDay = savedInstanceState.getInt("DAY");
             scheduleBy = savedInstanceState.getString("TITLE");
             currentTimePosition = savedInstanceState.getInt("CURRENT_TIME");
+            isSearchExpanded = savedInstanceState.getBoolean("SEARCH_EXPANDED");
+            searchText = savedInstanceState.getString("SEARCH_TEXT", "");
         }
 
         setupNavigationDrawer();
@@ -406,7 +414,7 @@ public class MainActivity extends ActionBarActivity {
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.actionbar_search, null);
 
-        AutoCompleteTextView globalSearch = (AutoCompleteTextView) v.findViewById(R.id.search_box);
+        ClearableAutoCompleteTextView globalSearch = (ClearableAutoCompleteTextView) v.findViewById(R.id.search_box);
         globalSearch.setAdapter(searchAdapter);
 
     }
@@ -486,9 +494,52 @@ public class MainActivity extends ActionBarActivity {
 
         }
 
+
+        MenuItem globalSearchMenuItem = menu.findItem(R.id.global_search);
+
+        MenuItemCompat.setOnActionExpandListener(globalSearchMenuItem,
+                new MenuItemCompat.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem item) {
+                        ClearableAutoCompleteTextView textView = (ClearableAutoCompleteTextView) item.getActionView().findViewById(R.id.search_box);
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+                        isSearchExpanded = false;
+
+                        return true; // Return true to collapse action view
+                    }
+
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem item) {
+                        isSearchExpanded = true;
+                        return true; // Return true to expand action view
+                    }
+                });
+
+
         View actionView = menu.findItem(R.id.global_search).getActionView();
-        AutoCompleteTextView searchTextView = (AutoCompleteTextView) actionView.findViewById(R.id.search_box);
+
+        searchTextView = (ClearableAutoCompleteTextView) actionView.findViewById(R.id.search_box);
+        SegmentedGroup searchCategory = (SegmentedGroup) actionView.findViewById(R.id.segmented2);
+        searchCategory.setTintColor(Color.WHITE, getResources().getColor(R.color.pagoda_color));
         searchTextView.setAdapter(searchAdapter);
+        searchTextView.setThreshold(1);
+
+        if (isSearchExpanded && searchTextView != null) {
+            globalSearchMenuItem.expandActionView();
+            searchTextView.setSelection(searchTextView.length());
+            searchTextView.setText(searchText);
+            searchTextView.requestFocus();
+            //Keyboard isn't raising unless I delay the command, even with the requestFocus above.
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(searchTextView, InputMethodManager.SHOW_IMPLICIT);
+                }
+            }, 300);
+
+        }
 
         return true;
     }
@@ -519,7 +570,7 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.global_search) {
             View actionView = menu.findItem(R.id.global_search).getActionView();
             if (actionView != null) {
-                final AutoCompleteTextView searchTextView = (AutoCompleteTextView) actionView.findViewById(R.id.search_box);
+                final ClearableAutoCompleteTextView searchTextView = (ClearableAutoCompleteTextView) actionView.findViewById(R.id.search_box);
                 searchTextView.setText("");
                 searchTextView.requestFocus();
 
@@ -716,13 +767,7 @@ public class MainActivity extends ActionBarActivity {
         View actionView = (View) menu.findItem(R.id.global_search).getActionView();
 
         if (actionView != null) {
-
-            AutoCompleteTextView textView = (AutoCompleteTextView) actionView.findViewById(R.id.search_box);
             MenuItem item = menu.findItem(R.id.global_search);
-
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
-
             item.collapseActionView();
         }
     }
@@ -830,9 +875,11 @@ public class MainActivity extends ActionBarActivity {
         savedInstanceState.putInt("DAY", currentDay);
         savedInstanceState.putString("TITLE", scheduleBy);
         savedInstanceState.putInt("CURRENT_TIME", currentTimePosition);
+        savedInstanceState.putBoolean("SEARCH_EXPANDED", isSearchExpanded);
+        savedInstanceState.putString("SEARCH_TEXT", searchText);
+
         super.onSaveInstanceState(savedInstanceState);
     }
-
 
     private class artistFilter extends Filter {
 
@@ -840,12 +887,16 @@ public class MainActivity extends ActionBarActivity {
         protected FilterResults performFiltering(CharSequence constraint) {
             List<Artist> list = shambhala.getArtists();
             FilterResults result = new FilterResults();
-            String substr = constraint.toString().toLowerCase();
-            // if no constraint is given, return the whole list
-            if (substr == null || substr.length() == 0) {
-                result.values = list;
-                result.count = list.size();
-            } else {
+
+            try {
+                searchText = constraint.toString().toLowerCase();
+            }catch(Exception e){
+                searchText = "";
+            }
+
+            EventBus.getDefault().post(new ShowHideAutoCompleteSearchClearButtonEvent(searchText.length() > 0));
+
+            if (searchText.length() > 1) {
                 // iterate over the list of venues and find if the venue matches the constraint. if it does, add to the result list
                 final ArrayList<Artist> retList = new ArrayList<Artist>();
                 for (Artist artist : list) {
@@ -867,6 +918,16 @@ public class MainActivity extends ActionBarActivity {
                 for (Artist artist : (ArrayList<Artist>) results.values) {
                     searchAdapter.add(artist);
                 }
+            }
+        }
+    }
+
+    public void onEventMainThread(ShowHideAutoCompleteSearchClearButtonEvent event) {
+        if(searchTextView!=null) {
+            if (event.isShowClearButton()) {
+                searchTextView.showClearButton();
+            } else {
+                searchTextView.hideClearButton();
             }
         }
     }

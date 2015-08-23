@@ -27,6 +27,7 @@
     <string name="stage_name_pagoda">Pagoda</string>
     <string name="stage_name_forest">Fractal Forest</string>
     <string name="stage_name_grove">The Grove</string>
+    <string name="search_box_hint">Search schedule</string>
 
     <string-array name="stages">
         <item>@string/stage_name_pagoda</item>

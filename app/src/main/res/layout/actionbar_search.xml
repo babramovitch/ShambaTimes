@@ -1,19 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_gravity="fill_horizontal"
-    android:focusable="true" >
+    android:paddingRight="5dp"
+    android:focusable="true"
+    >
 
-    <AutoCompleteTextView
+    <com.shambatimes.schedule.views.ClearableAutoCompleteTextView
         android:id="@+id/search_box"
         android:layout_width="fill_parent"
+        android:paddingRight="10dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:dropDownVerticalOffset="5dp"
         android:dropDownWidth="wrap_content"
         android:imeOptions="flagNoExtractUi"
-        android:textColor="#FFFFFF" >
-    </AutoCompleteTextView>
+        android:textColor="#FFFFFF"
+        android:singleLine="true"
+        android:hint="@string/search_box_hint"
+        android:background="@android:color/transparent"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/segmented2">
+    </com.shambatimes.schedule.views.ClearableAutoCompleteTextView>
+
+    <info.hoang8f.android.segmented.SegmentedGroup
+        xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+        android:visibility="gone"
+        android:id="@+id/segmented2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:orientation="horizontal"
+        android:checkedButton="@+id/button21"
+        android:layout_alignParentRight="true"
+        segmentedgroup:border_width="1dp"
+        segmentedgroup:corner_radius="1dp"
+        >
+
+        <RadioButton
+            android:id="@+id/button21"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Artist"
+            style="@style/RadioButton" />
+
+        <RadioButton
+            android:id="@+id/button22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Genre"
+            style="@style/RadioButton"
+            android:buttonTint="#ffffe557" />
+    </info.hoang8f.android.segmented.SegmentedGroup>
 
 </RelativeLayout>
