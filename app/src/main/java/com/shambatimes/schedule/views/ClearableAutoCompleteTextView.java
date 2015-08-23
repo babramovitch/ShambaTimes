@@ -62,7 +62,7 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
         // Set the bounds of the button
 
         this.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                imgClearButton, null);
+                null, null);
 
         // if the clear button is pressed, fire up the handler. Otherwise do nothing
         this.setOnTouchListener(new OnTouchListener() {

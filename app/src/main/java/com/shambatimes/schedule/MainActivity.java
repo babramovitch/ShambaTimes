@@ -501,11 +501,11 @@ public class MainActivity extends ActionBarActivity {
                 new MenuItemCompat.OnActionExpandListener() {
                     @Override
                     public boolean onMenuItemActionCollapse(MenuItem item) {
-                        ClearableAutoCompleteTextView textView = (ClearableAutoCompleteTextView) item.getActionView().findViewById(R.id.search_box);
+                        ClearableAutoCompleteTextView searchTextView = (ClearableAutoCompleteTextView) item.getActionView().findViewById(R.id.search_box);
+                        searchTextView.hideClearButton();
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+                        imm.hideSoftInputFromWindow(searchTextView.getWindowToken(), 0);
                         isSearchExpanded = false;
-
                         return true; // Return true to collapse action view
                     }
 
@@ -851,6 +851,10 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void onBackPressed() {
 
+        if(isSearchExpanded){
+            super.onBackPressed();
+            return;
+        }
         //Return to the time schedule fragment before exiting the app.
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.content_frame);
         if (!(f instanceof TimeScheduleFragment)) {
