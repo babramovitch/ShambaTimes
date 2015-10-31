@@ -68,7 +68,6 @@ public class StageScheduleFragment extends Fragment {
 
         pager = (ViewPager) result.findViewById(R.id.tabbed_pager);
         pager.setAdapter(buildAdapter());
-
         pager.setCurrentItem(stageSetTo, false);
 
         tabs = (PagerSlidingTabStrip) result.findViewById(R.id.tabs);
@@ -98,6 +97,7 @@ public class StageScheduleFragment extends Fragment {
 
     private void changeColor(int newColor, int stage) {
         tabs.setIndicatorColor(newColor);
+        tabs.setUnderlineColor(newColor);
         currentColor = newColor;
         EdgeChanger.setEdgeGlowColor(pager, newColor);
         EventBus.getDefault().postSticky(new ActionBarColorEvent(currentColor, stage));
