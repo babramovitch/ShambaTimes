@@ -1,26 +1,23 @@
 package com.shambatimes.schedule;
 
-import android.app.SearchManager;
 import android.content.Context;
-
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
-
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.SearchView;
+
 import android.support.v7.widget.Toolbar;
+import android.os.Handler;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,7 +35,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ArtistListLoadDoneEvent;
@@ -47,7 +43,6 @@ import com.shambatimes.schedule.events.ShowHideAutoCompleteSearchClearButtonEven
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DatabaseLoadFinishedEvent;
 import com.shambatimes.schedule.events.SearchSelectedEvent;
-import com.shambatimes.schedule.events.SearchTextEvent;
 import com.shambatimes.schedule.events.ToggleToStageEvent;
 import com.shambatimes.schedule.events.ToggleToTimeEvent;
 import com.shambatimes.schedule.events.UpdateScheduleByTimeEvent;
@@ -58,8 +53,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
-import info.hoang8f.android.segmented.SegmentedGroup;
-
 
 public class MainActivity extends ActionBarActivity {
 
@@ -456,46 +449,6 @@ public class MainActivity extends ActionBarActivity {
 
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) searchItem.getActionView();
-
-        SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
-
-        if (searchView != null) {
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity.this.getComponentName()));
-
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    EventBus.getDefault().post(new SearchTextEvent(query));
-                    return false;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    EventBus.getDefault().post(new SearchTextEvent(newText));
-                    return false;
-                }
-
-            });
-
-            MenuItemCompat.setOnActionExpandListener(searchItem,
-                    new MenuItemCompat.OnActionExpandListener() {
-                        @Override
-                        public boolean onMenuItemActionCollapse(MenuItem item) {
-                            scheduleSpinner.setVisibility(View.VISIBLE);
-                            return true; // Return true to collapse action view
-                        }
-
-                        @Override
-                        public boolean onMenuItemActionExpand(MenuItem item) {
-                            return true; // Return true to expand action view
-                        }
-                    });
-
-        }
-
-
         MenuItem globalSearchMenuItem = menu.findItem(R.id.global_search);
 
         MenuItemCompat.setOnActionExpandListener(globalSearchMenuItem,
@@ -521,8 +474,6 @@ public class MainActivity extends ActionBarActivity {
         View actionView = menu.findItem(R.id.global_search).getActionView();
 
         searchTextView = (ClearableAutoCompleteTextView) actionView.findViewById(R.id.search_box);
-        SegmentedGroup searchCategory = (SegmentedGroup) actionView.findViewById(R.id.segmented2);
-        searchCategory.setTintColor(Color.WHITE, getResources().getColor(R.color.pagoda_color));
         searchTextView.setAdapter(searchAdapter);
         searchTextView.setThreshold(1);
 
@@ -546,15 +497,11 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem searchItem = menu.findItem(R.id.action_search);
         MenuItem globalSearchItem = menu.findItem(R.id.global_search);
-
-        if (searchItem != null) {
-            searchItem.setVisible(!isDrawerOpen && currentFragment == FRAGMENT_ARTISTS);
-        }
 
         if (globalSearchItem != null) {
             globalSearchItem.setVisible(!isDrawerOpen && (currentFragment == FRAGMENT_TIME || currentFragment == FRAGMENT_STAGE));
+            globalSearchItem.setVisible(!isDrawerOpen);
         }
         return true;
     }
@@ -775,10 +722,14 @@ public class MainActivity extends ActionBarActivity {
 
 
     private void replaceFragment(int id, Fragment fragment, String tag, boolean addToBackStack) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(id, fragment, tag);
-        fragmentTransaction.commit();
+        try {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(id, fragment, tag);
+            fragmentTransaction.commit();
+        }catch(Exception e){
+            Log.e("MainActivity", "Exception replacing fragment", e);
+        }
     }
 
     public class AdapterBaseScheduleDays extends BaseAdapter {

@@ -61,7 +61,7 @@ public class FavoriteScheduleFragment extends Fragment implements UndoBarControl
                              Bundle savedInstanceState) {
 
 
-        View result = inflater.inflate(R.layout.recycler_schedule, container, false);
+        View result = inflater.inflate(R.layout.recycler_schedule_favorites, container, false);
 
 
         stageColors = this.getResources().getIntArray(R.array.stage_colors);
@@ -82,7 +82,7 @@ public class FavoriteScheduleFragment extends Fragment implements UndoBarControl
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new FlipInBottomXAnimator());
 
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recycler, int newState) {
                 super.onScrollStateChanged(recycler, newState);

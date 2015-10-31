@@ -21,37 +21,7 @@
         android:hint="@string/search_box_hint"
         android:background="@android:color/transparent"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/segmented2">
+        android:layout_alignParentTop="true">
     </com.shambatimes.schedule.views.ClearableAutoCompleteTextView>
-
-    <info.hoang8f.android.segmented.SegmentedGroup
-        xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
-        android:visibility="gone"
-        android:id="@+id/segmented2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:orientation="horizontal"
-        android:checkedButton="@+id/button21"
-        android:layout_alignParentRight="true"
-        segmentedgroup:border_width="1dp"
-        segmentedgroup:corner_radius="1dp"
-        >
-
-        <RadioButton
-            android:id="@+id/button21"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Artist"
-            style="@style/RadioButton" />
-
-        <RadioButton
-            android:id="@+id/button22"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Genre"
-            style="@style/RadioButton"
-            android:buttonTint="#ffffe557" />
-    </info.hoang8f.android.segmented.SegmentedGroup>
 
 </RelativeLayout>

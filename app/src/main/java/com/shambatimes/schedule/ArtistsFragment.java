@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 
+import com.shambatimes.schedule.events.SearchSelectedEvent;
 import com.shambatimes.schedule.events.SearchTextEvent;
 import com.shambatimes.schedule.myapplication.R;
 
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 
 import de.greenrobot.event.EventBus;
 import jp.wasabeef.recyclerview.animators.FlipInBottomXAnimator;
+import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller;
 
 
 public class ArtistsFragment extends Fragment {
@@ -33,6 +35,7 @@ public class ArtistsFragment extends Fragment {
 
 
     private ArtistRecyclerAdapter adapter;
+    private VerticalRecyclerViewFastScroller fastScroller;
     int[] colors = {0, 0, 0};
     int scrollColor;
 
@@ -45,16 +48,22 @@ public class ArtistsFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        View layout = inflater.inflate(R.layout.recycler_schedule, container, false);
+        View layout = inflater.inflate(R.layout.recycler_schedule_artists, container, false);
 
         recyclerView = (RecyclerView) layout.findViewById(R.id.listView_schedule);
+        fastScroller = (VerticalRecyclerViewFastScroller) layout.findViewById(R.id.fast_scroller);
+        fastScroller.setRecyclerView(recyclerView);
+        fastScroller.setBarColor(getResources().getColor(R.color.background_material_light));
+        recyclerView.addOnScrollListener(fastScroller.getOnScrollListener());
+
         recyclerView.setHasFixedSize(true);
+
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
         recyclerView.setItemAnimator(new FlipInBottomXAnimator());
 
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recycler, int newState) {
                 super.onScrollStateChanged(recycler, newState);
@@ -83,7 +92,6 @@ public class ArtistsFragment extends Fragment {
         protected ImageView image;
 
         public ArtistViewHolder(View v) {
-
             super(v);
 
             artistName = (TextView) v.findViewById(R.id.artistName);
@@ -132,6 +140,19 @@ public class ArtistsFragment extends Fragment {
             }else{
             return 0;
             }
+        }
+
+        public int findArtist(String name){
+
+            int artistPosition = 0;
+
+            for(Artist artist : artistList){
+                if(artist.getAristName().equals(name)){
+                    return artistPosition;
+                }
+                artistPosition++;
+            }
+            return -1;
         }
 
         public Filter getFilter() {
@@ -230,7 +251,17 @@ public class ArtistsFragment extends Fragment {
     public void onEventMainThread(ActionBarColorEvent event) {
         colors[1] = event.getColor();
         scrollColor = event.getColor();
+        fastScroller.setHandleColor(event.getColor());
     }
+    public void onEventMainThread(SearchSelectedEvent event) {
+        int artistPosition = adapter.findArtist(event.getArtist().getAristName());
+        if(artistPosition != -1) {
+            LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
+            llm.scrollToPositionWithOffset(artistPosition , 20);
+        }
+    }
+
+
 
     @Override
     public void onStart() {
