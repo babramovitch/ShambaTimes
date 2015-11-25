@@ -2,6 +2,7 @@ package com.shambatimes.schedule;
 
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -71,6 +72,8 @@ public class StageScheduleFragment extends Fragment {
         pager.setCurrentItem(stageSetTo, false);
 
         tabs = (PagerSlidingTabStrip) result.findViewById(R.id.tabs);
+
+        //tabs.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD), Typeface.BOLD);
 
         tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

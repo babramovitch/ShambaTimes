@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -40,12 +41,17 @@
 
         </LinearLayout>
 
-        <ListView
-            android:id="@+id/left_drawer"
+        <android.support.design.widget.NavigationView
+            android:id="@+id/navigation"
             android:layout_width="260dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="@color/background_material_light" />
+            android:background="@color/background_material_light"
+            app:itemBackground="@drawable/navigation_selector"
+            app:itemTextColor="@color/black"
+            app:itemIconTint="@color/black"
+            app:headerLayout="@layout/drawer_header"
+            app:menu="@menu/navigation_menu" />
 
     </android.support.v4.widget.DrawerLayout>
 </LinearLayout>

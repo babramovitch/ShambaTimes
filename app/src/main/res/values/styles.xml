@@ -143,7 +143,14 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="ListViewLarge">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">15dp</item>
+    </style>
+
     <style name="ListViewMedium">
+
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
@@ -153,7 +160,7 @@
     <style name="ListViewSmall">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:layout_marginLeft">15dp</item>
     </style>
 

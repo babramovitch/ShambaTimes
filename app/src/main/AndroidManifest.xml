@@ -4,6 +4,8 @@
 
    <!--  <uses-permission android:name="android.permission.VIBRATE" /> -->
      <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:name="com.orm.SugarApp"
@@ -57,6 +59,17 @@
                 android:initialKeyguardLayout="@layout/schedule_widget_layout"
                 android:widgetCategory="keyguard|home_screen"
                 />
+        </receiver>
+
+        <receiver android:name="com.shambatimes.schedule.Receivers.AlarmReceiver">
+        </receiver>
+
+        <!-- Will not be called unless the application explicitly enables it -->
+        <receiver android:name="com.shambatimes.schedule.Receivers.DeviceBootReceiver"
+            android:enabled="true" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
         </receiver>
 
 

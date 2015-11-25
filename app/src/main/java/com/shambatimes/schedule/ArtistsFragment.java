@@ -1,26 +1,35 @@
 package com.shambatimes.schedule;
 
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
 import android.widget.ImageView;
 
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.shambatimes.schedule.Receivers.AlarmReceiver;
+import com.shambatimes.schedule.Util.AlarmHelper;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 
 import com.shambatimes.schedule.events.SearchSelectedEvent;
-import com.shambatimes.schedule.events.SearchTextEvent;
+import com.shambatimes.schedule.events.FilterEvent;
 import com.shambatimes.schedule.myapplication.R;
 
 import java.util.ArrayList;
@@ -36,11 +45,15 @@ public class ArtistsFragment extends Fragment {
 
     private ArtistRecyclerAdapter adapter;
     private VerticalRecyclerViewFastScroller fastScroller;
-    int[] colors = {0, 0, 0};
-    int scrollColor;
+    private int[] colors = {0, 0, 0};
+    private int scrollColor;
 
-    ArrayList<Artist> artists;
-    RecyclerView recyclerView;
+    private ArrayList<Artist> artists;
+    private RecyclerView recyclerView;
+    private PendingIntent pendingIntent;
+    AlarmHelper alarmHelper;
+
+    private View layout;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -48,7 +61,8 @@ public class ArtistsFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        View layout = inflater.inflate(R.layout.recycler_schedule_artists, container, false);
+        layout = inflater.inflate(R.layout.recycler_schedule_artists, container, false);
+        alarmHelper = new AlarmHelper(getActivity(),layout);
 
         recyclerView = (RecyclerView) layout.findViewById(R.id.listView_schedule);
         fastScroller = (VerticalRecyclerViewFastScroller) layout.findViewById(R.id.fast_scroller);
@@ -82,12 +96,14 @@ public class ArtistsFragment extends Fragment {
     public static class ArtistViewHolder extends RecyclerView.ViewHolder {
 
         protected TextView artistDay;
+        protected TextView genres;
         protected TextView artistName;
         protected TextView artistTime;
         protected TextView artistStartTimePosition;
         protected TextView artistStage;
         protected RelativeLayout artistLayout;
         protected View divider;
+
 
         protected ImageView image;
 
@@ -99,6 +115,7 @@ public class ArtistsFragment extends Fragment {
             artistStartTimePosition = (TextView) v.findViewById(R.id.artistStartTimePosition);
             artistStage = (TextView) v.findViewById(R.id.artistStage);
             artistDay = (TextView) v.findViewById(R.id.artistDay);
+            genres = (TextView) v.findViewById(R.id.artistGenres);
             artistLayout = (RelativeLayout) v.findViewById(R.id.artistLayout);
             image = (ImageView) v.findViewById(R.id.list_favorited);
             divider = v.findViewById(R.id.separator);
@@ -106,13 +123,15 @@ public class ArtistsFragment extends Fragment {
         }
     }
 
+    Artist snackArtist;
+
     public class ArtistRecyclerAdapter extends RecyclerView.Adapter<ArtistViewHolder> {
 
         private ArrayList<Artist> artistList;
         String[] dayOfWeek = {"Thursday", "Friday", "Saturday", "Sunday"};
         private String[] stageNames = getActivity().getResources().getStringArray(R.array.stages);
 
-        ItemFilter mFilter = new ItemFilter();
+        //ItemFilter mFilter = new ItemFilter();
 
         int[] favoriteDrawables = {R.drawable.favorite_pagoda,
                 R.drawable.favorite_forest,
@@ -128,6 +147,14 @@ public class ArtistsFragment extends Fragment {
                 R.drawable.favorite_outline_village,
                 R.drawable.favorite_outline_amphitheatre};
 
+        int[] stageColors = {R.color.pagoda_color,
+                R.color.fractal_forest_color,
+                R.color.grove_color,
+                R.color.living_room_color,
+                R.color.village_color,
+                R.color.amphitheatre_color,
+                R.color.fractal_forest_color};
+
         public ArtistRecyclerAdapter(ArrayList<Artist> artistList) {
             this.artistList = artistList;
         }
@@ -135,19 +162,19 @@ public class ArtistsFragment extends Fragment {
         @Override
         public int getItemCount() {
 
-            if(artistList != null) {
+            if (artistList != null) {
                 return artistList.size();
-            }else{
-            return 0;
+            } else {
+                return 0;
             }
         }
 
-        public int findArtist(String name){
+        public int findArtist(String name) {
 
             int artistPosition = 0;
 
-            for(Artist artist : artistList){
-                if(artist.getAristName().equals(name)){
+            for (Artist artist : artistList) {
+                if (artist.getAristName().equals(name)) {
                     return artistPosition;
                 }
                 artistPosition++;
@@ -155,9 +182,9 @@ public class ArtistsFragment extends Fragment {
             return -1;
         }
 
-        public Filter getFilter() {
-            return mFilter;
-        }
+//        public Filter getFilter() {
+//            return mFilter;
+//        }
 
         @Override
         public void onBindViewHolder(final ArtistViewHolder artistViewHolder, final int i) {
@@ -165,6 +192,8 @@ public class ArtistsFragment extends Fragment {
 
             artistViewHolder.artistName.setText(artist.getAristName());
             artistViewHolder.artistDay.setText(dayOfWeek[artist.getDay()]);
+            String formattedGenres = artist.getGenres().replace(",", ", ");
+            artistViewHolder.genres.setText(formattedGenres);
             artistViewHolder.artistTime.setText(artist.getStartTimeString() + " to " + artist.getEndTimeString());
             artistViewHolder.artistStartTimePosition.setText("" + artist.getStartPosition());
             artistViewHolder.artistStage.setText(stageNames[artist.getStage()]);
@@ -185,10 +214,15 @@ public class ArtistsFragment extends Fragment {
                         artist.setFavorite(false);
                         artist.save();
 
+                        alarmHelper.dismissSnackbar();
+
                     } else {
                         artistViewHolder.image.setImageResource(favoriteDrawables[artist.getStage()]);
                         artist.setFavorite(true);
                         artist.save();
+
+
+                        alarmHelper.showSetAlarmSnackBar(artist);
                     }
 
                     MainActivity.shambhala.updateArtistById(artist.getId());
@@ -196,7 +230,6 @@ public class ArtistsFragment extends Fragment {
                 }
             });
         }
-
 
         @Override
         public ArtistViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -207,45 +240,58 @@ public class ArtistsFragment extends Fragment {
             return new ArtistViewHolder(itemView);
         }
 
-        private class ItemFilter extends Filter {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
+        private void applyGenreFilter(ArrayList<String> filteredGenres) {
 
-                String filterString = constraint.toString().toLowerCase();
+            final ArrayList<Artist> originalArtistList = artists;
 
-                FilterResults results = new FilterResults();
+            int count = originalArtistList.size();
 
-                final ArrayList<Artist> list = artists;
+            final ArrayList<Artist> newArtistList = new ArrayList<Artist>(count);
 
-                int count = list.size();
-                final ArrayList<Artist> nlist = new ArrayList<Artist>(count);
 
-                String filterableString;
+            String artistGenreString;
 
-                for (int i = 0; i < count; i++) {
-                    filterableString = list.get(i).getAristName();
-                    if (filterableString.toLowerCase().contains(filterString)) {
-                        nlist.add(list.get(i));
+            for (int i = 0; i < count; i++) {
+
+                artistGenreString = originalArtistList.get(i).getGenres();
+                String[] artistGenreArray = artistGenreString.split(",");
+
+                if (filteredGenres.isEmpty()) {
+                    newArtistList.add(originalArtistList.get(i));
+                } else {
+
+                    boolean matchFound = false;
+
+                    for (String genre : artistGenreArray) {
+
+                        if (filteredGenres.contains(genre.toLowerCase())) {
+                            newArtistList.add(originalArtistList.get(i));
+                            matchFound = true;
+                        }
+
+                        if (matchFound) {
+                            break;
+                        }
                     }
                 }
 
-                results.values = nlist;
-                results.count = nlist.size();
-
-                return results;
             }
 
-            @SuppressWarnings("unchecked")
-            @Override
-            protected void publishResults(CharSequence constraint, Filter.FilterResults results) {
-                artistList = (ArrayList<Artist>) results.values;
-                notifyDataSetChanged();
-            }
+            artistList = newArtistList;
+            notifyDataSetChanged();
+
         }
+
     }
 
-    public void onEvent(SearchTextEvent event) {
-        adapter.getFilter().filter(event.getSearchText());
+    public void onEventMainThread(FilterEvent event) {
+        if (event.getGenreFilterList().isEmpty()) {
+            recyclerView.addOnScrollListener(fastScroller.getOnScrollListener());
+        } else {
+            recyclerView.removeOnScrollListener(fastScroller.getOnScrollListener());
+        }
+
+        adapter.applyGenreFilter(event.getGenreFilterList());
     }
 
     public void onEventMainThread(ActionBarColorEvent event) {
@@ -253,14 +299,14 @@ public class ArtistsFragment extends Fragment {
         scrollColor = event.getColor();
         fastScroller.setHandleColor(event.getColor());
     }
+
     public void onEventMainThread(SearchSelectedEvent event) {
         int artistPosition = adapter.findArtist(event.getArtist().getAristName());
-        if(artistPosition != -1) {
+        if (artistPosition != -1) {
             LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
-            llm.scrollToPositionWithOffset(artistPosition , 20);
+            llm.scrollToPositionWithOffset(artistPosition, 20);
         }
     }
-
 
 
     @Override

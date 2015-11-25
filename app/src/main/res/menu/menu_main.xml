@@ -4,11 +4,27 @@
     tools:context=".MainActivity">
 
     <item
+        android:id="@+id/filter"
+        android:icon="@drawable/ic_filter_list_white_36dp"
+        android:title="Filter"
+        app:showAsAction="ifRoom"
+        />
+
+    <item
+        android:id="@+id/filter_active"
+        android:icon="@drawable/ic_filter_list_purple_a400_36dp"
+        android:title="Filter Active"
+        android:visible="false"
+        app:showAsAction="ifRoom"
+        />
+
+    <item
         android:id="@+id/global_search"
-        android:icon="@android:drawable/ic_menu_search"
+        android:icon="@drawable/ic_search_white_36dp"
         android:title="Search"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionLayout="@layout/actionbar_search"
         />
+
 
 </menu>

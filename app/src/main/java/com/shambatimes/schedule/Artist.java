@@ -26,6 +26,22 @@ public class Artist extends SugarRecord<Artist> {
     private String startTimeString;
     private String endTimeString;
 
+    public String getGenres() {
+        return genres;
+    }
+
+    public void setGenres(String genres) {
+        this.genres = genres;
+    }
+
+    public String getArtistName() {
+        return artistName;
+    }
+
+    private String genres;
+
+    private boolean isAlarmSet;
+
     @Ignore
     private DateTime startTime,endTime;
 
@@ -34,12 +50,11 @@ public class Artist extends SugarRecord<Artist> {
     private boolean favorite = false;
 
     @Ignore
-
     public Artist(){
 
     }
 
-    public Artist(int stage, int day, String startTime, String endTime, String artistName) {
+    public Artist(int stage, int day, String startTime, String endTime, String artistName, String genres) {
 
         this.stage = stage;
         this.startTimeString = startTime;
@@ -48,6 +63,7 @@ public class Artist extends SugarRecord<Artist> {
         this.startTime = convertStringTimeToPosition(startTime);
         this.endTime = convertStringTimeToPosition(endTime);
         this.artistName = artistName;
+        this.genres = genres;
 
         DateTime baseTime;
         if(day != 3) {
@@ -162,14 +178,6 @@ public class Artist extends SugarRecord<Artist> {
         this.endTime = endTime;
     }
 
-    //public boolean isReminderEnabled() {
-    //    return reminderEnabled;
-    //}
-
-    //public void setReminderEnabled(boolean reminderEnabled) {
-    //    this.reminderEnabled = reminderEnabled;
-    //}
-
    public boolean isFavorite() {
         return favorite;
    }
@@ -177,4 +185,12 @@ public class Artist extends SugarRecord<Artist> {
    public void setFavorite(boolean favorite) {
         this.favorite = favorite;
    }
+
+    public boolean isAlarmSet() {
+        return isAlarmSet;
+    }
+
+    public void setIsAlarmSet(boolean isAlarmSet) {
+        this.isAlarmSet = isAlarmSet;
+    }
 }

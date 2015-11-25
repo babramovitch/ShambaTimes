@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/artistLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="5dp"
+    android:paddingBottom="5dp"
     android:background="@drawable/list_forest_selector"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
@@ -19,35 +20,49 @@
 
     <TextView
         android:id="@+id/artistName"
-        style="@style/ListViewMedium"
+        android:fontFamily="sans-serif-condensed"
+        style="@style/ListViewLarge"
+        android:textStyle="bold"
+        android:textSize="19sp"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/separator"
         android:layout_toLeftOf="@+id/list_favorited"
-        android:paddingBottom="5dp"
         android:paddingTop="5dp"
         android:text="Artist Name"
-
         />
 
+    <TextView
+        android:id="@+id/artistGenres"
+        style="@style/ListViewSmall"
+        android:fontFamily="sans-serif-light"
+        android:textStyle="italic"
+        android:layout_width="fill_parent"
+        android:layout_below="@id/artistName"
+        android:text="Hip hop, Electro, Funk"
+        android:paddingBottom="8dp"
+        />
 
     <TextView
         android:id="@+id/artistStage"
         style="@style/ListViewSmall"
+        android:fontFamily="sans-serif-condensed"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/artistName"
+        android:layout_below="@id/artistGenres"
         android:layout_toLeftOf="@id/list_favorited"
         android:text="Stage" />
 
     <TextView
+        android:fontFamily="sans-serif-condensed"
         android:id="@+id/artistDay"
         style="@style/ListViewSmall"
-        android:layout_width="60dp"
+        android:layout_width="70dp"
         android:layout_below="@id/artistStage"
         android:text="Saturday"
 
         />
 
     <TextView
+        android:fontFamily="sans-serif-condensed"
         android:id="@+id/artistTime"
         style="@style/ListViewSmall"
         android:layout_alignBaseline="@id/artistDay"
@@ -56,7 +71,7 @@
         android:layout_toEndOf="@+id/artistDay"
         android:layout_toLeftOf="@id/list_favorited"
         android:layout_toRightOf="@+id/artistDay"
-        android:text="Artist Schedule" />
+        tools:text="Artist Schedule" />
 
     <TextView
         android:id="@+id/artistStartTimePosition"

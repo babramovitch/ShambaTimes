@@ -41,7 +41,7 @@ public class DatabaseScheduleUpdates {
                 artists = (ArrayList<Artist>) Artist.find(Artist.class, "artist_Name = ?", query2, null, "day ASC, start_Position ASC", null);
 
                 if (artists.size() == 0) {
-                    new Artist(Constants.LIVINGROOM, 0, "04:30", "05:30", "Akimi").save();
+                    new Artist(Constants.LIVINGROOM, 0, "04:30", "05:30", "Akimi","").save();
                 }
 
                 String[] query3 = {"Jodie Bruce"};

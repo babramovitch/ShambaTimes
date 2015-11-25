@@ -15,11 +15,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.shambatimes.schedule.Util.AlarmHelper;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
+import com.shambatimes.schedule.events.FilterEvent;
 import com.shambatimes.schedule.events.SearchSelectedEvent;
 import com.shambatimes.schedule.events.ToggleToTimeEvent;
 import com.shambatimes.schedule.myapplication.R;
@@ -49,6 +51,8 @@ public class StageListScheduleFragment extends Fragment {
     private String searchName;
 
     ArrayList<Artist> artists;
+    View rootView;
+    AlarmHelper alarmHelper;
 
     static StageListScheduleFragment newInstance(int position, int date, String name, int dividerColor) {
         StageListScheduleFragment frag = new StageListScheduleFragment();
@@ -70,18 +74,19 @@ public class StageListScheduleFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        View result = inflater.inflate(R.layout.list_schedule, container, false);
+        rootView = inflater.inflate(R.layout.list_schedule, container, false);
 
         date = getArguments().getInt(DATE_POSITION, 0);
         stage = getArguments().getInt(STAGE_POSITION, 0);
         searchName = getArguments().getString(SEARCH_NAME, "");
         artists = MainActivity.shambhala.getArtistsByDayAndStage(date, stage);
+        alarmHelper = new AlarmHelper(getActivity(),rootView);
 
         //ArrayList<Artist> artists =
         //        (ArrayList<Artist>) Artist.find(Artist.class, "day = ? and stage = ?", "" + date, "" + stage);
 
 
-        listView = (ListView) result.findViewById(R.id.listView_schedule);
+        listView = (ListView) rootView.findViewById(R.id.listView_schedule);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -112,7 +117,7 @@ public class StageListScheduleFragment extends Fragment {
 
         updateSelectedListViewItems(false);
 
-        return (result);
+        return (rootView);
     }
 
     @Override
@@ -225,9 +230,15 @@ public class StageListScheduleFragment extends Fragment {
                 mViewHolder = (MyViewHolder) convertView.getTag();
             }
 
+            Artist currentlyPlayingArtist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(1, DateUtils.getCurrentTimePosition(), stage);
+
 
             mViewHolder.artistName.setText(getItem(position).getAristName());
-            mViewHolder.artistTime.setText(getItem(position).getStartTimeString() + " to " + getItem(position).getEndTimeString());
+            if (currentlyPlayingArtist != null && getItem(position).getAristName().equals(currentlyPlayingArtist.getAristName())) {
+                mViewHolder.artistTime.setText(getItem(position).getStartTimeString() + " to " + getItem(position).getEndTimeString() + " - Now Playing");
+            } else {
+                mViewHolder.artistTime.setText(getItem(position).getStartTimeString() + " to " + getItem(position).getEndTimeString());
+            }
             mViewHolder.artistStartTimePosition.setText(getItem(position).getStartTimeString());
 
             final ImageView image = (ImageView) convertView.findViewById(R.id.list_favorited);
@@ -244,17 +255,67 @@ public class StageListScheduleFragment extends Fragment {
                     if (getItem(position).isFavorite()) {
                         image.setImageResource(favoriteOutlineDrawables[getItem(position).getStage()]);
                         getItem(position).setFavorite(false);
+                        getItem(position).setIsAlarmSet(false);
                         getItem(position).save();
+
+                        alarmHelper.cancelAlarm(getItem(position));
+                        alarmHelper.dismissSnackbar();
+
                     } else {
                         image.setImageResource(favoriteDrawables[getItem(position).getStage()]);
                         getItem(position).setFavorite(true);
                         getItem(position).save();
+
+                        alarmHelper.showSetAlarmSnackBar(getItem(position));
                     }
                 }
             });
 
             return convertView;
         }
+
+        private void applyGenreFilter(ArrayList<String> filteredGenres) {
+
+            final ArrayList<Artist> originalArtistList = artists;
+
+            int count = originalArtistList.size();
+
+            final ArrayList<Artist> newArtistList = new ArrayList<Artist>(count);
+
+
+            String artistGenreString;
+
+            for (int i = 0; i < count; i++) {
+
+                artistGenreString = originalArtistList.get(i).getGenres();
+                String[] artistGenreArray = artistGenreString.split(",");
+
+                if (filteredGenres.isEmpty()) {
+                    newArtistList.add(originalArtistList.get(i));
+                } else {
+
+                    boolean matchFound = false;
+
+                    for (String genre : artistGenreArray) {
+
+                        if (filteredGenres.contains(genre.toLowerCase())) {
+                            newArtistList.add(originalArtistList.get(i));
+                            matchFound = true;
+                        }
+
+                        if (matchFound) {
+                            break;
+                        }
+                    }
+                }
+
+            }
+
+            artistList = newArtistList;
+            notifyDataSetChanged();
+
+        }
+
 
         private class MyViewHolder {
             TextView artistName, artistTime, artistStartTimePosition;
@@ -308,10 +369,11 @@ public class StageListScheduleFragment extends Fragment {
         date = event.getPosition();
         rebuildAdapter();
         updateSelectedListViewItems(true);
+        adapter.applyGenreFilter(filterList);
     }
 
     public void onEventMainThread(SearchSelectedEvent event) {
-        searchName=event.getArtist().getAristName();
+        searchName = event.getArtist().getAristName();
         updateSelectedListViewItems(true);
     }
 
@@ -322,7 +384,7 @@ public class StageListScheduleFragment extends Fragment {
         if (event.isChanged()) {
             MainActivity.shambhala.updateArtistById(event.getArtistId());
 
-            //Get the current position, and how far it's scrolled.  After rebuilding adapter
+            //Get the current position, and how far it's scrolled.  After rebuilding genreAdapter
             //set the selection back to these values and it won't move.
             long currentPosition = listView.getFirstVisiblePosition();
             View v = listView.getChildAt(0);
@@ -330,13 +392,19 @@ public class StageListScheduleFragment extends Fragment {
 
             rebuildAdapter();
 
-            listView.setSelectionFromTop((int) currentPosition,top);
+            listView.setSelectionFromTop((int) currentPosition, top);
             updateSelectedListViewItems(false);
 
         }
     }
 
-    private void rebuildAdapter(){
+    ArrayList<String> filterList = new ArrayList<>();
+    public void onEventMainThread(FilterEvent event) {
+        filterList = event.getGenreFilterList();
+        adapter.applyGenreFilter(filterList);
+    }
+
+    private void rebuildAdapter() {
         artists = MainActivity.shambhala.getArtistsByDayAndStage(date, stage);
         adapter = new ArtistAdapter(getActivity(), artists);
         listView.setAdapter(adapter);

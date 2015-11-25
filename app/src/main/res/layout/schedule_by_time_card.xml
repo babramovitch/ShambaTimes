@@ -18,12 +18,15 @@
                 style="@style/card_header"
                 android:gravity="center_horizontal"
                 android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:fontFamily="sans-serif-condensed"
+                />
 
             <TextView
                 android:id="@+id/stage_text"
                 android:layout_below="@id/artist_text"
                 android:layout_alignParentLeft="true"
+                android:fontFamily="sans-serif-condensed"
 
                 style="@style/card_content"/>
 
@@ -31,6 +34,7 @@
                 android:id="@+id/time_text"
                 android:layout_below="@id/stage_text"
                 android:layout_alignParentLeft="true"
+                android:fontFamily="sans-serif-condensed"
                 style="@style/card_content" />
 
 

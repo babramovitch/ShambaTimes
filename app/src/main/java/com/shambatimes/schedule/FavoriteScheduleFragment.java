@@ -1,9 +1,12 @@
 package com.shambatimes.schedule;
 
 
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +20,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.cocosw.undobar.UndoBarController;
+
+import com.shambatimes.schedule.Receivers.AlarmReceiver;
+import com.shambatimes.schedule.Util.AlarmHelper;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
@@ -32,7 +37,7 @@ import jp.wasabeef.recyclerview.animators.FlipInBottomXAnimator;
 
 //see http://stackoverflow.com/questions/26995236/cardview-inside-recyclerview-has-extra-margins
 
-public class FavoriteScheduleFragment extends Fragment implements UndoBarController.UndoListener {
+public class FavoriteScheduleFragment extends Fragment {
     private static final String TAG = "FavoriteSheduleFragment";
 
     private static final String STAGE_POSITION = "STAGE";
@@ -51,9 +56,10 @@ public class FavoriteScheduleFragment extends Fragment implements UndoBarControl
 
     ArtistRecyclerAdapter adapter;
     RecyclerView recyclerView;
+    View result;
 
     boolean ignoreSelfEvent = true;
-
+    AlarmHelper alarmHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -61,8 +67,8 @@ public class FavoriteScheduleFragment extends Fragment implements UndoBarControl
                              Bundle savedInstanceState) {
 
 
-        View result = inflater.inflate(R.layout.recycler_schedule_favorites, container, false);
-
+        result = inflater.inflate(R.layout.recycler_schedule_favorites, container, false);
+        alarmHelper = new AlarmHelper(getActivity(),result);
 
         stageColors = this.getResources().getIntArray(R.array.stage_colors);
 
@@ -121,6 +127,11 @@ public class FavoriteScheduleFragment extends Fragment implements UndoBarControl
 
     }
 
+
+    Artist snackArtist;
+    int snackPosition;
+    boolean snackWasAlarmSet = false;
+
     public class ArtistRecyclerAdapter extends RecyclerView.Adapter<ArtistViewHolder> {
 
         private ArrayList<Artist> artistList;
@@ -161,8 +172,8 @@ public class FavoriteScheduleFragment extends Fragment implements UndoBarControl
                 artistList.add(position, artist);
                 notifyItemInserted(position);
                 notifyItemRangeChanged(position, artistList.size());
-            }catch (Exception e){
-                Log.e("Exception", "Error Adding Item",e );
+            } catch (Exception e) {
+                Log.e("Exception", "Error Adding Item", e);
             }
         }
 
@@ -189,26 +200,25 @@ public class FavoriteScheduleFragment extends Fragment implements UndoBarControl
                 public void onClick(View v) {
 
                     if (artist.isFavorite()) {
+
+                        snackWasAlarmSet = artist.isAlarmSet();
+                        snackArtist = artist;
+                        snackPosition = i;
+
                         artistViewHolder.image.setImageResource(favoriteOutlineDrawables[artist.getStage()]);
                         artist.setFavorite(false);
+                        artist.setIsAlarmSet(false);
                         artist.save();
+
                         MainActivity.shambhala.updateArtistById(artist.getId());
                     }
-
-                    Bundle bundle = new Bundle();
-                    bundle.putLong("index", artist.getId());
-                    bundle.putInt("position", i);
 
                     Animation animUndo = AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in);
                     animUndo.setDuration(1000);
 
-                    new UndoBarController.UndoBar(getActivity())
-                            .message("Undo - Add to schedule")
-                            .listener(FavoriteScheduleFragment.this)
-                            .token(bundle)
-                            .duration(2000)
-                            .show(false)
-                            .setAnimation(animUndo);
+                    showUndoSnackBar(artist);
+
+                    alarmHelper.cancelAlarm(artist);
 
                     ignoreSelfEvent = true;
 
@@ -232,28 +242,54 @@ public class FavoriteScheduleFragment extends Fragment implements UndoBarControl
 
     }
 
-    @Override
-    public void onUndo(final Parcelable token) {
+    private void showUndoSnackBar(Artist artist){
 
-        if (token != null) {
+        final View coordinatorLayoutView = result.findViewById(R.id.snackbarPosition);
 
-            long id = ((Bundle) token).getLong("index");
-            int position = ((Bundle) token).getInt("position");
+        Snackbar snackbar = Snackbar.make(coordinatorLayoutView, "Removing " + artist.getAristName() + " from schedule", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", undoClickListener)
+                .setDuration(Snackbar.LENGTH_LONG);
 
-            Artist artist = Artist.findById(Artist.class, id);
-            artist.setFavorite(true);
-            artist.save();
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(getResources().getColor(R.color.pagoda_color));
+        TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
 
-            adapter.addItem(position, artist);
+        snackBarTextView.setTextColor(Color.WHITE);
+        snackBarActionTextView.setTextColor(Color.WHITE);
 
-            ignoreSelfEvent = true;
-            EventBus.getDefault().postSticky(new DataChangedEvent(true, id));
+        snackBarActionTextView.setTextSize(14);
 
-
-        }
-
+        snackbar.show();
 
     }
+
+    final View.OnClickListener undoClickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+
+            if (snackArtist != null) {
+
+                long id = snackArtist.getId();
+                int position = snackPosition;
+
+                Artist artist = Artist.findById(Artist.class, id);
+                artist.setFavorite(true);
+                artist.setIsAlarmSet(snackWasAlarmSet);
+                artist.save();
+
+                if(snackWasAlarmSet){
+
+                    alarmHelper.setAlarm(snackArtist);
+                }
+
+                adapter.addItem(position, artist);
+
+                ignoreSelfEvent = true;
+                EventBus.getDefault().postSticky(new DataChangedEvent(true, id));
+
+            }
+        }
+    };
 
     public void onEventMainThread(DataChangedEvent event) {
 

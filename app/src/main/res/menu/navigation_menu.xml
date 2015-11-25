@@ -1,0 +1,29 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/drawer_time"
+            android:checked="true"
+            android:icon="@drawable/ic_access_time_black_24dp"
+            android:title="Schedules by Time"/>
+
+        <item
+            android:id="@+id/drawer_stage"
+            android:icon="@drawable/ic_store_black_24dp"
+            android:title="Schedules by Stage"/>
+
+
+        <item
+            android:id="@+id/drawer_my_schedule"
+            android:icon="@drawable/favorite"
+            android:title="My Schedule"/>
+
+        <item
+            android:id="@+id/drawer_artist_list"
+            android:icon="@drawable/ic_list_black_24dp"
+            android:title="Artist List"/>
+
+    </group>
+</menu>
