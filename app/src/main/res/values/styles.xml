@@ -2,10 +2,10 @@
 
     <style name="card_style">
         <item name="android:layout_gravity">center</item>
-        <item name="android:layout_marginRight">6dp</item>
-        <item name="android:layout_marginLeft">6dp</item>
-        <item name="android:layout_marginBottom">4dp</item>
-        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginRight">@dimen/card_left_right_margin</item>
+        <item name="android:layout_marginLeft">@dimen/card_left_right_margin</item>
+        <item name="android:layout_marginBottom">@dimen/card_top_bottom_margin</item>
+        <item name="android:layout_marginTop">@dimen/card_top_bottom_margin</item>
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/white</item>
