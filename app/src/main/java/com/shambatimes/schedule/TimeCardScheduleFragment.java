@@ -163,7 +163,7 @@ public class TimeCardScheduleFragment extends Fragment {
                 R.color.living_room_color,
                 R.color.village_color,
                 R.color.amphitheatre_color,
-                R.color.fractal_forest_color};
+                R.color.amphitheatre_color,};
 
 
         public scheduleAdapter(Context c) {

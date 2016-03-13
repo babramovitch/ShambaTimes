@@ -307,6 +307,23 @@ public class ArtistGenerator {
         artistList.add(new Artist(Constants.VILLAGE, 3, "04:30", "05:30", "Spiral Architects",""));
         artistList.add(new Artist(Constants.VILLAGE, 3, "05:30", "06:30", "Scottie D",""));
 
+        //BIODOME
+        artistList.add(new Artist(Constants.BIODOME, 1, "00:30", "02:00", "Skrillex","bass music,dubstep"));
+        artistList.add(new Artist(Constants.BIODOME, 1, "02:00", "03:00", "Downlink","bass music,dubstep,trap"));
+        artistList.add(new Artist(Constants.BIODOME, 1, "03:00", "04:30", "Drumsound & Bassline Smith","drum & bass"));
+        artistList.add(new Artist(Constants.BIODOME, 1, "04:30", "05:30", "Openend",""));
+        artistList.add(new Artist(Constants.BIODOME, 1, "05:30", "06:30", "Mr. B",""));
+
+        artistList.add(new Artist(Constants.BIODOME, 2, "00:00", "01:30", "Terravita",""));
+        artistList.add(new Artist(Constants.BIODOME, 2, "01:30", "03:00", "Excision",""));
+        artistList.add(new Artist(Constants.BIODOME, 2, "03:00", "04:30", "Tantrum Desire",""));
+        artistList.add(new Artist(Constants.BIODOME, 2, "04:30", "07:00", "Liquid Sunrise Jam",""));
+
+        artistList.add(new Artist(Constants.BIODOME, 3, "01:30", "03:00", "Zomboy",""));
+        artistList.add(new Artist(Constants.BIODOME, 3, "03:00", "04:30", "GTA",""));
+        artistList.add(new Artist(Constants.BIODOME, 3, "04:30", "05:30", "Spiral Architects",""));
+        artistList.add(new Artist(Constants.BIODOME, 3, "05:30", "06:30", "Scottie D",""));
+
 
         for (Artist artist : artistList) {
             artist.save();

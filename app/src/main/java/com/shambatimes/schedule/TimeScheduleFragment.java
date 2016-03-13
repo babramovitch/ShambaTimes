@@ -124,6 +124,7 @@ public class TimeScheduleFragment extends Fragment {
                 R.color.time_selector_grove,
                 R.color.time_selector_living_room,
                 R.color.time_selector_village,
+                R.color.time_selector_amphitheatre,
                 R.color.time_selector_amphitheatre};
 
         public ListTimeAdapter(Context context, String[] scheduleTimes) {

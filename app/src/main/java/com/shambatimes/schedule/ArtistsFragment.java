@@ -138,6 +138,7 @@ public class ArtistsFragment extends Fragment {
                 R.drawable.favorite_grove,
                 R.drawable.favorite_living_room,
                 R.drawable.favorite_village,
+                R.drawable.favorite_amphitheatre,
                 R.drawable.favorite_amphitheatre};
 
         int[] favoriteOutlineDrawables = {R.drawable.favorite_outline_pagoda,
@@ -145,6 +146,7 @@ public class ArtistsFragment extends Fragment {
                 R.drawable.favorite_outline_grove,
                 R.drawable.favorite_outline_living_room,
                 R.drawable.favorite_outline_village,
+                R.drawable.favorite_outline_amphitheatre,
                 R.drawable.favorite_outline_amphitheatre};
 
         int[] stageColors = {R.color.pagoda_color,
@@ -153,7 +155,7 @@ public class ArtistsFragment extends Fragment {
                 R.color.living_room_color,
                 R.color.village_color,
                 R.color.amphitheatre_color,
-                R.color.fractal_forest_color};
+                R.color.amphitheatre_color};
 
         public ArtistRecyclerAdapter(ArrayList<Artist> artistList) {
             this.artistList = artistList;

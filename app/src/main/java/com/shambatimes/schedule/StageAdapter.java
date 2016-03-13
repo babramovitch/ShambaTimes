@@ -16,7 +16,7 @@ public class StageAdapter extends FragmentStatePagerAdapter {
     Context context=null;
 
     private String TAG = "PagerScheduleFragment";
-    private final String[] TITLES = {"Pagoda", "Fractal Forest", "Grove", "Living Room", "Village", "Amphitheatre"};
+    private final String[] TITLES = {"Pagoda", "Fractal Forest", "Grove", "Living Room", "Village", "Amphitheatre","Biodome"};
     private int date;
     private String name;
     private int dividerColor;

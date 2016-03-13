@@ -39,6 +39,7 @@
         <item>@color/living_room_color</item>
         <item>@color/village_color</item>
         <item>@color/amphitheatre_color</item>
+        <item>@color/amphitheatre_color</item>
     </array>
 
     <array name="stage_light_colors">
@@ -47,6 +48,7 @@
         <item>@color/grove_color_light</item>
         <item>@color/living_room_color_light</item>
         <item>@color/village_color_light</item>
+        <item>@color/amphitheatre_color_light</item>
         <item>@color/amphitheatre_color_light</item>
     </array>
 

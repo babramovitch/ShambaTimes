@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -40,6 +41,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ArtistListLoadDoneEvent;
@@ -53,16 +55,15 @@ import com.shambatimes.schedule.events.ToggleFilterVisibility;
 import com.shambatimes.schedule.events.ToggleToStageEvent;
 import com.shambatimes.schedule.events.ToggleToTimeEvent;
 import com.shambatimes.schedule.events.UpdateScheduleByTimeEvent;
+import com.shambatimes.schedule.myapplication.BuildConfig;
 import com.shambatimes.schedule.myapplication.R;
 import com.shambatimes.schedule.views.ClearableAutoCompleteTextView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
-    private DrawerLayout mDrawerLayout;
+    private DrawerLayout drawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private boolean isDrawerOpen = false;
@@ -110,7 +111,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Fabric.with(this, new Crashlytics());
+        if(!BuildConfig.DEBUG) {
+            Fabric.with(this, new Crashlytics());
+        }
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -194,20 +197,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupNavigationDrawer() {
 
-        String[] left_list = {"Schedule by Time", "Schedule by Stage", "My Schedule", "Artist List"};
-
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-//
-//        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-//                R.layout.item_row, left_list));
-//
-//        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
-        final FrameLayout contentFrame = (FrameLayout) findViewById(R.id.content_frame);
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
-
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationMenu = navigationView.getMenu();
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -223,12 +214,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }, 300);
 
-                mDrawerLayout.closeDrawers();
+                drawerLayout.closeDrawers();
                 return true;
             }
         });
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_closed) {
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_closed) {
 
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 if (slideOffset > .55 && !isDrawerOpen) {
@@ -249,16 +240,7 @@ public class MainActivity extends AppCompatActivity {
                 super.onDrawerOpened(drawerView);
             }
         };
-
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-    }
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView parent, View view, final int position, long id) {
-            mDrawerLayout.closeDrawer(mDrawerList);
-        }
+        drawerLayout.setDrawerListener(mDrawerToggle);
     }
 
     private void setupToolbar() {

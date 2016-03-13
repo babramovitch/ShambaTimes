@@ -13,6 +13,7 @@ public class Constants {
     public static final int LIVINGROOM = 3;
     public static final int VILLAGE =4;
     public static final int AMPHITHEATER = 5;
+    public static final int BIODOME = 6;
 
     public static final int MINUTES_IN_DAY = 1440;
 

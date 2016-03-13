@@ -182,6 +182,7 @@ public class StageListScheduleFragment extends Fragment {
                 R.drawable.favorite_grove,
                 R.drawable.favorite_living_room,
                 R.drawable.favorite_village,
+                R.drawable.favorite_amphitheatre,
                 R.drawable.favorite_amphitheatre};
 
         int[] favoriteOutlineDrawables = {R.drawable.favorite_outline_pagoda,
@@ -189,6 +190,7 @@ public class StageListScheduleFragment extends Fragment {
                 R.drawable.favorite_outline_grove,
                 R.drawable.favorite_outline_living_room,
                 R.drawable.favorite_outline_village,
+                R.drawable.favorite_outline_amphitheatre,
                 R.drawable.favorite_outline_amphitheatre};
 
 
