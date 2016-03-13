@@ -4,8 +4,6 @@
     android:id="@+id/artistLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
-    android:background="@drawable/list_forest_selector"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal">

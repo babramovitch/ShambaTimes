@@ -548,12 +548,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (globalSearchItem != null) {
-//            filterListItem.setVisible(!isDrawerOpen &&
-//                    (currentFragment == FRAGMENT_ARTISTS
-//                            || currentFragment == FRAGMENT_STAGE
-//                            || currentFragment == FRAGMENT_FAVORITES));
             globalSearchItem.setVisible(!isDrawerOpen);
         }
+
+        filterListItem.setVisible(!isDrawerOpen);
+        //&& currentFragment != FRAGMENT_TIME);
+//                        (currentFragment == FRAGMENT_ARTISTS
+//                        || currentFragment == FRAGMENT_STAGE
+//                        || currentFragment == FRAGMENT_FAVORITES));
+
         return true;
     }
 

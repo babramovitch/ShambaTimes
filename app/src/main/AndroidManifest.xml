@@ -2,18 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.shambatimes.schedule.myapplication" >
 
-   <!--  <uses-permission android:name="android.permission.VIBRATE" /> -->
-     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <!-- <uses-permission android:name="android.permission.VIBRATE" /> -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name="com.orm.SugarApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        >
+        android:theme="@style/AppTheme" >
         <meta-data
             android:name="DATABASE"
             android:value="myapp.db" />
@@ -29,10 +30,11 @@
 
         <activity
             android:name="com.shambatimes.schedule.MainActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustPan" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -44,39 +46,42 @@
         <receiver android:name="com.shambatimes.schedule.Widgets.ScheduleWidget" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="android.intent.action.ACTION_SCREEN_ON"></action>
-                <action android:name="android.intent.action.ACTION_SCREEN_OFF"></action>
-
+                <action android:name="android.intent.action.ACTION_SCREEN_ON" />
+                <action android:name="android.intent.action.ACTION_SCREEN_OFF" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/new_app_widget_info"
-                android:minWidth="144dip"
-                android:minHeight="72dip"
-                android:updatePeriodMillis="0"
-                android:initialLayout="@layout/schedule_widget_layout"
                 android:initialKeyguardLayout="@layout/schedule_widget_layout"
-                android:widgetCategory="keyguard|home_screen"
-                />
+                android:initialLayout="@layout/schedule_widget_layout"
+                android:minHeight="72dip"
+                android:minWidth="144dip"
+                android:resource="@xml/new_app_widget_info"
+                android:updatePeriodMillis="0"
+                android:widgetCategory="keyguard|home_screen" />
         </receiver>
-
-        <receiver android:name="com.shambatimes.schedule.Receivers.AlarmReceiver">
+        <receiver android:name="com.shambatimes.schedule.Receivers.AlarmReceiver" >
         </receiver>
 
         <!-- Will not be called unless the application explicitly enables it -->
-        <receiver android:name="com.shambatimes.schedule.Receivers.DeviceBootReceiver"
-            android:enabled="true" android:exported="true">
+        <receiver
+            android:name="com.shambatimes.schedule.Receivers.DeviceBootReceiver"
+            android:enabled="true"
+            android:exported="true" >
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="c101da43bff4ccc3ef4e4e34afa3607e58f10410" />
-    </application>
 
+        <activity
+            android:name="com.shambatimes.schedule.AlarmActivity"
+            android:label="@string/title_activity_alarm" >
+        </activity>
+
+    </application>
 
 </manifest>

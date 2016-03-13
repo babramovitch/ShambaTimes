@@ -41,4 +41,15 @@
         <item>@color/amphitheatre_color</item>
     </array>
 
+    <array name="stage_light_colors">
+        <item>@color/pagoda_color_light</item>
+        <item>@color/fractal_forest_color_light</item>
+        <item>@color/grove_color_light</item>
+        <item>@color/living_room_color_light</item>
+        <item>@color/village_color_light</item>
+        <item>@color/amphitheatre_color_light</item>
+    </array>
+
+    <color name="black_overlay">#66000000</color>
+
 </resources>

@@ -1,0 +1,11 @@
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+app/build/intermediates/res/debug/drawable-mdpi/ic_filter_list_purple_a400_36dp.png
+app/build/intermediates/
+app/build/generated/
+.idea/
+app/build/

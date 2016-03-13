@@ -1,6 +1,5 @@
 package com.shambatimes.schedule;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -11,10 +10,10 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.shambatimes.schedule.Util.AlarmHelper;
 import com.shambatimes.schedule.Util.EdgeChanger;
@@ -41,9 +40,11 @@ public class TimeScheduleFragment extends Fragment {
     private ListView listView;
     MyViewPager pager;
 
+    ListTimeAdapter adapter;
     TimeAdapter timeAdapter;
     View result;
     AlarmHelper alarmHelper;
+
 
     private int date = 0;
 
@@ -62,7 +63,7 @@ public class TimeScheduleFragment extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
         result = inflater.inflate(R.layout.schedule_by_time_main_fragment, container, false);
-        alarmHelper = new AlarmHelper(getActivity(),result);
+        alarmHelper = new AlarmHelper(getActivity(), result);
         Bundle args = getArguments();
         int time;
 
@@ -101,26 +102,109 @@ public class TimeScheduleFragment extends Fragment {
         });
 
         listView = (ListView) result.findViewById(R.id.listViewTimes);
-        ;
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                R.layout.list_item, android.R.id.text1, generateListTimes());
+
+        adapter = new ListTimeAdapter(getActivity(), generateListTimes());
 
         listView.setAdapter(adapter);
 
         listView.getLayoutParams().width = (int) (getWidestView(getActivity(), adapter) * 1.05);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-
-                EventBus.getDefault().post(new UpdateScheduleByTimeEvent(position));
-
-            }
-        });
-
-
-
         return (result);
+    }
+
+    public class ListTimeAdapter extends BaseAdapter {
+
+        String[] scheduleTimes;
+        LayoutInflater inflater;
+        Context context;
+        int stageId;
+
+        int[] textSelectors = {R.color.time_selector_pagoda,
+                R.color.time_selector_forest,
+                R.color.time_selector_grove,
+                R.color.time_selector_living_room,
+                R.color.time_selector_village,
+                R.color.time_selector_amphitheatre};
+
+        public ListTimeAdapter(Context context, String[] scheduleTimes) {
+            this.scheduleTimes = scheduleTimes;
+            this.context = context;
+            inflater = LayoutInflater.from(this.context);
+        }
+
+        @Override
+        public int getCount() {
+            return scheduleTimes.length;
+        }
+
+        @Override
+        public String getItem(int position) {
+            return scheduleTimes[position];
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            ViewHolder viewHolder;
+
+            if (convertView == null) {
+                viewHolder = new ViewHolder();
+                convertView = inflater.inflate(R.layout.list_item_times, null);
+                convertView.setTag(viewHolder);
+                viewHolder.time = (TextView) convertView.findViewById(R.id.times);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+
+            viewHolder.time.setText(scheduleTimes[position]);
+            viewHolder.time.setTextColor(getResources().getColorStateList(getSelectorBackground(stageId)));
+            viewHolder.time.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EventBus.getDefault().post(new UpdateScheduleByTimeEvent(position));
+                }
+            });
+
+            return convertView;
+        }
+
+        private int getSelectorBackground(int stageId) {
+
+            switch (stageId) {
+
+                case 0:
+                    return textSelectors[0];
+                case 1:
+                    return textSelectors[1];
+                case 2:
+                    return textSelectors[2];
+                case 3:
+                    return textSelectors[3];
+                case 4:
+                    return textSelectors[4];
+                case 5:
+                    return textSelectors[5];
+                default:
+                    return textSelectors[0];
+            }
+
+        }
+
+        private class ViewHolder {
+            TextView time;
+        }
+
+        public void setStageId(int stageId) {
+            this.stageId = stageId;
+        }
+
+        public void updateListTimes(String[] times) {
+            this.scheduleTimes = times;
+        }
     }
 
     private String[] generateListTimes() {
@@ -152,7 +236,7 @@ public class TimeScheduleFragment extends Fragment {
      * <p/>
      * http://stackoverflow.com/a/13959716/2408033
      */
-    public static int getWidestView(Context context, ArrayAdapter<String> adapter) {
+    public static int getWidestView(Context context, ListTimeAdapter adapter) {
         int maxWidth = 0;
         View view = null;
         FrameLayout fakeParent = new FrameLayout(context);
@@ -185,6 +269,10 @@ public class TimeScheduleFragment extends Fragment {
     public void onEventMainThread(ActionBarColorEvent event) {
         EdgeChanger.setEdgeGlowColor(pager, event.getColor());
         EdgeChanger.setEdgeGlowColor(listView, event.getColor());
+
+        if (adapter != null) {
+            adapter.setStageId(event.getStage());
+        }
     }
 
     public void onEventMainThread(UpdateScheduleByTimeEvent event) {
@@ -230,22 +318,19 @@ public class TimeScheduleFragment extends Fragment {
         resetListViewValues();
     }
 
-    public void onEventMainThread(ShowHideAlarmSnackbarEvent event){
+    public void onEventMainThread(ShowHideAlarmSnackbarEvent event) {
 
-        if(event.getArtist() != null) {
+        if (event.getArtist() != null) {
             alarmHelper.showSetAlarmSnackBar(event.getArtist());
-        }else{
+        } else {
             alarmHelper.dismissSnackbar();
         }
     }
 
 
-
-    private void resetListViewValues(){
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                R.layout.list_item, android.R.id.text1, generateListTimes());
-
-        listView.setAdapter(adapter);
+    private void resetListViewValues() {
+        adapter.updateListTimes(generateListTimes());
+        adapter.notifyDataSetChanged();
 
         if (timeAdapter != null) {
             timeAdapter.setDate(date);

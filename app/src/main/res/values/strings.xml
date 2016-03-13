@@ -39,4 +39,11 @@
         <item>The Biodome</item>
     </string-array>
 
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_alarm">AlarmActivity</string>
+
+    <string name="alarm_time">in %1$s minutes at the\n%2$s</string>
+
 </resources>
