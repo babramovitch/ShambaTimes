@@ -1,8 +1,5 @@
 package com.shambatimes.schedule;
 
-
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -20,8 +17,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
-import com.shambatimes.schedule.Receivers.AlarmReceiver;
 import com.shambatimes.schedule.Util.AlarmHelper;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
@@ -46,7 +41,6 @@ public class FavoriteScheduleFragment extends Fragment {
     private static final String DIVIDER_COLOR = "COLOR";
 
     private int date = 0;
-
 
     private String[] stageNames;
     int[] stageColors;
@@ -122,11 +116,8 @@ public class FavoriteScheduleFragment extends Fragment {
             artistLayout = (RelativeLayout) v.findViewById(R.id.artistLayout);
             image = (ImageView) v.findViewById(R.id.list_favorited);
             divider = v.findViewById(R.id.separator);
-
         }
-
     }
-
 
     Artist snackArtist;
     int snackPosition;
@@ -176,7 +167,6 @@ public class FavoriteScheduleFragment extends Fragment {
                 Log.e("Exception", "Error Adding Item", e);
             }
         }
-
 
         @Override
         public void onBindViewHolder(final ArtistViewHolder artistViewHolder, final int i) {
@@ -228,7 +218,6 @@ public class FavoriteScheduleFragment extends Fragment {
 
                 }
             });
-
         }
 
         @Override
@@ -239,7 +228,6 @@ public class FavoriteScheduleFragment extends Fragment {
 
             return new ArtistViewHolder(itemView);
         }
-
     }
 
     private void showUndoSnackBar(Artist artist){
@@ -251,17 +239,16 @@ public class FavoriteScheduleFragment extends Fragment {
                 .setDuration(Snackbar.LENGTH_LONG);
 
         View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(getResources().getColor(R.color.pagoda_color));
+        snackbarView.setBackgroundColor(stageColors[artist.getStage()]);
+
         TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-        TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
-
         snackBarTextView.setTextColor(Color.WHITE);
-        snackBarActionTextView.setTextColor(Color.WHITE);
 
+        TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
+        snackBarActionTextView.setTextColor(Color.WHITE);
         snackBarActionTextView.setTextSize(14);
 
         snackbar.show();
-
     }
 
     final View.OnClickListener undoClickListener = new View.OnClickListener() {
@@ -317,7 +304,6 @@ public class FavoriteScheduleFragment extends Fragment {
         artists = (ArrayList<Artist>) Artist.find(Artist.class, "favorite = ? and day = ?", args, null, "day ASC, start_Position ASC", null);
         adapter = new ArtistRecyclerAdapter(artists);
         recyclerView.setAdapter(adapter);
-
     }
 
     public void onEventMainThread(ActionBarColorEvent event) {
@@ -325,12 +311,10 @@ public class FavoriteScheduleFragment extends Fragment {
         scrollColor = event.getColor();
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
         EventBus.getDefault().registerSticky(this);
-
     }
 
     @Override
@@ -338,5 +322,4 @@ public class FavoriteScheduleFragment extends Fragment {
         super.onStop();
         EventBus.getDefault().unregister(this);
     }
-
 }
