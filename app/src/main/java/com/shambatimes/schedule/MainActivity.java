@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -533,7 +532,7 @@ public class MainActivity extends AppCompatActivity {
             globalSearchItem.setVisible(!isDrawerOpen);
         }
 
-        filterListItem.setVisible(!isDrawerOpen);
+        filterListItem.setVisible(!isDrawerOpen && currentFragment == FRAGMENT_ARTISTS);
         //&& currentFragment != FRAGMENT_TIME);
 //                        (currentFragment == FRAGMENT_ARTISTS
 //                        || currentFragment == FRAGMENT_STAGE
@@ -734,6 +733,10 @@ public class MainActivity extends AppCompatActivity {
             selectedGenres = genres;
         }
 
+        public void clearSelectedGenres(){
+            itemChecked = new boolean[genreList.size()];
+        }
+
     }
 
 
@@ -775,12 +778,10 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Swaps fragments in the main content view
      */
-    private void selectItem(int position) {
+    private void selectItem(int drawerId) {
 
         Fragment fragment;
         FragmentManager fragmentManager = getSupportFragmentManager();
-
-        currentFragment = position;
 
         toolbar.setTitle("");
 
@@ -788,7 +789,7 @@ public class MainActivity extends AppCompatActivity {
         //weird behavior where both would sometimes appear, which wasn't making sense.
         toolbar.removeView(scheduleSpinner);
 
-        switch (position) {
+        switch (drawerId) {
 
             case R.id.drawer_time:
 
@@ -805,6 +806,7 @@ public class MainActivity extends AppCompatActivity {
 
                 scheduleBy = "Schedule by Time";
                 toolbar.addView(scheduleSpinner);
+                currentFragment = FRAGMENT_TIME;
 
                 break;
 
@@ -821,6 +823,7 @@ public class MainActivity extends AppCompatActivity {
                 scheduleBy = "Schedule by Stage";
                 toolbar.addView(scheduleSpinner);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                currentFragment = FRAGMENT_STAGE;
 
                 break;
 
@@ -837,6 +840,7 @@ public class MainActivity extends AppCompatActivity {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 scheduleBy = "My Schedule";
                 toolbar.addView(scheduleSpinner);
+                currentFragment = FRAGMENT_FAVORITES;
 
                 break;
 
@@ -856,14 +860,17 @@ public class MainActivity extends AppCompatActivity {
                 toolbar.setTitle("Artist List");
                 scheduleBy = "Artist List";
                 toolbar.removeView(scheduleSpinner);
+                currentFragment = FRAGMENT_ARTISTS;
+
+                if(genreAdapter != null){
+                    genreAdapter.clearSelectedGenres();
+                }
 
                 break;
         }
 
         adapterBaseScheduleDays.notifyDataSetChanged();
         invalidateOptionsMenu();
-        //mDrawerList.setItemChecked(position, true);
-
     }
 
     @Override
@@ -921,6 +928,7 @@ public class MainActivity extends AppCompatActivity {
         replaceFragment(R.id.content_frame, stageSchedule, "STAGE", false);
 
         adapterBaseScheduleDays.notifyDataSetChanged();
+        invalidateOptionsMenu();
     }
 
     public void onEventMainThread(ToggleToTimeEvent event) {
@@ -946,6 +954,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         adapterBaseScheduleDays.notifyDataSetChanged();
+        invalidateOptionsMenu();
     }
 
     private void collapseGlobalSearchActionView() {

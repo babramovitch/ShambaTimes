@@ -287,6 +287,7 @@ public class ArtistsFragment extends Fragment {
     }
 
     public void onEventMainThread(FilterEvent event) {
+        EventBus.getDefault().removeStickyEvent(event);
         if (event.getGenreFilterList().isEmpty()) {
             recyclerView.addOnScrollListener(fastScroller.getOnScrollListener());
         } else {

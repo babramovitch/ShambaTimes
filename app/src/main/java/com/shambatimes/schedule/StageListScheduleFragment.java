@@ -276,54 +276,10 @@ public class StageListScheduleFragment extends Fragment {
             return convertView;
         }
 
-        private void applyGenreFilter(ArrayList<String> filteredGenres) {
-
-            final ArrayList<Artist> originalArtistList = artists;
-
-            int count = originalArtistList.size();
-
-            final ArrayList<Artist> newArtistList = new ArrayList<Artist>(count);
-
-
-            String artistGenreString;
-
-            for (int i = 0; i < count; i++) {
-
-                artistGenreString = originalArtistList.get(i).getGenres();
-                String[] artistGenreArray = artistGenreString.split(",");
-
-                if (filteredGenres.isEmpty()) {
-                    newArtistList.add(originalArtistList.get(i));
-                } else {
-
-                    boolean matchFound = false;
-
-                    for (String genre : artistGenreArray) {
-
-                        if (filteredGenres.contains(genre.toLowerCase())) {
-                            newArtistList.add(originalArtistList.get(i));
-                            matchFound = true;
-                        }
-
-                        if (matchFound) {
-                            break;
-                        }
-                    }
-                }
-
-            }
-
-            artistList = newArtistList;
-            notifyDataSetChanged();
-
-        }
-
-
         private class MyViewHolder {
             TextView artistName, artistTime, artistStartTimePosition;
             LinearLayout artistLayout;
         }
-
     }
 
 
@@ -371,7 +327,7 @@ public class StageListScheduleFragment extends Fragment {
         date = event.getPosition();
         rebuildAdapter();
         updateSelectedListViewItems(true);
-        adapter.applyGenreFilter(filterList);
+        //adapter.applyGenreFilter(filterList);
     }
 
     public void onEventMainThread(SearchSelectedEvent event) {
@@ -400,19 +356,12 @@ public class StageListScheduleFragment extends Fragment {
         }
     }
 
-    ArrayList<String> filterList = new ArrayList<>();
-    public void onEventMainThread(FilterEvent event) {
-        filterList = event.getGenreFilterList();
-        adapter.applyGenreFilter(filterList);
-    }
-
     private void rebuildAdapter() {
         artists = MainActivity.shambhala.getArtistsByDayAndStage(date, stage);
         adapter = new ArtistAdapter(getActivity(), artists);
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
-
 
     @Override
     public void onStop() {
