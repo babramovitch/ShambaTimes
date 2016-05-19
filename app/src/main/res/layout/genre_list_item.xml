@@ -14,13 +14,68 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <CheckBox
-            android:id="@+id/genrebox"
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/genreboxPagoda"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
+            app:buttonTint="@color/pagoda_color"
+            android:visibility="gone"
             />
 
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/genreboxForest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            app:buttonTint="@color/fractal_forest_color"
+            android:visibility="gone"
+            />
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/genreboxGrove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            app:buttonTint="@color/grove_color"
+            android:visibility="gone"
+            />
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/genreboxLivingRoomm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            app:buttonTint="@color/living_room_color"
+            android:visibility="gone"
+            />
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/genreboxVillage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            app:buttonTint="@color/village_color"
+            android:visibility="gone"
+            />
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/genreboxAmph"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            app:buttonTint="@color/amphitheatre_color"
+            android:visibility="gone"
+            />
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/genreboxBioDome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            app:buttonTint="@color/amphitheatre_color"
+            android:visibility="gone"
+            />
 
         <TextView
             android:id="@+id/textView"

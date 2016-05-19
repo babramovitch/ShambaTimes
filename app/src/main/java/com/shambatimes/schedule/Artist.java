@@ -13,7 +13,7 @@ import org.joda.time.format.DateTimeFormatter;
  * Created by Ben on 14/02/2015.
  */
 
-public class Artist extends SugarRecord<Artist> {
+public class Artist extends SugarRecord {
 
     private int stage;
 
@@ -49,9 +49,7 @@ public class Artist extends SugarRecord<Artist> {
     //private boolean reminderEnabled = false;
     private boolean favorite = false;
 
-    @Ignore
     public Artist(){
-
     }
 
     public Artist(int stage, int day, String startTime, String endTime, String artistName, String genres) {

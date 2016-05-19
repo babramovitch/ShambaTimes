@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
             Fabric.with(this, new Crashlytics());
         }
 
+
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (DateUtils.getCurrentDay() == 3) {
@@ -451,8 +452,9 @@ public class MainActivity extends AppCompatActivity {
 
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        MenuItem globalSearchMenuItem = menu.findItem(R.id.global_search);
+        setupFilterItemAnimation(menu);
 
+        MenuItem globalSearchMenuItem = menu.findItem(R.id.global_search);
         MenuItemCompat.setOnActionExpandListener(globalSearchMenuItem,
                 new MenuItemCompat.OnActionExpandListener() {
                     @Override
@@ -496,25 +498,25 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        return true;
+    }
 
-        final ImageView test = (ImageView) menu.findItem(R.id.filter).getActionView();
+    ImageView test;
+    private void setupFilterItemAnimation(Menu menu){
+         test = (ImageView) menu.findItem(R.id.filter).getActionView();
         if (test != null) {
             //http://www.andronotes.org/uncategorized/animation-of-menuitem-in-actionbar/
             test.setImageResource(R.drawable.ic_filter_list_white_36dp);
-//            if(!flipped) {
-//                test.setImageResource(R.drawable.ic_filter_list_white_36dp);
-//            }else{
-//                test.setImageResource(R.drawable.ic_filter_list_white_down_36dp);
-//            }
+
             test.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Animation rotation;
                     if(!flipped) {
-                         rotation = AnimationUtils.loadAnimation(getApplicationContext(),
+                        rotation = AnimationUtils.loadAnimation(getApplicationContext(),
                                 R.anim.rotation_down);
                     }else{
-                         rotation = AnimationUtils.loadAnimation(getApplicationContext(),
+                        rotation = AnimationUtils.loadAnimation(getApplicationContext(),
                                 R.anim.rotation_up);
                     }
 
@@ -528,17 +530,13 @@ public class MainActivity extends AppCompatActivity {
                         public void onAnimationEnd(Animation animation) {
                             if(flipped) {
                                 flipped = false;
-                             //   test.setImageResource(R.drawable.ic_filter_list_white_36dp);
                             }else{
                                 flipped = true;
-                               // test.setImageResource(R.drawable.ic_filter_list_white_down_36dp);
                             }
-                            //test.setImageResource(R.drawable.ic_filter_list_white_down_36dp);
                         }
                     });
 
                     view.startAnimation(rotation);
-                    // create and use new data set
 
                     ArtistsFragment artistsFragment = (ArtistsFragment) getSupportFragmentManager().findFragmentByTag("ARTISTS");
                     if (artistsFragment != null) {
@@ -548,9 +546,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-
-
-        return true;
     }
 
     boolean flipped = false;
@@ -583,10 +578,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         filterListItem.setVisible(!isDrawerOpen && currentFragment == FRAGMENT_ARTISTS);
-        //&& currentFragment != FRAGMENT_TIME);
-//                        (currentFragment == FRAGMENT_ARTISTS
-//                        || currentFragment == FRAGMENT_STAGE
-//                        || currentFragment == FRAGMENT_FAVORITES));
 
         return true;
     }
@@ -618,179 +609,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (id == R.id.filter || id == R.id.filter_active) {
-            //onPopupButtonClick();
-
-
-//            ArtistsFragment artistsFragment = (ArtistsFragment) getSupportFragmentManager().findFragmentByTag("ARTISTS");
-//            if(artistsFragment != null){
-//                artistsFragment.showGenres();
-//            }
-        }
-
-
         return super.onOptionsItemSelected(item);
     }
-
-    GenreAdapter genreAdapter;
-    ArrayList<Boolean> isCheckedList = new ArrayList<>();
-    ListPopupWindow listPopupWindow;
-
-    public void onPopupButtonClick() {
-
-        if (listPopupWindow == null) {
-            listPopupWindow = new ListPopupWindow(MainActivity.this);
-            //ListAdapter genreAdapter = new ArrayAdapter<String>(this, R.layout.test, R.id.genrebox, products);
-
-            if (genreAdapter == null) {
-                ArrayList<String> genres = new ArrayList<>();
-                genres.add("Bass Music");
-                genres.add("Breakbeats");
-                genres.add("Dance");
-                genres.add("Deep House");
-                genres.add("Downtempo");
-                genres.add("Dubstep");
-                genres.add("Electro");
-                genres.add("Electronic");
-                genres.add("Funk");
-                genres.add("Ghetto Funk");
-                genres.add("Glitch Hop");
-                genres.add("Hip Hop");
-                genres.add("House");
-                genres.add("Neon Nature");
-                genres.add("Soul");
-                genres.add("Space Music");
-                genres.add("Techno");
-                genres.add("Trap");
-                genres.add("Trip Hop");
-                genres.add("Turntablism");
-
-                genreAdapter = new GenreAdapter(this, genres);
-                //genreAdapter.setSelectedGenres(getStringArrayPref(this,"GENRE_FILTERS"));
-            }
-            listPopupWindow.setAdapter(genreAdapter);
-
-            listPopupWindow.setAnchorView(findViewById(R.id.filter));
-            //listPopupWindow.setHorizontalOffset(-200);
-            listPopupWindow.setWidth(700);
-            listPopupWindow.setContentWidth(measureContentWidth(genreAdapter));
-            listPopupWindow.setModal(true);
-
-        }
-
-        listPopupWindow.show();
-    }
-
-    static ArrayList<String> selectedGenres = new ArrayList<>();
-
-    public class GenreAdapter extends BaseAdapter {
-
-        ArrayList<String> genreList = new ArrayList<>();
-        LayoutInflater inflater;
-        Context context;
-        boolean[] itemChecked;
-
-
-        public GenreAdapter(Context context, ArrayList<String> genreList) {
-            this.genreList = genreList;
-            this.context = context;
-            inflater = LayoutInflater.from(this.context);
-            itemChecked = new boolean[genreList.size()];
-        }
-
-        @Override
-        public int getCount() {
-            return genreList.size();
-        }
-
-        @Override
-        public String getItem(int position) {
-            return genreList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            MyViewHolder mViewHolder;
-
-            if (convertView == null) {
-                convertView = inflater.inflate(R.layout.genre_list_item, null);
-                mViewHolder = new MyViewHolder();
-                convertView.setTag(mViewHolder);
-                mViewHolder.genrebox = (CheckBox) convertView.findViewById(R.id.genrebox);
-                mViewHolder.textView = (TextView) convertView.findViewById(R.id.textView);
-
-
-            } else {
-                mViewHolder = (MyViewHolder) convertView.getTag();
-            }
-
-            mViewHolder.genrebox.setHighlightColor(actionBarColor);
-            mViewHolder.textView.setText(genreList.get(position));
-
-            if (itemChecked[position]) {
-                mViewHolder.genrebox.setChecked(true);
-            } else {
-                mViewHolder.genrebox.setChecked(false);
-            }
-
-            mViewHolder.genrebox.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CheckBox view = (CheckBox) v;
-                    if (view.isChecked()) {
-                        itemChecked[position] = true;
-                        Log.i("TAG", "Click CHECK" + genreList.get(position).toLowerCase());
-                        selectedGenres.add(genreList.get(position).toLowerCase());
-                        EventBus.getDefault().postSticky(new FilterEvent(selectedGenres));
-
-                        MenuItem filterItem = menu.findItem(R.id.filter);
-                        MenuItem filterActiveItem = menu.findItem(R.id.filter_active);
-                        filterItem.setVisible(false);
-                        filterActiveItem.setVisible(true);
-                    } else {
-                        itemChecked[position] = false;
-                        Log.i("TAG", "Click UNCHECKED" + genreList.get(position).toLowerCase());
-                        selectedGenres.remove(genreList.get(position).toLowerCase());
-                        EventBus.getDefault().postSticky(new FilterEvent(selectedGenres));
-                        if (selectedGenres.isEmpty()) {
-                            MenuItem filterItem = menu.findItem(R.id.filter);
-                            MenuItem filterActiveItem = menu.findItem(R.id.filter_active);
-                            filterItem.setVisible(true);
-                            filterActiveItem.setVisible(false);
-                        }
-                    }
-                }
-            });
-
-            return convertView;
-        }
-
-
-        private class MyViewHolder {
-            CheckBox genrebox;
-            TextView textView;
-            boolean isChecked;
-        }
-
-        public ArrayList<String> getSelectedGenres() {
-            return selectedGenres;
-        }
-
-        public void setSelectedGenres(ArrayList<String> genres) {
-            selectedGenres = genres;
-        }
-
-        public void clearSelectedGenres() {
-            itemChecked = new boolean[genreList.size()];
-        }
-
-    }
-
 
     private int measureContentWidth(ListAdapter listAdapter) {
         ViewGroup mMeasureParent = null;
@@ -913,10 +733,6 @@ public class MainActivity extends AppCompatActivity {
                 scheduleBy = "Artist List";
                 toolbar.removeView(scheduleSpinner);
                 currentFragment = FRAGMENT_ARTISTS;
-
-                if (genreAdapter != null) {
-                    genreAdapter.clearSelectedGenres();
-                }
 
                 break;
         }
@@ -1116,8 +932,17 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
             return;
         }
+        Fragment f;
+        f = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        if (f instanceof ArtistsFragment){
+            if(flipped){
+                test.callOnClick();
+                return;
+            }
+        }
+
         //Return to the time schedule fragment before exiting the app.
-        Fragment f = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        f = getSupportFragmentManager().findFragmentById(R.id.content_frame);
         if (!(f instanceof TimeScheduleFragment)) {
             selectItem(R.id.drawer_time);
             checkNavigationItem(R.id.drawer_time);

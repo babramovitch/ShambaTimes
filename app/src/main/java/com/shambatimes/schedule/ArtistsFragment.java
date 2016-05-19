@@ -47,7 +47,7 @@ public class ArtistsFragment extends Fragment {
 
     private ArrayList<Artist> artists;
     private RecyclerView recyclerView;
-    private ListView listview;
+    private ListView listView;
     private PendingIntent pendingIntent;
     AlarmHelper alarmHelper;
 
@@ -57,18 +57,13 @@ public class ArtistsFragment extends Fragment {
     private View layout;
 
     static ArrayList<String> selectedGenres = new ArrayList<>();
-    GenreAdapterA genreAdapter;
+    GenreAdapter genreAdapter;
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         layout = inflater.inflate(R.layout.recycler_schedule_artists, container, false);
         alarmHelper = new AlarmHelper(getActivity(), layout);
-
-
 
         setupGenres();
         setupRecyclerView();
@@ -76,14 +71,13 @@ public class ArtistsFragment extends Fragment {
         return (layout);
     }
 
-    private void setupRecyclerView(){
+    private void setupRecyclerView() {
         recyclerView = (RecyclerView) layout.findViewById(R.id.listView_schedule);
 
         fastScroller = (VerticalRecyclerViewFastScroller) layout.findViewById(R.id.fast_scroller);
         fastScroller.setRecyclerView(recyclerView);
-        fastScroller.setBarColor(getResources().getColor(R.color.pagoda_color));
-        recyclerView.addOnScrollListener(fastScroller.getOnScrollListener());
 
+        recyclerView.addOnScrollListener(fastScroller.getOnScrollListener());
         recyclerView.setHasFixedSize(true);
 
         llm = new LinearLayoutManager(getActivity());
@@ -206,12 +200,12 @@ public class ArtistsFragment extends Fragment {
             artistViewHolder.artistStage.setText(stageNames[artist.getStage()]);
             artistViewHolder.divider.setBackground(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
 
-            setupFavorites(artistViewHolder,artist);
+            setupFavorites(artistViewHolder, artist);
             setupGenreAnimations(artistViewHolder, i);
 
         }
 
-        private void setupFavorites(final ArtistViewHolder artistViewHolder, final Artist artist){
+        private void setupFavorites(final ArtistViewHolder artistViewHolder, final Artist artist) {
             if (artist.isFavorite()) {
                 artistViewHolder.image.setImageResource(favoriteDrawables[artist.getStage()]);
             } else {
@@ -240,7 +234,7 @@ public class ArtistsFragment extends Fragment {
             );
         }
 
-        private void setupGenreAnimations( ArtistViewHolder artistViewHolder, int position){
+        private void setupGenreAnimations(ArtistViewHolder artistViewHolder, int position) {
 
             int lastVisiblePosition = llm.findLastVisibleItemPosition() - 1;
             int firstVisiblePosition = llm.findFirstVisibleItemPosition() + 1;
@@ -251,11 +245,14 @@ public class ArtistsFragment extends Fragment {
 
             if (animateHeartsInwards) {
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(editTextWidth - 120, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                params.addRule(RelativeLayout.LEFT_OF, R.id.list_favorited);
                 params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 params.addRule(RelativeLayout.BELOW, R.id.separator);
                 artistViewHolder.artistName.setLayoutParams(params);
                 artistViewHolder.artistName.setPadding((int) Util.convertDpToPixel(15, getActivity()), 5, 0, 0);
+
+                RelativeLayout.LayoutParams paramsGenres = (RelativeLayout.LayoutParams) artistViewHolder.genres.getLayoutParams();
+                paramsGenres.width = editTextWidth - 120;
+                artistViewHolder.genres.setLayoutParams(paramsGenres);
 
                 if (position >= firstVisiblePosition || position <= lastVisiblePosition) {
                     artistViewHolder.image.animate()
@@ -274,6 +271,12 @@ public class ArtistsFragment extends Fragment {
                 params.addRule(RelativeLayout.BELOW, R.id.separator);
                 artistViewHolder.artistName.setLayoutParams(params);
                 artistViewHolder.artistName.setPadding((int) Util.convertDpToPixel(15, getActivity()), 5, 0, 0);
+
+                RelativeLayout.LayoutParams paramsGenres = (RelativeLayout.LayoutParams) artistViewHolder.genres.getLayoutParams();
+                paramsGenres.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+                params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                params.addRule(RelativeLayout.LEFT_OF, R.id.list_favorited);
+                artistViewHolder.genres.setLayoutParams(paramsGenres);
 
                 if (llm.findLastVisibleItemPosition() <= position || llm.findFirstCompletelyVisibleItemPosition() <= position) {
                     artistViewHolder.image.animate()
@@ -329,7 +332,6 @@ public class ArtistsFragment extends Fragment {
                         }
                     }
                 }
-
             }
 
             artistList = newArtistList;
@@ -342,10 +344,19 @@ public class ArtistsFragment extends Fragment {
         adapter.applyGenreFilter(event.getGenreFilterList());
     }
 
+    int stage;
+
     public void onEventMainThread(ActionBarColorEvent event) {
+        stage = event.getStage();
         colors[1] = event.getColor();
         scrollColor = event.getColor();
-        fastScroller.setHandleColor(event.getColor());
+        if(fastScroller != null) {
+            fastScroller.setHandleColor(event.getColor());
+            fastScroller.setBarColor(event.getColor());
+        }
+        if(listView != null) {
+            EdgeChanger.setEdgeGlowColor(listView, event.getColor());
+        }
     }
 
     public void onEventMainThread(SearchSelectedEvent event) {
@@ -385,10 +396,12 @@ public class ArtistsFragment extends Fragment {
             genres.add("Trip Hop");
             genres.add("Turntablism");
 
-            genreAdapter = new GenreAdapterA(getActivity(), genres);
+            genreAdapter = new GenreAdapter(getActivity(), genres);
 
-            listview = (ListView) layout.findViewById(R.id.genrelist);
-            listview.setAdapter(genreAdapter);
+            listView = (ListView) layout.findViewById(R.id.genrelist);
+            listView.setAdapter(genreAdapter);
+//            listView.setDivider(new ColorDrawable(ContextCompat.getColor(getActivity(),R.color.pagoda_color)));
+//            listView.setDividerHeight(2);
         }
     }
 
@@ -404,7 +417,7 @@ public class ArtistsFragment extends Fragment {
         EventBus.getDefault().unregister(this);
     }
 
-    public class GenreAdapterA extends BaseAdapter {
+    public class GenreAdapter extends BaseAdapter {
 
         ArrayList<String> genreList = new ArrayList<>();
         LayoutInflater inflater;
@@ -412,7 +425,7 @@ public class ArtistsFragment extends Fragment {
         boolean[] itemChecked;
 
 
-        public GenreAdapterA(Context context, ArrayList<String> genreList) {
+        public GenreAdapter(Context context, ArrayList<String> genreList) {
             this.genreList = genreList;
             this.context = context;
             inflater = LayoutInflater.from(this.context);
@@ -436,52 +449,150 @@ public class ArtistsFragment extends Fragment {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            MyViewHolder mViewHolder;
+            final MyViewHolder mViewHolder;
 
             if (convertView == null) {
                 convertView = inflater.inflate(R.layout.genre_list_item, null);
                 mViewHolder = new MyViewHolder();
                 convertView.setTag(mViewHolder);
-                mViewHolder.genrebox = (CheckBox) convertView.findViewById(R.id.genrebox);
+                //Styling material themed checkboxes dynamically is hard (impossible?) SO LETS HAVE ALL THE BOXES!
+                //If anyone sees this... and uh knows a way to do this that's theme based and can be done programatically
+                //please let me know. Pretty please.
+                mViewHolder.genreboxPagoda = (CheckBox) convertView.findViewById(R.id.genreboxPagoda);
+                mViewHolder.genreboxForest = (CheckBox) convertView.findViewById(R.id.genreboxForest);
+                mViewHolder.genreboxGrove = (CheckBox) convertView.findViewById(R.id.genreboxGrove);
+                mViewHolder.genreboxLivingRoom = (CheckBox) convertView.findViewById(R.id.genreboxLivingRoomm);
+                mViewHolder.genreboxVillage = (CheckBox) convertView.findViewById(R.id.genreboxVillage);
+                mViewHolder.genreboxAmphitheatre = (CheckBox) convertView.findViewById(R.id.genreboxAmph);
+                mViewHolder.genreboxBioDome = (CheckBox) convertView.findViewById(R.id.genreboxBioDome);
                 mViewHolder.textView = (TextView) convertView.findViewById(R.id.textView);
             } else {
                 mViewHolder = (MyViewHolder) convertView.getTag();
             }
 
-            mViewHolder.genrebox.setHighlightColor(colors[1]);
             mViewHolder.textView.setText(genreList.get(position));
 
-            if (itemChecked[position]) {
-                mViewHolder.genrebox.setChecked(true);
-            } else {
-                mViewHolder.genrebox.setChecked(false);
-            }
+            showThemedCheckBox(mViewHolder);
+            setupItemChecked(mViewHolder.genreboxPagoda, position);
+            setupItemChecked(mViewHolder.genreboxForest, position);
+            setupItemChecked(mViewHolder.genreboxGrove, position);
+            setupItemChecked(mViewHolder.genreboxLivingRoom, position);
+            setupItemChecked(mViewHolder.genreboxVillage, position);
+            setupItemChecked(mViewHolder.genreboxAmphitheatre, position);
+            setupItemChecked(mViewHolder.genreboxBioDome, position);
 
-            mViewHolder.genrebox.setOnClickListener(new View.OnClickListener() {
+            mViewHolder.textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    CheckBox view = (CheckBox) v;
-                    if (view.isChecked()) {
-                        itemChecked[position] = true;
-                        Log.i("TAG", "Click CHECK" + genreList.get(position).toLowerCase());
-                        selectedGenres.add(genreList.get(position).toLowerCase());
-                        EventBus.getDefault().postSticky(new FilterEvent(selectedGenres));
-
-                    } else {
-                        itemChecked[position] = false;
-                        Log.i("TAG", "Click UNCHECKED" + genreList.get(position).toLowerCase());
-                        selectedGenres.remove(genreList.get(position).toLowerCase());
-                        EventBus.getDefault().postSticky(new FilterEvent(selectedGenres));
-                    }
+                    simpleCheckboxClicker(mViewHolder);
                 }
             });
 
             return convertView;
         }
 
+        private void showThemedCheckBox(MyViewHolder viewHolder) {
+            switch (stage) {
+                case 0:
+                    viewHolder.genreboxPagoda.setVisibility(View.VISIBLE);
+                    break;
+                case 1:
+                    viewHolder.genreboxForest.setVisibility(View.VISIBLE);
+                    break;
+                case 2:
+                    viewHolder.genreboxGrove.setVisibility(View.VISIBLE);
+                    break;
+                case 3:
+                    viewHolder.genreboxLivingRoom.setVisibility(View.VISIBLE);
+                    break;
+                case 4:
+                    viewHolder.genreboxVillage.setVisibility(View.VISIBLE);
+                    break;
+                case 5:
+                    viewHolder.genreboxAmphitheatre.setVisibility(View.VISIBLE);
+                    break;
+                case 6:
+                    viewHolder.genreboxBioDome.setVisibility(View.VISIBLE);
+                    break;
+            }
+        }
+
+        private void setupItemChecked(CheckBox view, final int position) {
+            if (itemChecked[position]) {
+                view.setChecked(true);
+            } else {
+                view.setChecked(false);
+            }
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CheckBox view = (CheckBox) v;
+                    genresClicked(view, position);
+                }
+            });
+        }
+
+        private void genresClicked(CheckBox view, int position) {
+
+            if (view.isChecked()) {
+                itemChecked[position] = true;
+                Log.i("TAG", "Click CHECK" + genreList.get(position).toLowerCase());
+                selectedGenres.add(genreList.get(position).toLowerCase());
+                EventBus.getDefault().postSticky(new FilterEvent(selectedGenres));
+
+            } else {
+                itemChecked[position] = false;
+                Log.i("TAG", "Click UNCHECKED" + genreList.get(position).toLowerCase());
+                selectedGenres.remove(genreList.get(position).toLowerCase());
+                EventBus.getDefault().postSticky(new FilterEvent(selectedGenres));
+            }
+        }
+
+        private void simpleCheckboxClicker(MyViewHolder viewHolder) {
+            switch (stage) {
+                case 0:
+                    checkBoxClick(viewHolder.genreboxPagoda);
+                    break;
+                case 1:
+                    checkBoxClick(viewHolder.genreboxForest);
+                    break;
+                case 2:
+                    checkBoxClick(viewHolder.genreboxGrove);
+                    break;
+                case 3:
+                    checkBoxClick(viewHolder.genreboxLivingRoom);
+                    break;
+                case 4:
+                    checkBoxClick(viewHolder.genreboxVillage);
+                    break;
+                case 5:
+                    checkBoxClick(viewHolder.genreboxAmphitheatre);
+                    break;
+                case 6:
+                    checkBoxClick(viewHolder.genreboxBioDome);
+                    break;
+            }
+        }
+
+        private void checkBoxClick(CheckBox view) {
+            if (view.isChecked()) {
+                view.setChecked(false);
+            } else {
+                view.setChecked(true);
+            }
+            view.callOnClick();
+        }
 
         private class MyViewHolder {
-            CheckBox genrebox;
+            CheckBox genreboxPagoda;
+            CheckBox genreboxForest;
+            CheckBox genreboxGrove;
+            CheckBox genreboxLivingRoom;
+            CheckBox genreboxVillage;
+            CheckBox genreboxAmphitheatre;
+            CheckBox genreboxBioDome;
+
             TextView textView;
             boolean isChecked;
         }
@@ -508,7 +619,7 @@ public class ArtistsFragment extends Fragment {
 
         } else {
             adapter.animateHeartsToRight();
-            genreCardView.animate().setDuration(400).translationX(Util.convertDpToPixel(120, getActivity())).withEndAction(new Runnable() {
+            genreCardView.animate().setDuration(Constants.ANIMATION_DURATION).translationX(Util.convertDpToPixel(120, getActivity())).withEndAction(new Runnable() {
                 @Override
                 public void run() {
                     //After the animation duration delete the stock
