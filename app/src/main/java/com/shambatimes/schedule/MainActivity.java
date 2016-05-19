@@ -377,13 +377,15 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
 
-                        currentDay = artist.getDay();
-                        scheduleSpinner.setSelection(artist.getDay());
-                        currentDay = artist.getDay();
+                        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                        if (!(currentFragment instanceof ArtistsFragment)){
+                            currentDay = artist.getDay();
+                            scheduleSpinner.setSelection(artist.getDay());
+                            currentDay = artist.getDay();
+                        }
 
                         collapseGlobalSearchActionView();
-
-                        EventBus.getDefault().postSticky(new SearchSelectedEvent(artist));
+                        EventBus.getDefault().post(new SearchSelectedEvent(artist));
 
                     }
                 });
