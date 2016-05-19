@@ -24,6 +24,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -41,6 +43,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ArtistListLoadDoneEvent;
@@ -110,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(!BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
         }
 
@@ -201,7 +204,8 @@ public class MainActivity extends AppCompatActivity {
         navigationMenu = navigationView.getMenu();
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override public boolean onNavigationItemSelected(final MenuItem menuItem) {
+            @Override
+            public boolean onNavigationItemSelected(final MenuItem menuItem) {
                 menuItem.setChecked(true);
 
                 //Prevents the navigation drawer stutter when switching fragments.
@@ -321,19 +325,8 @@ public class MainActivity extends AppCompatActivity {
             private String[] stageNames = getResources().getStringArray(R.array.stages);
 
 
-            int[] favoriteDrawables = {R.drawable.favorite_pagoda,
-                    R.drawable.favorite_forest,
-                    R.drawable.favorite_grove,
-                    R.drawable.favorite_living_room,
-                    R.drawable.favorite_village,
-                    R.drawable.favorite_amphitheatre};
-
-            int[] favoriteOutlineDrawables = {R.drawable.favorite_outline_pagoda,
-                    R.drawable.favorite_outline_forest,
-                    R.drawable.favorite_outline_grove,
-                    R.drawable.favorite_outline_living_room,
-                    R.drawable.favorite_outline_village,
-                    R.drawable.favorite_outline_amphitheatre};
+            int[] favoriteDrawables = ColorUtil.getStageFavoriteDrawables();
+            int[] favoriteOutlineDrawables = ColorUtil.getStageFavoriteOutlineDrawables();
 
             @Override
             public View getView(final int position, View convertView, ViewGroup parent) {
@@ -503,8 +496,64 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+
+        final ImageView test = (ImageView) menu.findItem(R.id.filter).getActionView();
+        if (test != null) {
+            //http://www.andronotes.org/uncategorized/animation-of-menuitem-in-actionbar/
+            test.setImageResource(R.drawable.ic_filter_list_white_36dp);
+//            if(!flipped) {
+//                test.setImageResource(R.drawable.ic_filter_list_white_36dp);
+//            }else{
+//                test.setImageResource(R.drawable.ic_filter_list_white_down_36dp);
+//            }
+            test.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Animation rotation;
+                    if(!flipped) {
+                         rotation = AnimationUtils.loadAnimation(getApplicationContext(),
+                                R.anim.rotation_down);
+                    }else{
+                         rotation = AnimationUtils.loadAnimation(getApplicationContext(),
+                                R.anim.rotation_up);
+                    }
+
+                    rotation.setAnimationListener(new Animation.AnimationListener() {
+                        public void onAnimationStart(Animation animation) {
+                        }
+
+                        public void onAnimationRepeat(Animation animation) {
+                        }
+
+                        public void onAnimationEnd(Animation animation) {
+                            if(flipped) {
+                                flipped = false;
+                             //   test.setImageResource(R.drawable.ic_filter_list_white_36dp);
+                            }else{
+                                flipped = true;
+                               // test.setImageResource(R.drawable.ic_filter_list_white_down_36dp);
+                            }
+                            //test.setImageResource(R.drawable.ic_filter_list_white_down_36dp);
+                        }
+                    });
+
+                    view.startAnimation(rotation);
+                    // create and use new data set
+
+                    ArtistsFragment artistsFragment = (ArtistsFragment) getSupportFragmentManager().findFragmentByTag("ARTISTS");
+                    if (artistsFragment != null) {
+                        artistsFragment.showGenres();
+                    }
+
+                }
+            });
+        }
+
+
         return true;
     }
+
+    boolean flipped = false;
 
     public void onEventMainThread(ToggleFilterVisibility event) {
 
@@ -520,11 +569,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem globalSearchItem = menu.findItem(R.id.global_search);
         MenuItem filterListItem = menu.findItem(R.id.filter);
+
         MenuItem filterListSelectedItem = menu.findItem(R.id.filter_active);
 
-        if(filterListItem.isVisible()){
+        if (filterListItem.isVisible()) {
             filterListSelectedItem.setVisible(false);
-        }else{
+        } else {
             filterListSelectedItem.setVisible(true);
         }
 
@@ -569,7 +619,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id == R.id.filter || id == R.id.filter_active) {
-            onPopupButtonClick();
+            //onPopupButtonClick();
+
+
+//            ArtistsFragment artistsFragment = (ArtistsFragment) getSupportFragmentManager().findFragmentByTag("ARTISTS");
+//            if(artistsFragment != null){
+//                artistsFragment.showGenres();
+//            }
         }
 
 
@@ -581,8 +637,6 @@ public class MainActivity extends AppCompatActivity {
     ListPopupWindow listPopupWindow;
 
     public void onPopupButtonClick() {
-        String[] products = {"House", "Tech-House", "Dubset", "Funky",
-                "Dubstep", "Glitchhop", "Techno", "Breaks", "Psytrance", "Drum & Bass", "Drum Step"};
 
         if (listPopupWindow == null) {
             listPopupWindow = new ListPopupWindow(MainActivity.this);
@@ -671,27 +725,26 @@ public class MainActivity extends AppCompatActivity {
                 mViewHolder.textView = (TextView) convertView.findViewById(R.id.textView);
 
 
-
             } else {
                 mViewHolder = (MyViewHolder) convertView.getTag();
             }
 
-
+            mViewHolder.genrebox.setHighlightColor(actionBarColor);
             mViewHolder.textView.setText(genreList.get(position));
 
-            if(itemChecked[position]){
+            if (itemChecked[position]) {
                 mViewHolder.genrebox.setChecked(true);
-            }else{
-                mViewHolder.genrebox.setChecked (false);
+            } else {
+                mViewHolder.genrebox.setChecked(false);
             }
 
             mViewHolder.genrebox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     CheckBox view = (CheckBox) v;
-                    if(view.isChecked()){
+                    if (view.isChecked()) {
                         itemChecked[position] = true;
-                        Log.i("TAG", "Click CHECK" + genreList.get(position).toLowerCase() );
+                        Log.i("TAG", "Click CHECK" + genreList.get(position).toLowerCase());
                         selectedGenres.add(genreList.get(position).toLowerCase());
                         EventBus.getDefault().postSticky(new FilterEvent(selectedGenres));
 
@@ -699,12 +752,12 @@ public class MainActivity extends AppCompatActivity {
                         MenuItem filterActiveItem = menu.findItem(R.id.filter_active);
                         filterItem.setVisible(false);
                         filterActiveItem.setVisible(true);
-                    }else{
+                    } else {
                         itemChecked[position] = false;
-                        Log.i("TAG", "Click UNCHECKED" + genreList.get(position).toLowerCase() );
+                        Log.i("TAG", "Click UNCHECKED" + genreList.get(position).toLowerCase());
                         selectedGenres.remove(genreList.get(position).toLowerCase());
                         EventBus.getDefault().postSticky(new FilterEvent(selectedGenres));
-                        if(selectedGenres.isEmpty()){
+                        if (selectedGenres.isEmpty()) {
                             MenuItem filterItem = menu.findItem(R.id.filter);
                             MenuItem filterActiveItem = menu.findItem(R.id.filter_active);
                             filterItem.setVisible(true);
@@ -718,22 +771,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
         private class MyViewHolder {
             CheckBox genrebox;
             TextView textView;
             boolean isChecked;
         }
 
-        public ArrayList<String> getSelectedGenres(){
+        public ArrayList<String> getSelectedGenres() {
             return selectedGenres;
         }
 
-        public void setSelectedGenres(ArrayList<String> genres){
+        public void setSelectedGenres(ArrayList<String> genres) {
             selectedGenres = genres;
         }
 
-        public void clearSelectedGenres(){
+        public void clearSelectedGenres() {
             itemChecked = new boolean[genreList.size()];
         }
 
@@ -862,7 +914,7 @@ public class MainActivity extends AppCompatActivity {
                 toolbar.removeView(scheduleSpinner);
                 currentFragment = FRAGMENT_ARTISTS;
 
-                if(genreAdapter != null){
+                if (genreAdapter != null) {
                     genreAdapter.clearSelectedGenres();
                 }
 
@@ -1047,10 +1099,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void checkNavigationItem(int id){
-        if (navigationMenu != null){
+    private void checkNavigationItem(int id) {
+        if (navigationMenu != null) {
             MenuItem item = navigationMenu.findItem(id);
-            if(item != null) {
+            if (item != null) {
                 item.setChecked(true);
             }
         }
@@ -1118,7 +1170,7 @@ public class MainActivity extends AppCompatActivity {
                 // iterate over the list of venues and find if the venue matches the constraint. if it does, add to the result list
                 final ArrayList<Artist> retList = new ArrayList<Artist>();
                 for (Artist artist : list) {
-                    if (artist.getAristName().toLowerCase().contains(constraint)) {
+                    if (artist.getAristName().toLowerCase().contains(searchText)) {
                         retList.add(artist);
                     }
                 }

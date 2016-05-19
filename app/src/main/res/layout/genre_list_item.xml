@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/linearLayout1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -17,8 +18,8 @@
             android:id="@+id/genrebox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:buttonTint="@color/pagoda_color"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            />
 
 
         <TextView
@@ -26,6 +27,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
+            android:fontFamily="sans-serif-light"
+            android:textStyle="italic"
+            android:textSize="12sp"
             android:text="New Text" />
 
     </LinearLayout>

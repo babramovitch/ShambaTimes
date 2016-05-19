@@ -16,12 +16,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.shambatimes.schedule.Util.AlarmHelper;
+import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
-import com.shambatimes.schedule.events.FilterEvent;
 import com.shambatimes.schedule.events.SearchSelectedEvent;
 import com.shambatimes.schedule.events.ToggleToTimeEvent;
 import com.shambatimes.schedule.myapplication.R;
@@ -177,21 +177,8 @@ public class StageListScheduleFragment extends Fragment {
         LayoutInflater inflater;
         Context context;
 
-        int[] favoriteDrawables = {R.drawable.favorite_pagoda,
-                R.drawable.favorite_forest,
-                R.drawable.favorite_grove,
-                R.drawable.favorite_living_room,
-                R.drawable.favorite_village,
-                R.drawable.favorite_amphitheatre,
-                R.drawable.favorite_amphitheatre};
-
-        int[] favoriteOutlineDrawables = {R.drawable.favorite_outline_pagoda,
-                R.drawable.favorite_outline_forest,
-                R.drawable.favorite_outline_grove,
-                R.drawable.favorite_outline_living_room,
-                R.drawable.favorite_outline_village,
-                R.drawable.favorite_outline_amphitheatre,
-                R.drawable.favorite_outline_amphitheatre};
+        int[] favoriteDrawables = ColorUtil.getStageFavoriteDrawables();
+        int[] favoriteOutlineDrawables = ColorUtil.getStageFavoriteOutlineDrawables();
 
 
         public ArtistAdapter(Context context, ArrayList<Artist> artistList) {
@@ -313,14 +300,12 @@ public class StageListScheduleFragment extends Fragment {
     }
 
     public void onEventMainThread(ActionBarColorEvent event) {
-
         int color = event.getColor();
         int[] colors = {0, color, 0};
         listView.setDivider(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
         listView.setDividerHeight(1);
 
         EdgeChanger.setEdgeGlowColor(listView, event.getColor());
-
     }
 
     public void onEventMainThread(ChangeDateEvent event) {
@@ -368,5 +353,4 @@ public class StageListScheduleFragment extends Fragment {
         super.onStop();
         EventBus.getDefault().unregister(this);
     }
-
 }

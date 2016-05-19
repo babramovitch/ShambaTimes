@@ -1,28 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/background_material_light"
-    android:orientation="vertical"
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/snackbarPosition"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <android.support.v7.widget.RecyclerView
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/listView_schedule" />
-
-    <xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller
-        android:id="@+id/fast_scroller"
-        android:layout_width="20dp"
         android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        />
+        android:background="@color/background_material_light"
+        android:orientation="vertical">
 
-    <android.support.design.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/snackbarPosition">
-    </android.support.design.widget.CoordinatorLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/listView_schedule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-</RelativeLayout>
+        <xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller
+            android:id="@+id/fast_scroller"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@+id/genreCard" />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/genreCard"
+            android:layout_width="120dp"
+            android:layout_height="fill_parent"
+            android:layout_alignParentRight="true"
+            android:visibility="gone">
+
+            <ListView
+                android:id="@+id/genrelist"
+                android:layout_width="120dp"
+                android:layout_height="fill_parent" />
+        </android.support.v7.widget.CardView>
+
+        <!--<android.support.design.widget.CoordinatorLayout
+            android:id="@+id/snackbarPosition"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />-->
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

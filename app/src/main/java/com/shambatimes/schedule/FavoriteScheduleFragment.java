@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.shambatimes.schedule.Util.AlarmHelper;
+import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
@@ -128,21 +129,8 @@ public class FavoriteScheduleFragment extends Fragment {
         private ArrayList<Artist> artistList;
         private int lastPosition = -1;
 
-        int[] favoriteDrawables = {R.drawable.favorite_pagoda,
-                R.drawable.favorite_forest,
-                R.drawable.favorite_grove,
-                R.drawable.favorite_living_room,
-                R.drawable.favorite_village,
-                R.drawable.favorite_amphitheatre,
-                R.drawable.favorite_amphitheatre};
-
-        int[] favoriteOutlineDrawables = {R.drawable.favorite_outline_pagoda,
-                R.drawable.favorite_outline_forest,
-                R.drawable.favorite_outline_grove,
-                R.drawable.favorite_outline_living_room,
-                R.drawable.favorite_outline_village,
-                R.drawable.favorite_outline_amphitheatre,
-                R.drawable.favorite_outline_amphitheatre};
+        int[] favoriteDrawables = ColorUtil.getStageFavoriteDrawables();
+        int[] favoriteOutlineDrawables = ColorUtil.getStageFavoriteOutlineDrawables();
 
         public ArtistRecyclerAdapter(ArrayList<Artist> artistList) {
             this.artistList = artistList;

@@ -1,18 +1,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:compat="http://schemas.android.com/apk/res-auto/android"
     tools:context=".MainActivity">
 
     <item
         android:id="@+id/filter"
         android:icon="@drawable/ic_filter_list_white_36dp"
         android:title="Filter"
-        app:showAsAction="ifRoom"
-        />
+        app:actionViewClass="android.widget.ImageView"
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/filter_active"
-        android:icon="@drawable/ic_filter_list_purple_a400_36dp"
+        android:icon="@drawable/ic_filter_list_white_down_36dp"
         android:title="Filter Active"
         android:visible="false"
         app:showAsAction="ifRoom"

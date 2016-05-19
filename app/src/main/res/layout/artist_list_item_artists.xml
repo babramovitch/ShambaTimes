@@ -66,10 +66,10 @@
         android:layout_alignBaseline="@id/artistDay"
         android:layout_alignBottom="@id/artistDay"
         android:layout_marginLeft="5dp"
-        android:layout_toEndOf="@+id/artistDay"
-        android:layout_toLeftOf="@id/list_favorited"
         android:layout_toRightOf="@+id/artistDay"
-        tools:text="Artist Schedule" />
+        tools:text="Artist Schedule"
+        android:layout_alignRight="@id/list_favorited"
+        android:layout_alignEnd="@id/list_favorited" />
 
     <TextView
         android:id="@+id/artistStartTimePosition"
