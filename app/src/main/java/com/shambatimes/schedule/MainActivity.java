@@ -1017,7 +1017,11 @@ public class MainActivity extends AppCompatActivity {
 
             title.setText(scheduleBy);
 
-            subtitle.setText(data[position]);
+            if (!Shambhala.getFestivalYear(MainActivity.this).equals(Shambhala.CURRENT_YEAR)) {
+                subtitle.setText(data[position] + " - " + Shambhala.getFestivalYear(MainActivity.this));
+            }else{
+                subtitle.setText(data[position]);
+            }
             return actionBarView;
 
         }
