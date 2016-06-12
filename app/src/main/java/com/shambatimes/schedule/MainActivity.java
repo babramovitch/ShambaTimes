@@ -241,12 +241,12 @@ public class MainActivity extends AppCompatActivity {
                 if (slideOffset > .55 && !isDrawerOpen) {
                     onDrawerOpened(drawerView);
                     isDrawerOpen = true;
+                    invalidateOptionsMenu();
                 } else if (slideOffset < .45 && isDrawerOpen) {
                     onDrawerClosed(drawerView);
                     isDrawerOpen = false;
+                    invalidateOptionsMenu();
                 }
-                invalidateOptionsMenu();
-
             }
 
             public void onDrawerClosed(View view) {
@@ -606,10 +606,7 @@ public class MainActivity extends AppCompatActivity {
             filterImage.setImageResource(R.drawable.ic_filter_list_white_36dp);
 
             if (genreFilteringActive) {
-                Animation rotation = AnimationUtils.loadAnimation(getApplicationContext(),
-                        R.anim.rotation_down);
-                rotation.setDuration(0);
-                filterImage.startAnimation(rotation);
+                setFilterToDownPosition();
             }
 
             filterImage.setOnClickListener(new View.OnClickListener() {
@@ -652,8 +649,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onEventMainThread(ToggleFilterVisibility event) {
+    private void setFilterToDownPosition() {
+        Animation rotation = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.rotation_down);
+        rotation.setDuration(0);
+        if (filterImage != null) {
+            filterImage.startAnimation(rotation);
+        }
+    }
 
+    public void onEventMainThread(ToggleFilterVisibility event) {
         if (currentFragment == FRAGMENT_ARTISTS) {
             if (menu != null && !Shambhala.getFestivalYear(this).equals("2015")) {
                 MenuItem filter = menu.findItem(R.id.filter);
@@ -662,7 +667,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-
     }
 
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -756,6 +760,8 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         toolbar.setTitle("");
+
+        genreFilteringActive = false;
 
         //I'm removing the view as toggling between spinner/non spinner was causing some
         //weird behavior where both would sometimes appear, which wasn't making sense.

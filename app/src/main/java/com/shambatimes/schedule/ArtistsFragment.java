@@ -1,6 +1,5 @@
 package com.shambatimes.schedule;
 
-import android.app.PendingIntent;
 import android.content.Context;
 
 import android.graphics.drawable.GradientDrawable;
@@ -50,15 +49,15 @@ public class ArtistsFragment extends Fragment {
     private ArrayList<Artist> artists;
     private RecyclerView recyclerView;
     private ListView listView;
-    private PendingIntent pendingIntent;
+
     AlarmHelper alarmHelper;
 
     CardView genreCardView;
 
-    LinearLayoutManager llm;
+    LinearLayoutManager linearLayoutManager;
     private View layout;
 
-    static ArrayList<String> selectedGenres = new ArrayList<>();
+    ArrayList<String> selectedGenres = new ArrayList<>();
     GenreAdapter genreAdapter;
 
     @Override
@@ -68,16 +67,15 @@ public class ArtistsFragment extends Fragment {
         alarmHelper = new AlarmHelper(getActivity(), layout);
 
 
-
         setupRecyclerView();
         setupGenres();
 
-        if (savedInstanceState == null) {
-            selectedGenres.clear();
-        } else if (savedInstanceState != null) {
+        if (savedInstanceState != null) {
             boolean genresVisible = savedInstanceState.getBoolean("genresVisible", false);
 
             if (genreAdapter != null) {
+                selectedGenres = savedInstanceState.getStringArrayList("selectedGenres");
+
                 boolean[] itemChecked = savedInstanceState.getBooleanArray("itemChecked");
                 genreAdapter.setItemChecked(itemChecked);
                 EventBus.getDefault().postSticky(new FilterEvent(selectedGenres));
@@ -88,8 +86,7 @@ public class ArtistsFragment extends Fragment {
                 showGenres(false);
             }
         }
-
-
+        
         return (layout);
     }
 
@@ -102,9 +99,9 @@ public class ArtistsFragment extends Fragment {
         recyclerView.addOnScrollListener(fastScroller.getOnScrollListener());
         recyclerView.setHasFixedSize(true);
 
-        llm = new LinearLayoutManager(getActivity());
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(llm);
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new FlipInBottomXAnimator());
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -272,8 +269,8 @@ public class ArtistsFragment extends Fragment {
 
         private void setupGenreAnimations(ArtistViewHolder artistViewHolder, int position) {
 
-            int lastVisiblePosition = llm.findLastVisibleItemPosition() - 1;
-            int firstVisiblePosition = llm.findFirstVisibleItemPosition() + 1;
+            int lastVisiblePosition = linearLayoutManager.findLastVisibleItemPosition() - 1;
+            int firstVisiblePosition = linearLayoutManager.findFirstVisibleItemPosition() + 1;
 
             if (editTextWidth == 0 && artistViewHolder.artistStage.getWidth() != 0) {
                 editTextWidth = artistViewHolder.artistStage.getWidth();
@@ -314,7 +311,7 @@ public class ArtistsFragment extends Fragment {
                 params.addRule(RelativeLayout.LEFT_OF, R.id.list_favorited);
                 artistViewHolder.genres.setLayoutParams(paramsGenres);
 
-                if (!skipAnimations && (llm.findLastVisibleItemPosition() <= position || llm.findFirstCompletelyVisibleItemPosition() <= position)) {
+                if (!skipAnimations && (linearLayoutManager.findLastVisibleItemPosition() <= position || linearLayoutManager.findFirstCompletelyVisibleItemPosition() <= position)) {
                     artistViewHolder.image.animate()
                             .setDuration(Constants.ANIMATION_DURATION)
                             .translationX(Util.convertDpToPixel(0, getActivity()))
@@ -780,5 +777,7 @@ public class ArtistsFragment extends Fragment {
             boolean[] itemChecked = genreAdapter.getItemChecked();
             savedInstanceState.putBooleanArray("itemChecked", itemChecked);
         }
+
+        savedInstanceState.putStringArrayList("selectedGenres", selectedGenres);
     }
 }
