@@ -155,7 +155,8 @@ public class StageListScheduleFragment extends Fragment {
                     break; //exit loop as there's nothing left to select
                 }
 
-            } else if (currentlyPlayingArtist != null && artistNameTextView.getText().toString().equals(currentlyPlayingArtist.getAristName())) {
+            } else if (currentlyPlayingArtist != null && artistNameTextView.getText().toString().equals(currentlyPlayingArtist.getAristName())
+                    && Shambhala.getFestivalYear(getActivity()).equals(Shambhala.CURRENT_YEAR)) {
                 listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
                 listView.setItemChecked(i, true);
             }
