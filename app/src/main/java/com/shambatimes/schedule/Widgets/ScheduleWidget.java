@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 import com.shambatimes.schedule.Constants;
+import com.shambatimes.schedule.Shambhala;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.events.DataChangedEvent;
 import com.shambatimes.schedule.Artist;
@@ -101,7 +102,7 @@ public class ScheduleWidget extends AppWidgetProvider {
 
         if (!DateUtils.isPrePostFestival()) {
 
-            ArrayList<Artist> artistList = (ArrayList) Artist.find(Artist.class, "start_Position <= ? and end_Position > ? and day = ?", "" + position, "" + position, "" + day);
+            ArrayList<Artist> artistList = (ArrayList) Artist.find(Artist.class, "start_Position <= ? and end_Position > ? and day = ? and year = ?", "" + position, "" + position, "" + day, Shambhala.getFestivalYear(context));
 
             for (Artist artist : artistList) {
 
@@ -153,7 +154,7 @@ public class ScheduleWidget extends AppWidgetProvider {
 
             int position = DateUtils.getCurrentTimePosition();
 
-            ArrayList<Artist> artist = (ArrayList) Artist.find(Artist.class, "stage = ? and start_Position <= ? and end_Position > ? and day = ?", "" + artistStage, "" + position, "" + position, "" + day);
+            ArrayList<Artist> artist = (ArrayList) Artist.find(Artist.class, "stage = ? and start_Position <= ? and end_Position > ? and day = ? and year = ?", "" + artistStage, "" + position, "" + position, "" + day, Shambhala.getFestivalYear(context));
 
             if (artist != null && artist.size() == 1) {
 

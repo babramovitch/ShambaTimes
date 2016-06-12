@@ -80,7 +80,7 @@ public class StageListScheduleFragment extends Fragment {
         stage = getArguments().getInt(STAGE_POSITION, 0);
         searchName = getArguments().getString(SEARCH_NAME, "");
         artists = MainActivity.shambhala.getArtistsByDayAndStage(date, stage);
-        alarmHelper = new AlarmHelper(getActivity(),rootView);
+        alarmHelper = new AlarmHelper(getActivity(), rootView);
 
         //ArrayList<Artist> artists =
         //        (ArrayList<Artist>) Artist.find(Artist.class, "day = ? and stage = ?", "" + date, "" + stage);
@@ -223,7 +223,8 @@ public class StageListScheduleFragment extends Fragment {
 
 
             mViewHolder.artistName.setText(getItem(position).getAristName());
-            if (currentlyPlayingArtist != null && getItem(position).getAristName().equals(currentlyPlayingArtist.getAristName())) {
+            if (currentlyPlayingArtist != null && getItem(position).getAristName().equals(currentlyPlayingArtist.getAristName())
+                    && Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR)) {
                 mViewHolder.artistTime.setText(getItem(position).getStartTimeString() + " to " + getItem(position).getEndTimeString() + " - Now Playing");
             } else {
                 mViewHolder.artistTime.setText(getItem(position).getStartTimeString() + " to " + getItem(position).getEndTimeString());

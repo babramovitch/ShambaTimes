@@ -25,8 +25,8 @@
         <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
         <item name="android:windowTranslucentNavigation">false</item>
         <item name="android:windowTranslucentStatus">true</item>
-
     </style>
+
 </resources>
 
     <!-- <item name="android:navigationBarColor">@color/pagoda_color</item> -->

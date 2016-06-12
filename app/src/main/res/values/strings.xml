@@ -18,6 +18,14 @@
         <item>Sunday</item>
     </string-array>
 
+    <string-array name="all_and_days">
+        <item>All Artists</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string-array>
+
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
 
@@ -57,5 +65,11 @@
     <string name="title_activity_alarm">AlarmActivity</string>
 
     <string name="alarm_time">in %1$s minutes at the\n%2$s</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <string-array name="ScheduleYears">
+        <item>2015</item>
+        <item>2016</item>
+    </string-array>
 
 </resources>

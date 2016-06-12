@@ -1,5 +1,11 @@
 package com.shambatimes.schedule;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import com.shambatimes.schedule.Settings.SettingsActivity;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,6 +14,8 @@ import java.util.Comparator;
  * Created by Ben on 14/02/2015.
  */
  public class  Shambhala {
+
+    public final static String CURRENT_YEAR = "2016";
 
     ArrayList<Artist> artists = new ArrayList<Artist>();
     private final String TAG = "Shambhala";
@@ -41,7 +49,6 @@ import java.util.Comparator;
             }
         }
 
-
         Collections.sort(artistsByDay, new Comparator<Artist>() {
             @Override
             public int compare(Artist lhs, Artist rhs) {
@@ -50,6 +57,19 @@ import java.util.Comparator;
                 return (o1>o2 ? -1 : (o1==o2 ? 0 : 1));
             }
         });
+
+        return artistsByDay;
+    }
+
+    public ArrayList<Artist> getArtistsByDay(int day){
+
+        ArrayList<Artist> artistsByDay = new ArrayList<>();
+
+        for(Artist currentArtist : artists){
+            if(currentArtist.getDay() == day){
+                artistsByDay.add(currentArtist);
+            }
+        }
 
         return artistsByDay;
     }
@@ -86,5 +106,20 @@ import java.util.Comparator;
         this.artists = artists;
     }
 
+    public  ArrayList<Artist> loadAllArtistsForYear(String year) {
+        String[] query1 = {"" + year};
+        ArrayList<Artist> artistList = (ArrayList<Artist>) Artist.find(Artist.class, "year = ?", query1, null, "lower(artist_Name) asc", null);
+        return artistList;
+    }
 
+    public ArrayList<Artist> loadAllArtistsForYearAndDay(String year, String day) {
+        String[] query1 = {year, day};
+        ArrayList<Artist> artistList = (ArrayList<Artist>) Artist.find(Artist.class, "year = ? and day = ?", query1, null, "lower(artist_Name) asc", null);
+        return artistList;
+    }
+
+    public static  String getFestivalYear(Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getString(SettingsActivity.FESTIVAL_YEAR,"2016");
+    }
 }

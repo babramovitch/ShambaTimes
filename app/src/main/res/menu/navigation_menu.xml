@@ -25,5 +25,10 @@
             android:icon="@drawable/ic_list_black_24dp"
             android:title="Artist List"/>
 
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_settings_grey_600_24dp"
+            android:title="Settings"/>
+
     </group>
 </menu>

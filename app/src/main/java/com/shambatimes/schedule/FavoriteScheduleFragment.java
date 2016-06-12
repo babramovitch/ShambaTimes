@@ -1,8 +1,10 @@
 package com.shambatimes.schedule;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -67,8 +69,8 @@ public class FavoriteScheduleFragment extends Fragment {
 
         stageColors = this.getResources().getIntArray(R.array.stage_colors);
 
-        String[] args = {"1", "0"};
-        artists = (ArrayList<Artist>) Artist.find(Artist.class, "favorite = ? and day = ?", args, null, "day ASC, start_Position ASC", null);
+        String[] args = {"1", "0",Shambhala.getFestivalYear(getActivity())};
+        artists = (ArrayList<Artist>) Artist.find(Artist.class, "favorite = ? and day = ? and year = ?", args, null, "day ASC, start_Position ASC", null);
 
         stageNames = getActivity().getResources().getStringArray(R.array.stages);
 
@@ -274,10 +276,10 @@ public class FavoriteScheduleFragment extends Fragment {
 
             EventBus.getDefault().removeStickyEvent(event);
 
-            String[] args = {"1", "" + date};
+            String[] args = {"1", "" + date, Shambhala.getFestivalYear(getActivity())};
 
             MainActivity.shambhala.updateArtistById(event.getArtistId());
-            artists = (ArrayList<Artist>) Artist.find(Artist.class, "favorite = ? and day = ?", args, null, "day ASC, start_Position ASC", null);
+            artists = (ArrayList<Artist>) Artist.find(Artist.class, "favorite = ? and day = ? and year = ?", args, null, "day ASC, start_Position ASC", null);
             adapter = new ArtistRecyclerAdapter(artists);
             recyclerView.setAdapter(adapter);
         }
@@ -289,9 +291,9 @@ public class FavoriteScheduleFragment extends Fragment {
 
         date = event.getPosition();
 
-        String[] args = {"1", "" + date};
+        String[] args = {"1", "" + date, Shambhala.getFestivalYear(getActivity())};
 
-        artists = (ArrayList<Artist>) Artist.find(Artist.class, "favorite = ? and day = ?", args, null, "day ASC, start_Position ASC", null);
+        artists = (ArrayList<Artist>) Artist.find(Artist.class, "favorite = ? and day = ? and year = ?", args, null, "day ASC, start_Position ASC", null);
         adapter = new ArtistRecyclerAdapter(artists);
         recyclerView.setAdapter(adapter);
     }

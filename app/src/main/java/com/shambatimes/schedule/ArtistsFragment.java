@@ -5,6 +5,7 @@ import android.content.Context;
 
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,6 +26,7 @@ import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.Util.Util;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
+import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.SearchSelectedEvent;
 import com.shambatimes.schedule.events.FilterEvent;
 import com.shambatimes.schedule.myapplication.R;
@@ -65,8 +67,10 @@ public class ArtistsFragment extends Fragment {
         layout = inflater.inflate(R.layout.recycler_schedule_artists, container, false);
         alarmHelper = new AlarmHelper(getActivity(), layout);
 
-        setupGenres();
+        selectedGenres.clear();
+
         setupRecyclerView();
+        setupGenres();
 
         return (layout);
     }
@@ -93,7 +97,7 @@ public class ArtistsFragment extends Fragment {
             }
         });
 
-        artists = (ArrayList<Artist>) Artist.find(Artist.class, null, null, null, "lower(artist_Name) asc", null);
+        artists = MainActivity.shambhala.loadAllArtistsForYear(Shambhala.getFestivalYear(getActivity()));
 
         adapter = new ArtistRecyclerAdapter(artists);
         recyclerView.setAdapter(adapter);
@@ -135,6 +139,7 @@ public class ArtistsFragment extends Fragment {
         String[] dayOfWeek = getActivity().getResources().getStringArray(R.array.daysOfWeek);
         private String[] stageNames = getActivity().getResources().getStringArray(R.array.stages);
         private boolean animateHeartsInwards = false;
+        private boolean skipAnimations = true;
         //ItemFilter mFilter = new ItemFilter();
 
         int editTextWidth;
@@ -147,16 +152,27 @@ public class ArtistsFragment extends Fragment {
             this.artistList = artistList;
         }
 
+        public void setArtistList(ArrayList<Artist> artistList) {
+            this.artistList = artistList;
+            notifyDataSetChanged();
+        }
+
         public void animateHeartsToLeft() {
+            skipAnimations = false;
             animateHeartsInwards = true;
             screenWidth = getResources().getDisplayMetrics().widthPixels;
             notifyDataSetChanged();
         }
 
         public void animateHeartsToRight() {
+            skipAnimations = false;
             animateHeartsInwards = false;
             screenWidth = getResources().getDisplayMetrics().widthPixels;
             notifyDataSetChanged();
+        }
+
+        public void skipAnimations(boolean skip) {
+            skipAnimations = skip;
         }
 
         @Override
@@ -220,6 +236,8 @@ public class ArtistsFragment extends Fragment {
                                                                   artist.setFavorite(false);
                                                                   artist.save();
 
+                                                                  Log.i("TAG", "Year: " + artist.getYear());
+
                                                                   alarmHelper.dismissSnackbar();
                                                               } else {
                                                                   artistViewHolder.image.setImageResource(favoriteDrawables[artist.getStage()]);
@@ -254,14 +272,14 @@ public class ArtistsFragment extends Fragment {
                 paramsGenres.width = editTextWidth - 120;
                 artistViewHolder.genres.setLayoutParams(paramsGenres);
 
-                if (position >= firstVisiblePosition || position <= lastVisiblePosition) {
+                if (!skipAnimations && (position >= firstVisiblePosition || position <= lastVisiblePosition)) {
                     artistViewHolder.image.animate()
                             .setDuration(Constants.ANIMATION_DURATION)
                             .translationX(Util.convertDpToPixel(-115, getActivity()))
                             .translationY(Util.convertDpToPixel(30, getActivity()));
                 } else {
                     artistViewHolder.image.setTranslationX(Util.convertDpToPixel(-115, getActivity()));
-                    artistViewHolder.image.setTranslationY(Util.convertDpToPixel(40, getActivity()));
+                    artistViewHolder.image.setTranslationY(Util.convertDpToPixel(30, getActivity()));
                 }
 
             } else {
@@ -278,7 +296,7 @@ public class ArtistsFragment extends Fragment {
                 params.addRule(RelativeLayout.LEFT_OF, R.id.list_favorited);
                 artistViewHolder.genres.setLayoutParams(paramsGenres);
 
-                if (llm.findLastVisibleItemPosition() <= position || llm.findFirstCompletelyVisibleItemPosition() <= position) {
+                if (!skipAnimations && (llm.findLastVisibleItemPosition() <= position || llm.findFirstCompletelyVisibleItemPosition() <= position)) {
                     artistViewHolder.image.animate()
                             .setDuration(Constants.ANIMATION_DURATION)
                             .translationX(Util.convertDpToPixel(0, getActivity()))
@@ -350,20 +368,35 @@ public class ArtistsFragment extends Fragment {
         stage = event.getStage();
         colors[1] = event.getColor();
         scrollColor = event.getColor();
-        if(fastScroller != null) {
+        if (fastScroller != null) {
             fastScroller.setHandleColor(event.getColor());
             fastScroller.setBarColor(event.getColor());
         }
-        if(listView != null) {
+        if (listView != null) {
             EdgeChanger.setEdgeGlowColor(listView, event.getColor());
         }
     }
 
-    public void onEventMainThread(SearchSelectedEvent event) {
+    public void onEventMainThread(final SearchSelectedEvent event) {
         int artistPosition = adapter.findArtist(event.getArtist().getAristName());
         if (artistPosition != -1) {
             LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
             llm.scrollToPositionWithOffset(artistPosition, 20);
+        } else {
+            artists = MainActivity.shambhala.loadAllArtistsForYearAndDay(Shambhala.getFestivalYear(getActivity()), "" + event.getArtist().getDay());
+            adapter.notifyDataSetChanged();
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    int artistPosition = adapter.findArtist(event.getArtist().getAristName());
+                    if (artistPosition != -1) {
+                        LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
+                        llm.scrollToPositionWithOffset(artistPosition, 20);
+                    }
+                }
+            }, 50);
         }
     }
 
@@ -373,7 +406,10 @@ public class ArtistsFragment extends Fragment {
         genreCardView = (CardView) layout.findViewById(R.id.genreCard);
         genreCardView.setTranslationX(Util.convertDpToPixel(120, getActivity()));
 
+        generateFilteredGenreList();
+
         if (genreAdapter == null) {
+
             ArrayList<String> genres = new ArrayList<>();
             genres.add("Bass Music");
             genres.add("Breakbeats");
@@ -397,11 +433,24 @@ public class ArtistsFragment extends Fragment {
             genres.add("Turntablism");
 
             genreAdapter = new GenreAdapter(getActivity(), genres);
-
             listView = (ListView) layout.findViewById(R.id.genrelist);
             listView.setAdapter(genreAdapter);
-//            listView.setDivider(new ColorDrawable(ContextCompat.getColor(getActivity(),R.color.pagoda_color)));
-//            listView.setDividerHeight(2);
+        }
+    }
+
+    ArrayList<String> availableGenresByDate = new ArrayList<>();
+
+    public void generateFilteredGenreList() {
+
+        availableGenresByDate.clear();
+
+        for (Artist artist : artists) {
+            String[] artistGenres = artist.getGenres().split(",");
+            for (String genre : artistGenres) {
+                if (!availableGenresByDate.contains(genre)) {
+                    availableGenresByDate.add(genre);
+                }
+            }
         }
     }
 
@@ -473,6 +522,9 @@ public class ArtistsFragment extends Fragment {
             mViewHolder.textView.setText(genreList.get(position));
 
             showThemedCheckBox(mViewHolder);
+
+            setupCheckboxEnabledState(mViewHolder,position);
+
             setupItemChecked(mViewHolder.genreboxPagoda, position);
             setupItemChecked(mViewHolder.genreboxForest, position);
             setupItemChecked(mViewHolder.genreboxGrove, position);
@@ -491,7 +543,16 @@ public class ArtistsFragment extends Fragment {
             return convertView;
         }
 
+        private void setupCheckboxEnabledState(MyViewHolder viewHolder, int position){
+            if (availableGenresByDate.contains(genreList.get(position).toLowerCase())) {
+                setCheckBoxAlpha(viewHolder,1f);
+            }else{
+                setCheckBoxAlpha(viewHolder,0.1f);
+            }
+        }
+
         private void showThemedCheckBox(MyViewHolder viewHolder) {
+
             switch (stage) {
                 case 0:
                     viewHolder.genreboxPagoda.setVisibility(View.VISIBLE);
@@ -517,6 +578,16 @@ public class ArtistsFragment extends Fragment {
             }
         }
 
+        private void setCheckBoxAlpha(MyViewHolder mViewHolder, float alpha){
+            mViewHolder.genreboxPagoda.setAlpha(alpha);
+            mViewHolder.genreboxForest.setAlpha(alpha);
+            mViewHolder.genreboxGrove.setAlpha(alpha);
+            mViewHolder.genreboxLivingRoom.setAlpha(alpha);
+            mViewHolder.genreboxVillage.setAlpha(alpha);
+            mViewHolder.genreboxAmphitheatre.setAlpha(alpha);
+            mViewHolder.genreboxBioDome.setAlpha(alpha);
+        }
+
         private void setupItemChecked(CheckBox view, final int position) {
             if (itemChecked[position]) {
                 view.setChecked(true);
@@ -524,13 +595,17 @@ public class ArtistsFragment extends Fragment {
                 view.setChecked(false);
             }
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CheckBox view = (CheckBox) v;
-                    genresClicked(view, position);
-                }
-            });
+            view.setOnClickListener(new View.OnClickListener()
+
+                                    {
+                                        @Override
+                                        public void onClick(View v) {
+                                            CheckBox view = (CheckBox) v;
+                                            genresClicked(view, position);
+                                        }
+                                    }
+
+            );
         }
 
         private void genresClicked(CheckBox view, int position) {
@@ -540,7 +615,6 @@ public class ArtistsFragment extends Fragment {
                 Log.i("TAG", "Click CHECK" + genreList.get(position).toLowerCase());
                 selectedGenres.add(genreList.get(position).toLowerCase());
                 EventBus.getDefault().postSticky(new FilterEvent(selectedGenres));
-
             } else {
                 itemChecked[position] = false;
                 Log.i("TAG", "Click UNCHECKED" + genreList.get(position).toLowerCase());
@@ -550,6 +624,7 @@ public class ArtistsFragment extends Fragment {
         }
 
         private void simpleCheckboxClicker(MyViewHolder viewHolder) {
+
             switch (stage) {
                 case 0:
                     checkBoxClick(viewHolder.genreboxPagoda);
@@ -574,6 +649,7 @@ public class ArtistsFragment extends Fragment {
                     break;
             }
         }
+
 
         private void checkBoxClick(CheckBox view) {
             if (view.isChecked()) {
@@ -609,6 +685,24 @@ public class ArtistsFragment extends Fragment {
             itemChecked = new boolean[genreList.size()];
         }
 
+    }
+
+    public void onEventMainThread(ChangeDateEvent event) {
+        if (event.isArtistEvent()) {
+
+            if (event.getPosition() == -1) {
+                artists = MainActivity.shambhala.loadAllArtistsForYear(Shambhala.getFestivalYear(getActivity()));
+            } else {
+                artists = MainActivity.shambhala.loadAllArtistsForYearAndDay(Shambhala.getFestivalYear(getActivity()), "" + event.getPosition());
+            }
+
+            adapter.setArtistList(artists);
+
+            generateFilteredGenreList();
+            genreAdapter.notifyDataSetChanged();
+            EventBus.getDefault().postSticky(new FilterEvent(selectedGenres));
+
+        }
     }
 
     public void showGenres() {

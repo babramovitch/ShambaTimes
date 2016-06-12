@@ -4,15 +4,18 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by babramovitch on 8/16/2015.
  */
 public class DatabaseScheduleUpdates {
 
-    public static void scheduleUpdate1(Context context) {
+    public static void scheduleUpdateOne2015(Context context) {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -41,7 +44,7 @@ public class DatabaseScheduleUpdates {
                 artists = (ArrayList<Artist>) Artist.find(Artist.class, "artist_Name = ?", query2, null, "day ASC, start_Position ASC", null);
 
                 if (artists.size() == 0) {
-                    new Artist(Constants.LIVINGROOM, 0, "04:30", "05:30", "Akimi","").save();
+                    new Artist(2015, Constants.LIVINGROOM, 0, "04:30", "05:30", "Akimi", "").save();
                 }
 
                 String[] query3 = {"Jodie Bruce"};
@@ -154,6 +157,51 @@ public class DatabaseScheduleUpdates {
 
             } catch (Exception e) {
                 Log.e("UpdateDatabase", "Error Updating", e);
+            }
+        }
+    }
+
+    public static void scheduleUpdateTwo2015(Context context) {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (!prefs.contains("update_two_complete")) {
+
+            try {
+
+                String[] query0 = {"0"};
+                Iterator<Artist> artists = Artist.findAll(Artist.class);
+
+                while (artists.hasNext()) {
+                    Artist artist = artists.next();
+                    if (artist.getYear() == 0) {
+                        artist.setYear(2015);
+                        artist.save();
+                    }
+                }
+
+                ArtistGenerator artistGenerator = new ArtistGenerator(context);
+                artistGenerator.get2016Artists();
+
+                prefs.edit().putBoolean("update_two_complete", true).apply();
+
+            } catch (Exception e) {
+                Log.e("UpdateDatabase", "Error Updating", e);
+            }
+        }
+    }
+
+    public static void load2016Database(Context context) {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (!prefs.contains("2016_loaded")) {
+            try {
+                ArtistGenerator artistGenerator = new ArtistGenerator(context);
+                artistGenerator.get2016Artists();
+                prefs.edit().putBoolean("2016_loaded", true).apply();
+            }catch(Exception e){
+                Toast.makeText(context,"Error Loading 2016 Schedule", Toast.LENGTH_LONG).show();
             }
         }
     }

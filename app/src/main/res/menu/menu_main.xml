@@ -12,14 +12,6 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/filter_active"
-        android:icon="@drawable/ic_filter_list_white_down_36dp"
-        android:title="Filter Active"
-        android:visible="false"
-        app:showAsAction="ifRoom"
-        />
-
-    <item
         android:id="@+id/global_search"
         android:icon="@drawable/ic_search_white_36dp"
         android:title="Search"

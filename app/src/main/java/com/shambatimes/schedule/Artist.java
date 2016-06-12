@@ -25,6 +25,7 @@ public class Artist extends SugarRecord {
     private String stageName;
     private String startTimeString;
     private String endTimeString;
+    private int year;
 
     public String getGenres() {
         return genres;
@@ -52,7 +53,7 @@ public class Artist extends SugarRecord {
     public Artist(){
     }
 
-    public Artist(int stage, int day, String startTime, String endTime, String artistName, String genres) {
+    public Artist(int year, int stage, int day, String startTime, String endTime, String artistName, String genres) {
 
         this.stage = stage;
         this.startTimeString = startTime;
@@ -62,6 +63,7 @@ public class Artist extends SugarRecord {
         this.endTime = convertStringTimeToPosition(endTime);
         this.artistName = artistName;
         this.genres = genres;
+        this.year = year;
 
         DateTime baseTime;
         if(day != 3) {
@@ -190,5 +192,13 @@ public class Artist extends SugarRecord {
 
     public void setIsAlarmSet(boolean isAlarmSet) {
         this.isAlarmSet = isAlarmSet;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 }

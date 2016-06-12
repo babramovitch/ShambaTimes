@@ -1,6 +1,7 @@
 package com.shambatimes.schedule;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -30,12 +31,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
-import android.widget.ListPopupWindow;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -43,12 +42,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ArtistListLoadDoneEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
-import com.shambatimes.schedule.events.FilterEvent;
 import com.shambatimes.schedule.events.ShowHideAutoCompleteSearchClearButtonEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DatabaseLoadFinishedEvent;
@@ -107,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
     ClearableAutoCompleteTextView searchTextView;
     Handler handler = new Handler();
 
+    String festivalYear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,8 +117,9 @@ public class MainActivity extends AppCompatActivity {
             Fabric.with(this, new Crashlytics());
         }
 
-
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        festivalYear = Shambhala.getFestivalYear(this);
 
         if (DateUtils.getCurrentDay() == 3) {
             Constants.REFERENCE_TIME = Constants.SUNDAY_REFERENCE_TIME;
@@ -141,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
             currentTimePosition = savedInstanceState.getInt("CURRENT_TIME");
             isSearchExpanded = savedInstanceState.getBoolean("SEARCH_EXPANDED");
             searchText = savedInstanceState.getString("SEARCH_TEXT", "");
+            artistDateSelected = savedInstanceState.getBoolean("artistDateSelected", false);
         }
 
         setupNavigationDrawer();
@@ -153,24 +155,30 @@ public class MainActivity extends AppCompatActivity {
         if (prefs.contains("database_loaded")) {
             new Thread(new Runnable() {
                 public void run() {
-                    DatabaseScheduleUpdates.scheduleUpdate1(MainActivity.this);
-                    fetchAllArtists();
-                    EventBus.getDefault().postSticky(new DatabaseLoadFinishedEvent());
+                    DatabaseScheduleUpdates.scheduleUpdateOne2015(MainActivity.this);
+                    DatabaseScheduleUpdates.scheduleUpdateTwo2015(MainActivity.this);
+                    DatabaseScheduleUpdates.load2016Database(MainActivity.this);
+                    fetchAllArtistsForYear(festivalYear);
                 }
             }).start();
 
         } else if (!prefs.contains("database_load_started")) {
 
+            //TODO make this a snackbar
             Toast.makeText(this, "Preparing Database", Toast.LENGTH_LONG).show();
 
             new Thread(new Runnable() {
                 public void run() {
 
                     prefs.edit().putBoolean("database_load_started", true).apply();
-                    ArtistGenerator artistList = new ArtistGenerator(MainActivity.this);
-                    shambhala.setArtists(artistList.getArtists());
+                    ArtistGenerator artistGenerator = new ArtistGenerator(MainActivity.this);
+                    artistGenerator.get2015Artists();
+                    shambhala.setArtists(artistGenerator.get2016Artists());
                     prefs.edit().putBoolean("database_loaded", true).apply();
-                    prefs.edit().putBoolean("update_one_complete", true).apply(); //Original sources have been corrected, only existing users need this.
+                    prefs.edit().putBoolean("2016_loaded", true).apply();
+                    prefs.edit().putBoolean("update_one_complete", true).apply();
+                    prefs.edit().putBoolean("update_two_complete", true).apply();
+                    prefs.edit().putString(SettingsActivity.FESTIVAL_YEAR, "2016").apply();
                     EventBus.getDefault().postSticky(new DatabaseLoadFinishedEvent());
 
                 }
@@ -187,11 +195,12 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void fetchAllArtists() {
+    private void fetchAllArtistsForYear(final String year) {
         new Thread(new Runnable() {
             public void run() {
-                ArrayList<Artist> artistList = (ArrayList) Artist.listAll(Artist.class);
+                ArrayList<Artist> artistList = shambhala.loadAllArtistsForYear(year);
                 shambhala.setArtists(artistList);
+                EventBus.getDefault().postSticky(new DatabaseLoadFinishedEvent());
             }
         }).start();
     }
@@ -234,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
                     isDrawerOpen = false;
                 }
                 invalidateOptionsMenu();
+
             }
 
             public void onDrawerClosed(View view) {
@@ -244,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
                 super.onDrawerOpened(drawerView);
             }
         };
-        drawerLayout.setDrawerListener(mDrawerToggle);
+        drawerLayout.addDrawerListener(mDrawerToggle);
     }
 
     private void setupToolbar() {
@@ -259,7 +269,12 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
             setupGlobalSearch();
-            setupScheduleSpinner();
+            if (currentFragment != FRAGMENT_ARTISTS) {
+                setupScheduleSpinner();
+            } else {
+                setupArtistListSpinner();
+            }
+
             EventBus.getDefault().postSticky(new ActionBarColorEvent(actionBarColor, actionBarStage));
         }
     }
@@ -274,7 +289,14 @@ public class MainActivity extends AppCompatActivity {
 
         if (scheduleSpinner != null) {
 
-            adapterBaseScheduleDays = new AdapterBaseScheduleDays(this, R.layout.schedule_spinner, getResources().getStringArray(R.array.days));
+
+            if (currentFragment == FRAGMENT_ARTISTS) {
+                adapterBaseScheduleDays = new AdapterBaseScheduleDays(this, R.layout.schedule_spinner, getResources().getStringArray(R.array.all_and_days));
+            } else {
+                adapterBaseScheduleDays = new AdapterBaseScheduleDays(this, R.layout.schedule_spinner, getResources().getStringArray(R.array.days));
+            }
+
+
             scheduleSpinner.setAdapter(adapterBaseScheduleDays);
             scheduleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -297,6 +319,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
+
         if (currentDay != -1) {
             scheduleSpinner.setSelection(currentDay);
         } else {
@@ -313,6 +336,72 @@ public class MainActivity extends AppCompatActivity {
         } else {
             toolbar.setTitle(scheduleBy);
         }
+
+    }
+
+    /**
+     * Used to prevent the first load of the spinner from triggering which automatically happens
+     * when it's created.
+     */
+    boolean firstSpinnerLoad = true;
+
+    /**
+     * Used to track if the date has been changed once in the artist fragment.
+     * Until it's been changed once, we should always show the full artist list.
+     */
+    boolean artistDateSelected = false;
+
+
+    /**
+     * A spinner for the ArtistList fragment to handle special edge cases that would complicate
+     * the one used elsewhere.
+     */
+    private void setupArtistListSpinner() {
+
+        //Setting up the spinner in the actionbar
+        //See: http://stackoverflow.com/questions/15193598/actionbar-spinner-customisation
+
+        scheduleSpinner = new Spinner(this);
+        scheduleSpinner.setTag("spinner_nav");
+
+        firstSpinnerLoad = true;
+
+        if (scheduleSpinner != null) {
+
+            adapterBaseScheduleDays = new AdapterBaseScheduleDays(this, R.layout.schedule_spinner, getResources().getStringArray(R.array.all_and_days));
+
+            scheduleSpinner.setAdapter(adapterBaseScheduleDays);
+            scheduleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                    if (!firstSpinnerLoad) {
+                        artistDateSelected = true;
+                        currentDay = position - 1;
+                        if (currentDay == 3) {
+                            Constants.REFERENCE_TIME = Constants.SUNDAY_REFERENCE_TIME;
+                        } else {
+                            Constants.REFERENCE_TIME = Constants.GENERAL_REFERENCE_TIME;
+                        }
+
+                        EventBus.getDefault().postSticky(new ChangeDateEvent(position - 1, true));
+                    } else {
+                        firstSpinnerLoad = false;
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parentView) {
+                }
+
+            });
+        }
+
+        if (!artistDateSelected) {
+            scheduleSpinner.setSelection(0);
+        } else {
+            scheduleSpinner.setSelection(currentDay + 1);
+        }
+        toolbar.addView(scheduleSpinner);
 
     }
 
@@ -378,9 +467,13 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View v) {
 
                         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                        if (!(currentFragment instanceof ArtistsFragment)){
+                        if (!(currentFragment instanceof ArtistsFragment)) {
                             currentDay = artist.getDay();
                             scheduleSpinner.setSelection(artist.getDay());
+                            currentDay = artist.getDay();
+                        } else if (scheduleSpinner.getSelectedItemPosition() != 0) {
+                            currentDay = artist.getDay();
+                            scheduleSpinner.setSelection(artist.getDay() + 1);
                             currentDay = artist.getDay();
                         }
 
@@ -503,21 +596,22 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    ImageView test;
-    private void setupFilterItemAnimation(Menu menu){
-         test = (ImageView) menu.findItem(R.id.filter).getActionView();
-        if (test != null) {
-            //http://www.andronotes.org/uncategorized/animation-of-menuitem-in-actionbar/
-            test.setImageResource(R.drawable.ic_filter_list_white_36dp);
+    ImageView filterImage;
 
-            test.setOnClickListener(new View.OnClickListener() {
+    private void setupFilterItemAnimation(Menu menu) {
+        filterImage = (ImageView) menu.findItem(R.id.filter).getActionView();
+        if (filterImage != null) {
+            //http://www.andronotes.org/uncategorized/animation-of-menuitem-in-actionbar/
+            filterImage.setImageResource(R.drawable.ic_filter_list_white_36dp);
+
+            filterImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Animation rotation;
-                    if(!flipped) {
+                    if (!flipped) {
                         rotation = AnimationUtils.loadAnimation(getApplicationContext(),
                                 R.anim.rotation_down);
-                    }else{
+                    } else {
                         rotation = AnimationUtils.loadAnimation(getApplicationContext(),
                                 R.anim.rotation_up);
                     }
@@ -530,9 +624,9 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         public void onAnimationEnd(Animation animation) {
-                            if(flipped) {
+                            if (flipped) {
                                 flipped = false;
-                            }else{
+                            } else {
                                 flipped = true;
                             }
                         }
@@ -554,10 +648,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void onEventMainThread(ToggleFilterVisibility event) {
 
-        if (menu != null) {
-            MenuItem filter = menu.findItem(R.id.filter);
-            if (filter != null) {
-                filter.setVisible(event.isVisible());
+        if (currentFragment == FRAGMENT_ARTISTS) {
+            if (menu != null && !Shambhala.getFestivalYear(this).equals("2015")) {
+                MenuItem filter = menu.findItem(R.id.filter);
+                if (filter != null) {
+                    filter.setVisible(event.isVisible());
+                }
             }
         }
 
@@ -567,19 +663,15 @@ public class MainActivity extends AppCompatActivity {
         MenuItem globalSearchItem = menu.findItem(R.id.global_search);
         MenuItem filterListItem = menu.findItem(R.id.filter);
 
-        MenuItem filterListSelectedItem = menu.findItem(R.id.filter_active);
-
-        if (filterListItem.isVisible()) {
-            filterListSelectedItem.setVisible(false);
-        } else {
-            filterListSelectedItem.setVisible(true);
-        }
-
         if (globalSearchItem != null) {
             globalSearchItem.setVisible(!isDrawerOpen);
         }
 
-        filterListItem.setVisible(!isDrawerOpen && currentFragment == FRAGMENT_ARTISTS);
+        if (!Shambhala.getFestivalYear(this).equals("2015") && !isSearchExpanded) {
+            filterListItem.setVisible(!isDrawerOpen && currentFragment == FRAGMENT_ARTISTS);
+        } else {
+            filterListItem.setVisible(false);
+        }
 
         return true;
     }
@@ -661,7 +753,6 @@ public class MainActivity extends AppCompatActivity {
 
         //I'm removing the view as toggling between spinner/non spinner was causing some
         //weird behavior where both would sometimes appear, which wasn't making sense.
-        toolbar.removeView(scheduleSpinner);
 
         switch (drawerId) {
 
@@ -679,8 +770,11 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 scheduleBy = "Schedule by Time";
-                toolbar.addView(scheduleSpinner);
+
+                //toolbar.addView(scheduleSpinner);
                 currentFragment = FRAGMENT_TIME;
+                toolbar.removeView(scheduleSpinner);
+                setupScheduleSpinner();
 
                 break;
 
@@ -695,9 +789,12 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 scheduleBy = "Schedule by Stage";
-                toolbar.addView(scheduleSpinner);
+
+                //toolbar.addView(scheduleSpinner);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 currentFragment = FRAGMENT_STAGE;
+                toolbar.removeView(scheduleSpinner);
+                setupScheduleSpinner();
 
                 break;
 
@@ -713,14 +810,16 @@ public class MainActivity extends AppCompatActivity {
 
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 scheduleBy = "My Schedule";
-                toolbar.addView(scheduleSpinner);
+                //toolbar.addView(scheduleSpinner);
                 currentFragment = FRAGMENT_FAVORITES;
+                toolbar.removeView(scheduleSpinner);
+                setupScheduleSpinner();
 
                 break;
 
             case R.id.drawer_artist_list:
 
-                fetchArtistDataForQuickLoad();
+                //fetchArtistDataForQuickLoad();
 
                 fragment = fragmentManager.findFragmentByTag("ARTISTS");
                 if (fragment == null) {
@@ -730,18 +829,27 @@ public class MainActivity extends AppCompatActivity {
 
                 }
 
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                toolbar.setTitle("Artist List");
                 scheduleBy = "Artist List";
-                toolbar.removeView(scheduleSpinner);
                 currentFragment = FRAGMENT_ARTISTS;
+                toolbar.removeView(scheduleSpinner);
+                artistDateSelected = false;
+                setupArtistListSpinner();
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                //toolbar.setTitle("Artist List");
 
+
+                break;
+
+            case R.id.settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 break;
         }
 
         adapterBaseScheduleDays.notifyDataSetChanged();
         invalidateOptionsMenu();
     }
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -754,6 +862,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         EventBus.getDefault().registerSticky(this);
+    }
+
+    @Override
+    protected void onResume() {
+        didFestivalYearChange();
+        super.onResume();
+    }
+
+    private void didFestivalYearChange() {
+        String newFestivalYear = Shambhala.getFestivalYear(this);
+        if (!newFestivalYear.equals(festivalYear)) {
+            Intent intent = getIntent();
+            overridePendingTransition(0, 0);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            finish();
+            overridePendingTransition(0, 0);
+            startActivity(intent);
+        }
     }
 
     public void onEventMainThread(UpdateScheduleByTimeEvent event) {
@@ -936,9 +1062,9 @@ public class MainActivity extends AppCompatActivity {
         }
         Fragment f;
         f = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-        if (f instanceof ArtistsFragment){
-            if(flipped){
-                test.callOnClick();
+        if (f instanceof ArtistsFragment) {
+            if (flipped) {
+                filterImage.callOnClick();
                 return;
             }
         }
@@ -970,6 +1096,7 @@ public class MainActivity extends AppCompatActivity {
         savedInstanceState.putInt("CURRENT_TIME", currentTimePosition);
         savedInstanceState.putBoolean("SEARCH_EXPANDED", isSearchExpanded);
         savedInstanceState.putString("SEARCH_TEXT", searchText);
+        savedInstanceState.putBoolean("artistDateSelected", artistDateSelected);
 
 //        if(genreAdapter != null) {
 //            setStringArrayPref(this, "GENRE_FILTERS", genreAdapter.getSelectedGenres());
@@ -1028,6 +1155,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-
 }

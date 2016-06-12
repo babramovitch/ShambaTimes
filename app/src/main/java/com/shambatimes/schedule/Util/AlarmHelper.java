@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.shambatimes.schedule.Artist;
 import com.shambatimes.schedule.Receivers.AlarmReceiver;
+import com.shambatimes.schedule.Shambhala;
 import com.shambatimes.schedule.myapplication.R;
 
 /**
@@ -42,28 +43,31 @@ public class AlarmHelper {
 
     public void showSetAlarmSnackBar(Artist artist) {
 
-        this.artist = artist;
+        if (Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR)) {
 
-        final View coordinatorLayoutView = layout.findViewById(R.id.snackbarPosition);
-        coordinatorLayoutView.setVisibility(View.VISIBLE);
+            this.artist = artist;
 
-        snackbar = Snackbar.make(coordinatorLayoutView, "Add alarm 30 minutes before " + artist.getAristName(), Snackbar.LENGTH_LONG)
-                .setAction("OK", snackBarClickListener)
-                .setDuration(Snackbar.LENGTH_LONG);
+            final View coordinatorLayoutView = layout.findViewById(R.id.snackbarPosition);
+            coordinatorLayoutView.setVisibility(View.VISIBLE);
 
-        View snackbarView = snackbar.getView();
+            snackbar = Snackbar.make(coordinatorLayoutView, "Add alarm 30 minutes before " + artist.getAristName(), Snackbar.LENGTH_LONG)
+                    .setAction("OK", snackBarClickListener)
+                    .setDuration(Snackbar.LENGTH_LONG);
 
-        snackbarView.setBackgroundColor(context.getResources().getColor((stageColors[artist.getStage()])));
+            View snackbarView = snackbar.getView();
 
-        TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-        TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
+            snackbarView.setBackgroundColor(context.getResources().getColor((stageColors[artist.getStage()])));
 
-        snackBarTextView.setTextColor(Color.WHITE);
-        snackBarActionTextView.setTextColor(Color.WHITE);
+            TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+            TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
 
-        snackBarActionTextView.setTextSize(14);
+            snackBarTextView.setTextColor(Color.WHITE);
+            snackBarActionTextView.setTextColor(Color.WHITE);
 
-        snackbar.show();
+            snackBarActionTextView.setTextSize(14);
+
+            snackbar.show();
+        }
     }
 
     final View.OnClickListener snackBarClickListener = new View.OnClickListener() {
@@ -92,49 +96,50 @@ public class AlarmHelper {
 
     public void setAlarm(Artist artist) {
 
-        this.artist = artist;
+        if (Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR)) {
 
-        Log.i("AlarmHelper", "Alarm set for " + artist.getArtistName());
+            this.artist = artist;
 
-        Intent alarmIntent = new Intent(context, AlarmReceiver.class);
-        alarmIntent.putExtra("name", artist.getArtistName());
-        alarmIntent.putExtra("id", artist.getId().toString());
+            Log.i("AlarmHelper", "Alarm set for " + artist.getArtistName());
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, artist.getId().intValue(), alarmIntent, 0);
+            Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+            alarmIntent.putExtra("name", artist.getArtistName());
+            alarmIntent.putExtra("id", artist.getId().toString());
 
-        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, artist.getId().intValue(), alarmIntent, 0);
 
-        artist.setIsAlarmSet(true);
-        artist.save();
+            AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+            artist.setIsAlarmSet(true);
+            artist.save();
 
 
-        //TODO - Set the alarm to startTime minus [value from preferences] minutes.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            manager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 15000, pendingIntent);
-        }else{
-            manager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10000, pendingIntent);
+            //TODO - Set the alarm to startTime minus [value from preferences] minutes.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                manager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 15000, pendingIntent);
+            } else {
+                manager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10000, pendingIntent);
+            }
         }
-
     }
 
-    public void cancelAlarm(Artist artist){
+    public void cancelAlarm(Artist artist) {
+        if (Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR)) {
 
-        Log.i("AlarmHelper", "Alarm cancelled for " + artist.getArtistName());
+            Log.i("AlarmHelper", "Alarm cancelled for " + artist.getArtistName());
 
-        Intent cancelAlarmIntent = new Intent(context, AlarmReceiver.class);
-        cancelAlarmIntent.putExtra("name", artist.getArtistName());
-        cancelAlarmIntent.putExtra("id", artist.getId().toString());
+            Intent cancelAlarmIntent = new Intent(context, AlarmReceiver.class);
+            cancelAlarmIntent.putExtra("name", artist.getArtistName());
+            cancelAlarmIntent.putExtra("id", artist.getId().toString());
 
-        PendingIntent.getBroadcast(context, artist.getId().intValue(), cancelAlarmIntent, PendingIntent.FLAG_UPDATE_CURRENT).cancel();
-
+            PendingIntent.getBroadcast(context, artist.getId().intValue(), cancelAlarmIntent, PendingIntent.FLAG_UPDATE_CURRENT).cancel();
+        }
     }
 
-    public void dismissSnackbar(){
-
-        if(snackbar != null){
+    public void dismissSnackbar() {
+        if (snackbar != null) {
             Log.i("AlarmHelper", "Snackbar dismissed");
             snackbar.dismiss();
         }
     }
-
 }

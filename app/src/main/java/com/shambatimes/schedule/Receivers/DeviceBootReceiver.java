@@ -9,6 +9,7 @@ import android.os.Build;
 import android.util.Log;
 
 import com.shambatimes.schedule.Artist;
+import com.shambatimes.schedule.Shambhala;
 
 import java.util.ArrayList;
 
@@ -20,8 +21,8 @@ public class DeviceBootReceiver extends BroadcastReceiver {
 
             try {
 
-                String[] query1 = {"1"};
-                ArrayList<Artist> artists = (ArrayList<Artist>) Artist.find(Artist.class, "is_Alarm_Set = ?", query1, null, null, null);
+                String[] query1 = {"1", Shambhala.getFestivalYear(context)};
+                ArrayList<Artist> artists = (ArrayList<Artist>) Artist.find(Artist.class, "is_Alarm_Set = ? and year = ?", query1, null, null, null);
 
                 for (Artist artist : artists) {
 

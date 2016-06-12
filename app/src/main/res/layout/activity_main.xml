@@ -49,7 +49,7 @@
             android:background="@color/background_material_light"
             app:itemBackground="@drawable/navigation_selector"
             app:itemTextColor="@color/black"
-            app:itemIconTint="@color/black"
+            app:itemIconTint="@color/gray"
             app:headerLayout="@layout/drawer_header"
             app:menu="@menu/navigation_menu" />
 
