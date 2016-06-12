@@ -67,10 +67,28 @@ public class ArtistsFragment extends Fragment {
         layout = inflater.inflate(R.layout.recycler_schedule_artists, container, false);
         alarmHelper = new AlarmHelper(getActivity(), layout);
 
-        selectedGenres.clear();
+
 
         setupRecyclerView();
         setupGenres();
+
+        if (savedInstanceState == null) {
+            selectedGenres.clear();
+        } else if (savedInstanceState != null) {
+            boolean genresVisible = savedInstanceState.getBoolean("genresVisible", false);
+
+            if (genreAdapter != null) {
+                boolean[] itemChecked = savedInstanceState.getBooleanArray("itemChecked");
+                genreAdapter.setItemChecked(itemChecked);
+                EventBus.getDefault().postSticky(new FilterEvent(selectedGenres));
+            }
+
+            if (genresVisible) {
+                adapter.animateHeartsInwards = true;
+                showGenres(false);
+            }
+        }
+
 
         return (layout);
     }
@@ -481,6 +499,14 @@ public class ArtistsFragment extends Fragment {
             itemChecked = new boolean[genreList.size()];
         }
 
+        public boolean[] getItemChecked() {
+            return itemChecked;
+        }
+
+        public void setItemChecked(boolean[] itemChecked) {
+            this.itemChecked = itemChecked;
+        }
+
         @Override
         public int getCount() {
             return genreList.size();
@@ -523,7 +549,7 @@ public class ArtistsFragment extends Fragment {
 
             showThemedCheckBox(mViewHolder);
 
-            setupCheckboxEnabledState(mViewHolder,position);
+            setupCheckboxEnabledState(mViewHolder, position);
 
             setupItemChecked(mViewHolder.genreboxPagoda, position);
             setupItemChecked(mViewHolder.genreboxForest, position);
@@ -543,11 +569,11 @@ public class ArtistsFragment extends Fragment {
             return convertView;
         }
 
-        private void setupCheckboxEnabledState(MyViewHolder viewHolder, int position){
+        private void setupCheckboxEnabledState(MyViewHolder viewHolder, int position) {
             if (availableGenresByDate.contains(genreList.get(position).toLowerCase())) {
-                setCheckBoxAlpha(viewHolder,1f);
-            }else{
-                setCheckBoxAlpha(viewHolder,0.1f);
+                setCheckBoxAlpha(viewHolder, 1f);
+            } else {
+                setCheckBoxAlpha(viewHolder, 0.1f);
             }
         }
 
@@ -578,7 +604,7 @@ public class ArtistsFragment extends Fragment {
             }
         }
 
-        private void setCheckBoxAlpha(MyViewHolder mViewHolder, float alpha){
+        private void setCheckBoxAlpha(MyViewHolder mViewHolder, float alpha) {
             mViewHolder.genreboxPagoda.setAlpha(alpha);
             mViewHolder.genreboxForest.setAlpha(alpha);
             mViewHolder.genreboxGrove.setAlpha(alpha);
@@ -705,26 +731,54 @@ public class ArtistsFragment extends Fragment {
         }
     }
 
-    public void showGenres() {
+    public void showGenres(boolean animate) {
+
         if (genreCardView.getVisibility() == View.GONE) {
             genreCardView.setVisibility(View.VISIBLE);
-            genreCardView.animate().setDuration(Constants.ANIMATION_DURATION).translationX(Util.convertDpToPixel(0, getActivity()));
-            adapter.animateHeartsToLeft();
+
+            if (animate) {
+                genreCardView.animate().setDuration(Constants.ANIMATION_DURATION).translationX(Util.convertDpToPixel(0, getActivity()));
+                adapter.animateHeartsToLeft();
+            } else {
+                genreCardView.setTranslationX(Util.convertDpToPixel(0, getActivity()));
+            }
 
         } else {
-            adapter.animateHeartsToRight();
-            genreCardView.animate().setDuration(Constants.ANIMATION_DURATION).translationX(Util.convertDpToPixel(120, getActivity())).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    //After the animation duration delete the stock
-                    genreCardView.setVisibility(View.GONE);
-                }
-            });
+            if (animate) {
+                adapter.animateHeartsToRight();
+                genreCardView.animate().setDuration(Constants.ANIMATION_DURATION).translationX(Util.convertDpToPixel(120, getActivity())).withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        //After the animation duration delete the stock
+                        genreCardView.setVisibility(View.GONE);
+                    }
+                });
+            } else {
+                genreCardView.setTranslationX(Util.convertDpToPixel(120, getActivity()));
+                genreCardView.setVisibility(View.GONE);
+            }
 
             genreAdapter.clearSelectedGenres();
             selectedGenres.clear();
             genreAdapter.notifyDataSetChanged();
             adapter.applyGenreFilter(new ArrayList<String>());
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        if (adapter != null) {
+            savedInstanceState.putBoolean("animateHeartsInwards", adapter.animateHeartsInwards);
+        }
+
+        if (genreCardView != null) {
+            savedInstanceState.putBoolean("genresVisible", genreCardView.getVisibility() == View.VISIBLE);
+        }
+
+        if (genreAdapter != null) {
+            boolean[] itemChecked = genreAdapter.getItemChecked();
+            savedInstanceState.putBooleanArray("itemChecked", itemChecked);
         }
     }
 }

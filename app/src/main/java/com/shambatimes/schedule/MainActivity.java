@@ -108,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
 
     String festivalYear;
 
+    boolean genreFilteringActive = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
             isSearchExpanded = savedInstanceState.getBoolean("SEARCH_EXPANDED");
             searchText = savedInstanceState.getString("SEARCH_TEXT", "");
             artistDateSelected = savedInstanceState.getBoolean("artistDateSelected", false);
+            genreFilteringActive = savedInstanceState.getBoolean("genreFilteringActive", false);
         }
 
         setupNavigationDrawer();
@@ -351,7 +354,6 @@ public class MainActivity extends AppCompatActivity {
      */
     boolean artistDateSelected = false;
 
-
     /**
      * A spinner for the ArtistList fragment to handle special edge cases that would complicate
      * the one used elsewhere.
@@ -402,7 +404,6 @@ public class MainActivity extends AppCompatActivity {
             scheduleSpinner.setSelection(currentDay + 1);
         }
         toolbar.addView(scheduleSpinner);
-
     }
 
     private void setupGlobalSearch() {
@@ -604,11 +605,18 @@ public class MainActivity extends AppCompatActivity {
             //http://www.andronotes.org/uncategorized/animation-of-menuitem-in-actionbar/
             filterImage.setImageResource(R.drawable.ic_filter_list_white_36dp);
 
+            if (genreFilteringActive) {
+                Animation rotation = AnimationUtils.loadAnimation(getApplicationContext(),
+                        R.anim.rotation_down);
+                rotation.setDuration(0);
+                filterImage.startAnimation(rotation);
+            }
+
             filterImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Animation rotation;
-                    if (!flipped) {
+                    if (!genreFilteringActive) {
                         rotation = AnimationUtils.loadAnimation(getApplicationContext(),
                                 R.anim.rotation_down);
                     } else {
@@ -624,10 +632,10 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         public void onAnimationEnd(Animation animation) {
-                            if (flipped) {
-                                flipped = false;
+                            if (genreFilteringActive) {
+                                genreFilteringActive = false;
                             } else {
-                                flipped = true;
+                                genreFilteringActive = true;
                             }
                         }
                     });
@@ -636,15 +644,13 @@ public class MainActivity extends AppCompatActivity {
 
                     ArtistsFragment artistsFragment = (ArtistsFragment) getSupportFragmentManager().findFragmentByTag("ARTISTS");
                     if (artistsFragment != null) {
-                        artistsFragment.showGenres();
+                        artistsFragment.showGenres(true);
                     }
 
                 }
             });
         }
     }
-
-    boolean flipped = false;
 
     public void onEventMainThread(ToggleFilterVisibility event) {
 
@@ -1060,18 +1066,18 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
             return;
         }
-        Fragment f;
-        f = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-        if (f instanceof ArtistsFragment) {
-            if (flipped) {
+        Fragment fragment;
+        fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        if (fragment instanceof ArtistsFragment) {
+            if (genreFilteringActive) {
                 filterImage.callOnClick();
                 return;
             }
         }
 
         //Return to the time schedule fragment before exiting the app.
-        f = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-        if (!(f instanceof TimeScheduleFragment)) {
+        fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        if (!(fragment instanceof TimeScheduleFragment)) {
             selectItem(R.id.drawer_time);
             checkNavigationItem(R.id.drawer_time);
             return;
@@ -1097,10 +1103,7 @@ public class MainActivity extends AppCompatActivity {
         savedInstanceState.putBoolean("SEARCH_EXPANDED", isSearchExpanded);
         savedInstanceState.putString("SEARCH_TEXT", searchText);
         savedInstanceState.putBoolean("artistDateSelected", artistDateSelected);
-
-//        if(genreAdapter != null) {
-//            setStringArrayPref(this, "GENRE_FILTERS", genreAdapter.getSelectedGenres());
-//        }
+        savedInstanceState.putBoolean("genreFilteringActive", genreFilteringActive);
 
         super.onSaveInstanceState(savedInstanceState);
     }
