@@ -55,6 +55,6 @@ dependencies {
     compile 'joda-time:joda-time:2.7'
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.github.satyan:sugar:1.5'
-    compile 'jp.wasabeef:recyclerview-animators:1.1.0@aar'
+    compile 'jp.wasabeef:recyclerview-animators:2.2.3@aar'
     compile 'xyz.danoz:recyclerviewfastscroller:0.1.3'
 }

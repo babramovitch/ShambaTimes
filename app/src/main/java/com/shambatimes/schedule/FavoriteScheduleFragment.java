@@ -1,10 +1,8 @@
 package com.shambatimes.schedule;
 
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -83,6 +81,7 @@ public class FavoriteScheduleFragment extends Fragment {
         adapter = new ArtistRecyclerAdapter(artists);
 
         recyclerView.setAdapter(adapter);
+
         recyclerView.setItemAnimator(new FlipInBottomXAnimator());
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -146,7 +145,6 @@ public class FavoriteScheduleFragment extends Fragment {
         public void removeItem(int position) {
             artistList.remove(position);
             notifyItemRemoved(position);
-            notifyItemRangeChanged(position, artistList.size());
             Log.i(TAG, "Removing item " + position);
         }
 
@@ -154,15 +152,14 @@ public class FavoriteScheduleFragment extends Fragment {
             try {
                 artistList.add(position, artist);
                 notifyItemInserted(position);
-                notifyItemRangeChanged(position, artistList.size());
             } catch (Exception e) {
                 Log.e("Exception", "Error Adding Item", e);
             }
         }
 
         @Override
-        public void onBindViewHolder(final ArtistViewHolder artistViewHolder, final int i) {
-            final Artist artist = artistList.get(i);
+        public void onBindViewHolder(final ArtistViewHolder artistViewHolder, int i) {
+            final Artist artist = artistList.get(artistViewHolder.getAdapterPosition());
 
 
             artistViewHolder.artistName.setText(artist.getAristName());
@@ -185,7 +182,7 @@ public class FavoriteScheduleFragment extends Fragment {
 
                         snackWasAlarmSet = artist.isAlarmSet();
                         snackArtist = artist;
-                        snackPosition = i;
+                        snackPosition = artistViewHolder.getAdapterPosition();
 
                         artistViewHolder.image.setImageResource(favoriteOutlineDrawables[artist.getStage()]);
                         artist.setFavorite(false);
@@ -206,7 +203,7 @@ public class FavoriteScheduleFragment extends Fragment {
 
                     EventBus.getDefault().postSticky(new DataChangedEvent(true, artist.getId()));
 
-                    removeItem(i);
+                    removeItem(artistViewHolder.getAdapterPosition());
 
                 }
             });
@@ -257,7 +254,6 @@ public class FavoriteScheduleFragment extends Fragment {
                 artist.save();
 
                 if(snackWasAlarmSet){
-
                     alarmHelper.setAlarm(snackArtist);
                 }
 
@@ -272,7 +268,7 @@ public class FavoriteScheduleFragment extends Fragment {
 
     public void onEventMainThread(DataChangedEvent event) {
 
-        if (event.isChanged() && ignoreSelfEvent != true) {
+        if (event.isChanged() && !ignoreSelfEvent) {
 
             EventBus.getDefault().removeStickyEvent(event);
 
