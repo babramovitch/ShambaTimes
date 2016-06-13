@@ -266,7 +266,12 @@ public class MainActivity extends AppCompatActivity {
 
         if (toolbar != null) {
 
-            setSupportActionBar(toolbar);
+            try {
+                setSupportActionBar(toolbar);
+            } catch (Throwable t) {
+                // WTF SAMSUNG!
+            }
+
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -1019,7 +1024,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (!Shambhala.getFestivalYear(MainActivity.this).equals(Shambhala.CURRENT_YEAR)) {
                 subtitle.setText(data[position] + " - " + Shambhala.getFestivalYear(MainActivity.this));
-            }else{
+            } else {
                 subtitle.setText(data[position]);
             }
             return actionBarView;

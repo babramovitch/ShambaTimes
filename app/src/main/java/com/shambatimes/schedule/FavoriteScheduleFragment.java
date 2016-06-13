@@ -63,11 +63,11 @@ public class FavoriteScheduleFragment extends Fragment {
 
 
         result = inflater.inflate(R.layout.recycler_schedule_favorites, container, false);
-        alarmHelper = new AlarmHelper(getActivity(),result);
+        alarmHelper = new AlarmHelper(getActivity(), result);
 
         stageColors = this.getResources().getIntArray(R.array.stage_colors);
 
-        String[] args = {"1", "0",Shambhala.getFestivalYear(getActivity())};
+        String[] args = {"1", "0", Shambhala.getFestivalYear(getActivity())};
         artists = (ArrayList<Artist>) Artist.find(Artist.class, "favorite = ? and day = ? and year = ?", args, null, "day ASC, start_Position ASC", null);
 
         stageNames = getActivity().getResources().getStringArray(R.array.stages);
@@ -143,9 +143,15 @@ public class FavoriteScheduleFragment extends Fragment {
         }
 
         public void removeItem(int position) {
-            artistList.remove(position);
-            notifyItemRemoved(position);
-            Log.i(TAG, "Removing item " + position);
+            try {
+                if (position < getItemCount()) {
+                    artistList.remove(position);
+                    notifyItemRemoved(position);
+                    Log.i(TAG, "Removing item " + position);
+                }
+            } catch (Exception e) {
+                Log.e("Exception", "Error removing Item", e);
+            }
         }
 
         public void addItem(int position, Artist artist) {
@@ -219,7 +225,7 @@ public class FavoriteScheduleFragment extends Fragment {
         }
     }
 
-    private void showUndoSnackBar(Artist artist){
+    private void showUndoSnackBar(Artist artist) {
 
         final View coordinatorLayoutView = result.findViewById(R.id.snackbarPosition);
 
@@ -253,7 +259,7 @@ public class FavoriteScheduleFragment extends Fragment {
                 artist.setIsAlarmSet(snackWasAlarmSet);
                 artist.save();
 
-                if(snackWasAlarmSet){
+                if (snackWasAlarmSet) {
                     alarmHelper.setAlarm(snackArtist);
                 }
 

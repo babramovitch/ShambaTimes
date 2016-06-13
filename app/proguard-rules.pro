@@ -15,3 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+#https://stackoverflow.com/questions/24809580/noclassdeffounderror-android-support-v7-internal-view-menu-menubuilder/27254191#27254191
+-keep class !android.support.v7.internal.view.menu.**,** {*;}
+-keep interface android.support.v7.* { *; }
