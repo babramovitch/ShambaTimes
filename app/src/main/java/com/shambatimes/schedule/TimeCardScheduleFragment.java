@@ -1,6 +1,5 @@
 package com.shambatimes.schedule;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -17,8 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import com.shambatimes.schedule.Util.AlarmHelper;
+import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
 import com.shambatimes.schedule.events.ShowHideAlarmSnackbarEvent;
@@ -30,7 +29,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import de.greenrobot.event.EventBus;
-
 
 public class TimeCardScheduleFragment extends Fragment {
     private static final String TIME_POSITION = "position";
@@ -58,11 +56,9 @@ public class TimeCardScheduleFragment extends Fragment {
         return (frag);
     }
 
-
     static String getTitle(Context ctxt, int position) {
         return ("");
     }
-
 
     @Override
     public void onAttach(Activity activity) {
@@ -81,7 +77,7 @@ public class TimeCardScheduleFragment extends Fragment {
 
 
         rootView = inflater.inflate(R.layout.schedule_by_time_grid, container, false);
-        alarmHelper = new AlarmHelper(getActivity(),rootView);
+        alarmHelper = new AlarmHelper(getActivity(), rootView);
 
         timePosition = getArguments().getInt(TIME_POSITION, 0);
         date = getArguments().getInt(DATE_POSITION, 0);
@@ -111,7 +107,7 @@ public class TimeCardScheduleFragment extends Fragment {
     private void setupGridView() {
         gridView = (GridView) rootView.findViewById(R.id.gridView);
 
-        scheduleAdapter = new scheduleAdapter(getActivity());
+        scheduleAdapter = new ScheduleAdapter(getActivity());
         gridView.setAdapter(scheduleAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -119,7 +115,6 @@ public class TimeCardScheduleFragment extends Fragment {
 
             }
         });
-
 
         gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -152,22 +147,14 @@ public class TimeCardScheduleFragment extends Fragment {
         });
     }
 
-
-    public class scheduleAdapter extends BaseAdapter {
+    public class ScheduleAdapter extends BaseAdapter {
         private Context mContext;
         private String[] stageNames = getActivity().getResources().getStringArray(R.array.stages);
 
-        int[] stageColors = {R.color.pagoda_color,
-                R.color.fractal_forest_color,
-                R.color.grove_color,
-                R.color.living_room_color,
-                R.color.village_color,
-                R.color.amphitheatre_color,
-                R.color.amphitheatre_color,};
+        int[] stageColors = ColorUtil.getStageColors();
 
-
-        public scheduleAdapter(Context c) {
-            mContext = c;
+        public ScheduleAdapter(Context context) {
+            mContext = context;
         }
 
         public int getCount() {
@@ -194,8 +181,6 @@ public class TimeCardScheduleFragment extends Fragment {
             TextView stageName = (TextView) gridView.findViewById(R.id.stage_text);
             TextView artistName = (TextView) gridView.findViewById(R.id.artist_text);
             TextView artistTime = (TextView) gridView.findViewById(R.id.time_text);
-            //TextView artistGenres = (TextView) gridView.findViewById(R.id.genres_text);
-
 
             stageName.setText(stageNames[position]);
             card.setCardBackgroundColor(getResources().getColor(stageColors[position]));
@@ -203,12 +188,9 @@ public class TimeCardScheduleFragment extends Fragment {
             final ImageView image = (ImageView) gridView.findViewById(R.id.card_favorited);
             final Artist artist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(date, timePosition, position);
 
-
-
             if (artist != null) {
                 artistName.setText(artist.getAristName());
                 artistTime.setText(artist.getStartTimeString() + " - " + artist.getEndTimeString());
-                //artistGenres.setText(artist.getGenres());
 
                 if (artist.isFavorite()) {
                     image.setImageResource(R.drawable.favorite_white);
@@ -244,18 +226,12 @@ public class TimeCardScheduleFragment extends Fragment {
             } else {
                 image.setImageResource(R.drawable.favorite_outline_white);
             }
-
             return gridView;
         }
-
     }
 
     public void onEventMainThread(ChangeDateEvent event) {
-
         if (event.getPosition() != date) {
-
-            //Log.i("TAG", "Change Date Position WAS " + timePosition);
-
             if (date == 3 && event.getPosition() != 3) {
                 timePosition = timePosition + 2;
             } else if (date != 3 && event.getPosition() == 3) {
@@ -266,25 +242,20 @@ public class TimeCardScheduleFragment extends Fragment {
                 timePosition = 0;
             }
 
-           // Log.i("TAG", "Change Date Position Now " + timePosition);
-
             setHeaderTimes();
 
             date = event.getPosition();
 
             scheduleAdapter.notifyDataSetChanged();
-
         }
-
     }
 
     public void onEventMainThread(DataChangedEvent event) {
-
         EventBus.getDefault().removeStickyEvent(event);
 
         if (event.isChanged()) {
             MainActivity.shambhala.updateArtistById(event.getArtistId());
-            scheduleAdapter = new scheduleAdapter(getActivity());
+            scheduleAdapter = new ScheduleAdapter(getActivity());
             gridView.setAdapter(scheduleAdapter);
         }
     }
@@ -300,5 +271,4 @@ public class TimeCardScheduleFragment extends Fragment {
         super.onStop();
         EventBus.getDefault().unregister(this);
     }
-
 }

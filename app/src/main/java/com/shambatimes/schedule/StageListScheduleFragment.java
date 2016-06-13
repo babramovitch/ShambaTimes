@@ -82,10 +82,6 @@ public class StageListScheduleFragment extends Fragment {
         artists = MainActivity.shambhala.getArtistsByDayAndStage(date, stage);
         alarmHelper = new AlarmHelper(getActivity(), rootView);
 
-        //ArrayList<Artist> artists =
-        //        (ArrayList<Artist>) Artist.find(Artist.class, "day = ? and stage = ?", "" + date, "" + stage);
-
-
         listView = (ListView) rootView.findViewById(R.id.listView_schedule);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -162,7 +158,6 @@ public class StageListScheduleFragment extends Fragment {
             }
         }
     }
-
 
     private DateTime convertStringTimeToPosition(String stringTime) {
 
@@ -270,7 +265,6 @@ public class StageListScheduleFragment extends Fragment {
             LinearLayout artistLayout;
         }
     }
-
 
     private int getPressedColor(int stage) {
 

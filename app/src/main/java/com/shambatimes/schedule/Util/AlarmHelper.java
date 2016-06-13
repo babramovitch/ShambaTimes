@@ -27,13 +27,7 @@ public class AlarmHelper {
     View layout;
     Snackbar snackbar;
 
-    int[] stageColors = {R.color.pagoda_color,
-            R.color.fractal_forest_color,
-            R.color.grove_color,
-            R.color.living_room_color,
-            R.color.village_color,
-            R.color.amphitheatre_color,
-            R.color.fractal_forest_color};
+    int[] stageColors = ColorUtil.getStageColors();
 
 
     public AlarmHelper(Context context, View layout) {

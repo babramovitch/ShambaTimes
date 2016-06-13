@@ -36,11 +36,6 @@ import jp.wasabeef.recyclerview.animators.FlipInBottomXAnimator;
 public class FavoriteScheduleFragment extends Fragment {
     private static final String TAG = "FavoriteSheduleFragment";
 
-    private static final String STAGE_POSITION = "STAGE";
-    private static final String DATE_POSITION = "DATE";
-    private static final String SEARCH_NAME = "NAME";
-    private static final String DIVIDER_COLOR = "COLOR";
-
     private int date = 0;
 
     private String[] stageNames;
@@ -128,7 +123,6 @@ public class FavoriteScheduleFragment extends Fragment {
     public class ArtistRecyclerAdapter extends RecyclerView.Adapter<ArtistViewHolder> {
 
         private ArrayList<Artist> artistList;
-        private int lastPosition = -1;
 
         int[] favoriteDrawables = ColorUtil.getStageFavoriteDrawables();
         int[] favoriteOutlineDrawables = ColorUtil.getStageFavoriteOutlineDrawables();

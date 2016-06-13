@@ -41,7 +41,6 @@ public class StageScheduleFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
     }
 
     @Override
@@ -72,9 +71,6 @@ public class StageScheduleFragment extends Fragment {
         pager.setCurrentItem(stageSetTo, false);
 
         tabs = (PagerSlidingTabStrip) result.findViewById(R.id.tabs);
-
-        //tabs.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD), Typeface.BOLD);
-
         tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {

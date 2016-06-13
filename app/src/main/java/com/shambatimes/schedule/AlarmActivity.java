@@ -11,19 +11,14 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.myapplication.R;
 
 import java.util.ArrayList;
 
 public class AlarmActivity extends Activity {
 
-    int[] stageColors = {R.color.pagoda_color,
-            R.color.fractal_forest_color,
-            R.color.grove_color,
-            R.color.living_room_color,
-            R.color.village_color,
-            R.color.amphitheatre_color,
-            R.color.fractal_forest_color};
+    int[] stageColors = ColorUtil.getStageColors();
 
     MediaPlayer mediaPlayer;
 

@@ -33,7 +33,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-
 public class TimeScheduleFragment extends Fragment {
 
     private String TAG = "PagerScheduleFragment";
@@ -44,7 +43,6 @@ public class TimeScheduleFragment extends Fragment {
     TimeAdapter timeAdapter;
     View result;
     AlarmHelper alarmHelper;
-
 
     private int date = 0;
 
@@ -84,7 +82,7 @@ public class TimeScheduleFragment extends Fragment {
         pager.setAdapter(buildAdapter());
         pager.setCurrentItem(time, false);
 
-        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
 
@@ -176,7 +174,6 @@ public class TimeScheduleFragment extends Fragment {
         private int getSelectorBackground(int stageId) {
 
             switch (stageId) {
-
                 case 0:
                     return textSelectors[0];
                 case 1:
@@ -192,7 +189,6 @@ public class TimeScheduleFragment extends Fragment {
                 default:
                     return textSelectors[0];
             }
-
         }
 
         private class ViewHolder {
@@ -252,7 +248,6 @@ public class TimeScheduleFragment extends Fragment {
         return maxWidth;
     }
 
-
     private PagerAdapter buildAdapter() {
         timeAdapter = new TimeAdapter(getActivity(), getChildFragmentManager(), date);
         return timeAdapter;
@@ -278,8 +273,9 @@ public class TimeScheduleFragment extends Fragment {
 
     public void onEventMainThread(UpdateScheduleByTimeEvent event) {
         EventBus.getDefault().removeStickyEvent(event);
-        if (pager.getCurrentItem() != event.getPosition())
+        if (pager.getCurrentItem() != event.getPosition()) {
             pager.setCurrentItem(event.getPosition(), false);
+        }
     }
 
     public void onEventMainThread(SearchSelectedEvent event) {
@@ -294,11 +290,9 @@ public class TimeScheduleFragment extends Fragment {
         date = artist.getDay();
 
         resetListViewValues();
-
     }
 
     public void onEventMainThread(ChangeDateEvent event) {
-
         //The genreAdapter needs to be reset when we change to/from Sunday due to the page counts differing
         //What happens if I just try to change the content is the first page looks good, but then
         //as you page, the content becomes wrong until it properly refreshes.
@@ -328,7 +322,6 @@ public class TimeScheduleFragment extends Fragment {
         }
     }
 
-
     private void resetListViewValues() {
         adapter.updateListTimes(generateListTimes());
         adapter.notifyDataSetChanged();
@@ -338,15 +331,10 @@ public class TimeScheduleFragment extends Fragment {
         }
     }
 
-    public void dataLoaded() {
-        timeAdapter.notifyDataSetChanged();
-    }
-
     @Override
     public void onStart() {
         super.onStart();
         EventBus.getDefault().registerSticky(this);
-
     }
 
     @Override
@@ -354,6 +342,4 @@ public class TimeScheduleFragment extends Fragment {
         super.onStop();
         EventBus.getDefault().unregister(this);
     }
-
-
 }

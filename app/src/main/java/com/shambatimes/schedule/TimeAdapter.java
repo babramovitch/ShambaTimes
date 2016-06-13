@@ -8,31 +8,28 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-
 public class TimeAdapter extends FragmentStatePagerAdapter {
-    Context context=null;
+    Context context;
     int date = 0;
     int position = 0;
 
-    public TimeAdapter(Context ctxt, FragmentManager mgr, int date) {
-        super(mgr);
-        this.context=ctxt;
+    public TimeAdapter(Context context, FragmentManager fragmentManager, int date) {
+        super(fragmentManager);
+        this.context=context;
         this.date = date;
     }
 
-    public TimeAdapter(Context ctxt, FragmentManager mgr, int date,int position) {
-        super(mgr);
-        this.context=ctxt;
+    public TimeAdapter(Context context, FragmentManager fragmentManager, int date,int position) {
+        super(fragmentManager);
+        this.context=context;
         this.date = date;
         this.position = position;
     }
-
 
     @Override
     public int getCount() {
         return(48);
     }
-
 
     @Override
     public Fragment getItem(int position) {
@@ -47,5 +44,4 @@ public class TimeAdapter extends FragmentStatePagerAdapter {
     public void setDate(int date){
         this.date = date;
     }
-
 }

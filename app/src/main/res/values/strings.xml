@@ -35,6 +35,7 @@
     <string name="stage_name_pagoda">Pagoda</string>
     <string name="stage_name_forest">Fractal Forest</string>
     <string name="stage_name_grove">The Grove</string>
+    <string name="stage_name_biodome">The Biodome</string>
     <string name="search_box_hint">Search by artist name</string>
 
     <string-array name="stages">
@@ -44,7 +45,7 @@
         <item>@string/stage_name_living_room</item>
         <item>@string/stage_name_village</item>
         <item>@string/stage_name_amphitheatre</item>
-        <item>The Biodome</item>
+        <item>@string/stage_name_biodome</item>
     </string-array>
 
     <string name="thursday">Thursday</string>
