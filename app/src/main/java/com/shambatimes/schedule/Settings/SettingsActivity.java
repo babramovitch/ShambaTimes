@@ -3,12 +3,14 @@ package com.shambatimes.schedule.Settings;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
+import android.view.MenuItem;
 
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.myapplication.R;
@@ -19,7 +21,6 @@ import de.greenrobot.event.EventBus;
  * Created by babramovitch on 5/31/2016.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
-
 
     public final static String FESTIVAL_YEAR = "FESTIVAL_YEAR";
     int actionBarColor;
@@ -34,27 +35,21 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 .replace(android.R.id.content, new SettingsFragment()).commit();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private void setupActionBar() {
-//
-//        LinearLayout root = (LinearLayout) findViewById(android.R.id.list).getParent().getParent().getParent();
-//        Toolbar toolbar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.settings_toolbar, root, false);
-//        root.addView(toolbar, 0);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-//        Toolbar toolbar;
-//        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        toolbar = (Toolbar) inflater.inflate(R.layout.settings_toolbar, null);
-//
-//        setSupportActionBar(toolbar);
-
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setBackgroundDrawable(new ColorDrawable(Color.GREEN));
         if (actionBar != null) {
-            // Show the Up button in the action bar.
+            actionBar.setBackgroundDrawable(new ColorDrawable(Color.GREEN));
             actionBar.setDisplayHomeAsUpEnabled(true);
-
         }
     }
 
@@ -109,16 +104,27 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         actionBarColor = event.getColor();
         Drawable colorDrawable = new ColorDrawable(actionBarColor);
         getSupportActionBar().setBackgroundDrawable(colorDrawable);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(getDarkerShade(actionBarColor));
+        }
+    }
+
+    private static final float SHADE_FACTOR = 0.6f;
+    private int getDarkerShade(int color) {
+        return Color.rgb((int)(SHADE_FACTOR * Color.red(color)),
+                (int)(SHADE_FACTOR * Color.green(color)),
+                (int)(SHADE_FACTOR * Color.blue(color)));
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         EventBus.getDefault().registerSticky(this);
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         EventBus.getDefault().unregister(this);
     }
@@ -129,10 +135,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-            // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.preferences);
             bindPreferenceSummaryToValue(findPreference(FESTIVAL_YEAR));
         }
     }
-
 }

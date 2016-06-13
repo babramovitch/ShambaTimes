@@ -128,8 +128,6 @@ public class ArtistsFragment extends Fragment {
         protected TextView artistStage;
         protected RelativeLayout artistLayout;
         protected View divider;
-
-
         protected ImageView image;
 
         public ArtistViewHolder(View v) {
