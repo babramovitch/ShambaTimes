@@ -62,6 +62,7 @@ public class TimeScheduleFragment extends Fragment {
                              Bundle savedInstanceState) {
         result = inflater.inflate(R.layout.schedule_by_time_main_fragment, container, false);
         alarmHelper = new AlarmHelper(getActivity(), result);
+
         Bundle args = getArguments();
         int time;
 

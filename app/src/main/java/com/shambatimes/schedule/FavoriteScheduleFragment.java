@@ -33,7 +33,7 @@ import jp.wasabeef.recyclerview.animators.FlipInBottomXAnimator;
 
 //see http://stackoverflow.com/questions/26995236/cardview-inside-recyclerview-has-extra-margins
 
-public class FavoriteScheduleFragment extends Fragment {
+public class FavoriteScheduleFragment extends Fragment  {
     private static final String TAG = "FavoriteSheduleFragment";
 
     private int date = 0;
@@ -56,9 +56,7 @@ public class FavoriteScheduleFragment extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
 
-
         result = inflater.inflate(R.layout.recycler_schedule_favorites, container, false);
-        alarmHelper = new AlarmHelper(getActivity(), result);
 
         stageColors = this.getResources().getIntArray(R.array.stage_colors);
 
@@ -87,6 +85,7 @@ public class FavoriteScheduleFragment extends Fragment {
             }
         });
 
+        alarmHelper = new AlarmHelper(getActivity(), result);
 
         return (result);
     }
@@ -99,7 +98,7 @@ public class FavoriteScheduleFragment extends Fragment {
         protected TextView artistStage;
         protected RelativeLayout artistLayout;
         protected View divider;
-
+        protected ImageView alarm;
         protected ImageView image;
 
         public ArtistViewHolder(View v) {
@@ -111,8 +110,10 @@ public class FavoriteScheduleFragment extends Fragment {
             artistStartTimePosition = (TextView) v.findViewById(R.id.artistStartTimePosition);
             artistStage = (TextView) v.findViewById(R.id.artistStage);
             artistLayout = (RelativeLayout) v.findViewById(R.id.artistLayout);
+            alarm = (ImageView) v.findViewById(R.id.list_alarm_set);
             image = (ImageView) v.findViewById(R.id.list_favorited);
             divider = v.findViewById(R.id.separator);
+
         }
     }
 
@@ -168,6 +169,12 @@ public class FavoriteScheduleFragment extends Fragment {
             artistViewHolder.artistStage.setText(stageNames[artist.getStage()]);
             artistViewHolder.divider.setBackground(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
 
+            if(artist.isAlarmSet()){
+                artistViewHolder.alarm.setVisibility(View.VISIBLE);
+            }else{
+                artistViewHolder.alarm.setVisibility(View.GONE);
+            }
+
             if (artist.isFavorite()) {
                 artistViewHolder.image.setImageResource(favoriteDrawables[artist.getStage()]);
             } else {
@@ -205,6 +212,29 @@ public class FavoriteScheduleFragment extends Fragment {
 
                     removeItem(artistViewHolder.getAdapterPosition());
 
+                }
+            });
+
+            alarmHelper.setOnAlarmStateChangedListener(null);
+
+            artistViewHolder.artistLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alarmHelper.dismissSnackbar();
+                    if(artist.isAlarmSet()){
+                        alarmHelper.showCancelAlarmSnackbar(artist);
+                    }else{
+                        alarmHelper.showSetAlarmSnackBar(artist);
+                    }
+
+                    alarmHelper.setOnAlarmStateChangedListener(new AlarmHelper.OnAlarmStateChangedListener() {
+                        @Override
+                        public void alarmStateChanged() {
+                            if(adapter != null){
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+                    });
                 }
             });
         }

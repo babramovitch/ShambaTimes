@@ -4,8 +4,10 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 
 import com.shambatimes.schedule.Artist;
 import com.shambatimes.schedule.Receivers.AlarmReceiver;
+import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Shambhala;
 import com.shambatimes.schedule.myapplication.R;
 
@@ -22,17 +25,25 @@ import com.shambatimes.schedule.myapplication.R;
  */
 public class AlarmHelper {
 
+    public interface OnAlarmStateChangedListener {
+        void alarmStateChanged();
+    }
+
     Context context;
     Artist artist;
     View layout;
     Snackbar snackbar;
+    OnAlarmStateChangedListener onAlarmStateChangedListener;
 
     int[] stageColors = ColorUtil.getStageColors();
-
 
     public AlarmHelper(Context context, View layout) {
         this.context = context;
         this.layout = layout;
+    }
+
+    public void setOnAlarmStateChangedListener(OnAlarmStateChangedListener listener) {
+        onAlarmStateChangedListener = listener;
     }
 
     public void showSetAlarmSnackBar(Artist artist) {
@@ -44,7 +55,10 @@ public class AlarmHelper {
             final View coordinatorLayoutView = layout.findViewById(R.id.snackbarPosition);
             coordinatorLayoutView.setVisibility(View.VISIBLE);
 
-            snackbar = Snackbar.make(coordinatorLayoutView, "Add alarm 30 minutes before " + artist.getAristName(), Snackbar.LENGTH_LONG)
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            String alarmMinutes = preferences.getString(SettingsActivity.ALARM_TIMES, "30");
+
+            snackbar = Snackbar.make(coordinatorLayoutView, "Add alarm " + alarmMinutes + " minutes before " + artist.getAristName(), Snackbar.LENGTH_LONG)
                     .setAction("OK", snackBarClickListener)
                     .setDuration(Snackbar.LENGTH_LONG);
 
@@ -72,7 +86,6 @@ public class AlarmHelper {
             snackbar = Snackbar.make(coordinatorLayoutView, "Alarm Added for " + artist.getAristName(), Snackbar.LENGTH_LONG)
                     .setDuration(Snackbar.LENGTH_LONG);
 
-
             View snackbarView = snackbar.getView();
             snackbarView.setBackgroundColor(context.getResources().getColor((stageColors[artist.getStage()])));
 
@@ -84,7 +97,6 @@ public class AlarmHelper {
             snackbar.show();
 
             setAlarm(artist);
-
         }
     };
 
@@ -110,12 +122,52 @@ public class AlarmHelper {
 
             //TODO - Set the alarm to startTime minus [value from preferences] minutes.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                manager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 15000, pendingIntent);
+                manager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000000, pendingIntent);
             } else {
-                manager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10000, pendingIntent);
+                manager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000000, pendingIntent);
+            }
+
+            if (onAlarmStateChangedListener != null) {
+                onAlarmStateChangedListener.alarmStateChanged();
             }
         }
     }
+
+    public void showCancelAlarmSnackbar(Artist artist) {
+        if (Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR)) {
+
+            this.artist = artist;
+
+            final View coordinatorLayoutView = layout.findViewById(R.id.snackbarPosition);
+            coordinatorLayoutView.setVisibility(View.VISIBLE);
+
+            snackbar = Snackbar.make(coordinatorLayoutView, "Remove alarm for " + artist.getAristName() + "?", Snackbar.LENGTH_LONG)
+                    .setAction("OK", snackBarCancelClickListener)
+                    .setDuration(Snackbar.LENGTH_LONG);
+
+            View snackbarView = snackbar.getView();
+
+            snackbarView.setBackgroundColor(context.getResources().getColor((stageColors[artist.getStage()])));
+
+            TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+            TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
+
+            snackBarTextView.setTextColor(Color.WHITE);
+            snackBarActionTextView.setTextColor(Color.WHITE);
+
+            snackBarActionTextView.setTextSize(14);
+
+            snackbar.show();
+        }
+    }
+
+    final View.OnClickListener snackBarCancelClickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            artist.setIsAlarmSet(false);
+            artist.save();
+            cancelAlarm(artist);
+        }
+    };
 
     public void cancelAlarm(Artist artist) {
         if (Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR)) {
@@ -127,6 +179,10 @@ public class AlarmHelper {
             cancelAlarmIntent.putExtra("id", artist.getId().toString());
 
             PendingIntent.getBroadcast(context, artist.getId().intValue(), cancelAlarmIntent, PendingIntent.FLAG_UPDATE_CURRENT).cancel();
+
+            if (onAlarmStateChangedListener != null) {
+                onAlarmStateChangedListener.alarmStateChanged();
+            }
         }
     }
 

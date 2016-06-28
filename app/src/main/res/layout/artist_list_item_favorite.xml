@@ -61,6 +61,17 @@
         style="@style/ListViewSmall"
          />
 
+    <ImageView
+        android:id="@+id/list_alarm_set"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/ic_alarm_black_18dp"
+        android:layout_below="@+id/artistStage"
+        android:layout_toRightOf="@+id/artistTime"
+        android:layout_toEndOf="@+id/artistTime"
+        android:layout_alignBottom="@id/artistTime"/>
+
     <TextView
         android:id="@+id/artistStartTimePosition"
         android:layout_width="wrap_content"
@@ -78,6 +89,5 @@
         android:paddingLeft="30dp"
         android:paddingRight="20dp"
         android:src="@drawable/favorite_outline" />
-
 
 </RelativeLayout>

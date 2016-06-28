@@ -23,6 +23,7 @@ import de.greenrobot.event.EventBus;
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
     public final static String FESTIVAL_YEAR = "FESTIVAL_YEAR";
+    public final static String ALARM_TIMES = "ALARM_TIMES";
     int actionBarColor;
 
     @Override
@@ -64,11 +65,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 ListPreference listPreference = (ListPreference) preference;
                 int index = listPreference.findIndexOfValue(stringValue);
 
+                String message = "";
+
                 // Set the summary to reflect the new value.
-                preference.setSummary(
-                        index >= 0
-                                ? listPreference.getEntries()[index]
-                                : null);
+                if(preference.getKey().equals(ALARM_TIMES)) {
+                    message = "The time an alarm will go off before a set.  This time is for all alarms.\n\n";
+                }
+                    preference.setSummary(
+                            index >= 0
+                                    ? message + listPreference.getEntries()[index]
+                                    : null);
+
 
             } else {
                 // For all other preferences, set the summary to the value's
@@ -138,6 +145,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             addPreferencesFromResource(R.xml.preferences);
             bindPreferenceSummaryToValue(findPreference(FESTIVAL_YEAR));
+            bindPreferenceSummaryToValue(findPreference(ALARM_TIMES));
         }
     }
 }
+
