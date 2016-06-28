@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
         }
+        //PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -572,6 +573,9 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onMenuItemActionExpand(MenuItem item) {
                         isSearchExpanded = true;
+                        if(genreFilteringActive && filterImage != null){
+                            filterImage.callOnClick();
+                        }
                         EventBus.getDefault().post(new ToggleFilterVisibility(false));
                         return true; // Return true to expand action view
                     }
