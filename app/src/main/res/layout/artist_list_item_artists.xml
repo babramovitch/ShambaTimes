@@ -34,10 +34,12 @@
         style="@style/ListViewSmall"
         android:fontFamily="sans-serif-light"
         android:textStyle="italic"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_below="@id/artistName"
         android:text="Hip hop, Electro, Funk"
-        />
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/list_favorited"
+        android:layout_toStartOf="@id/list_favorited" />
 
     <TextView
         android:id="@+id/artistStage"
@@ -85,7 +87,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginBottom="5dp"
-        android:paddingLeft="30dp"
+        android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:src="@drawable/favorite_outline" />
 

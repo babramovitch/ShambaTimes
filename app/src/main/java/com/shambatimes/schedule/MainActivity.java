@@ -243,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
                     onDrawerOpened(drawerView);
                     isDrawerOpen = true;
                     invalidateOptionsMenu();
+                    collapseGlobalSearchActionView();
                 } else if (slideOffset < .45 && isDrawerOpen) {
                     onDrawerClosed(drawerView);
                     isDrawerOpen = false;

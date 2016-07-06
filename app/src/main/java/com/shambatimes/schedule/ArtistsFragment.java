@@ -86,7 +86,7 @@ public class ArtistsFragment extends Fragment {
                 showGenres(false);
             }
         }
-        
+
         return (layout);
     }
 
@@ -221,10 +221,10 @@ public class ArtistsFragment extends Fragment {
             final Artist artist = artistList.get(i);
 
             String formattedGenres = artist.getGenres().replace(",", ", ").toLowerCase();
-            if(formattedGenres.length() == 0 || Shambhala.getFestivalYear(getActivity()).equals("2015")){
+            if (formattedGenres.length() == 0 || Shambhala.getFestivalYear(getActivity()).equals("2015")) {
                 artistViewHolder.genres.setVisibility(View.GONE);
                 yAxisAnimationDistance = 20;
-            }else{
+            } else {
                 artistViewHolder.genres.setVisibility(View.VISIBLE);
                 yAxisAnimationDistance = 30;
             }
@@ -283,15 +283,18 @@ public class ArtistsFragment extends Fragment {
             }
 
             if (animateHeartsInwards) {
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(editTextWidth - 120, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(editTextWidth - ((int) Util.convertDpToPixel(40, getActivity())), RelativeLayout.LayoutParams.WRAP_CONTENT);
                 params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 params.addRule(RelativeLayout.BELOW, R.id.separator);
                 artistViewHolder.artistName.setLayoutParams(params);
                 artistViewHolder.artistName.setPadding((int) Util.convertDpToPixel(15, getActivity()), 5, 0, 0);
 
-                RelativeLayout.LayoutParams paramsGenres = (RelativeLayout.LayoutParams) artistViewHolder.genres.getLayoutParams();
-                paramsGenres.width = editTextWidth - 120;
+                RelativeLayout.LayoutParams paramsGenres = new RelativeLayout.LayoutParams(editTextWidth - ((int) Util.convertDpToPixel(55, getActivity())), RelativeLayout.LayoutParams.WRAP_CONTENT);
+                paramsGenres.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                paramsGenres.addRule(RelativeLayout.BELOW, R.id.artistName);
+                paramsGenres.setMargins((int) Util.convertDpToPixel(15, getActivity()), 0, 0, 0);
                 artistViewHolder.genres.setLayoutParams(paramsGenres);
+
 
                 if (!skipAnimations && (position >= firstVisiblePosition || position <= lastVisiblePosition)) {
                     artistViewHolder.image.animate()
@@ -312,9 +315,9 @@ public class ArtistsFragment extends Fragment {
                 artistViewHolder.artistName.setPadding((int) Util.convertDpToPixel(15, getActivity()), 5, 0, 0);
 
                 RelativeLayout.LayoutParams paramsGenres = (RelativeLayout.LayoutParams) artistViewHolder.genres.getLayoutParams();
-                paramsGenres.width = RelativeLayout.LayoutParams.MATCH_PARENT;
-                params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                params.addRule(RelativeLayout.LEFT_OF, R.id.list_favorited);
+                paramsGenres.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                paramsGenres.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                paramsGenres.addRule(RelativeLayout.LEFT_OF, R.id.list_favorited);
                 artistViewHolder.genres.setLayoutParams(paramsGenres);
 
                 if (!skipAnimations && (linearLayoutManager.findLastVisibleItemPosition() <= position || linearLayoutManager.findFirstCompletelyVisibleItemPosition() <= position)) {
