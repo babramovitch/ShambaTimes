@@ -91,7 +91,7 @@ public class ArtistGenerator {
         artistList.add(new Artist(2015, Constants.AMPHITHEATER, 0, "12:00", "13:30", "Bryx", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.AMPHITHEATER, 0, "13:30", "15:00", "Timothy Wisdom", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.AMPHITHEATER, 0, "15:00", "16:30", "Skiitour", "house,electro,glitch hop"));
-        artistList.add(new Artist(2015, Constants.AMPHITHEATER, 0, "16:30", "18:00", "jOBOT", "bass music,dubstep,glitch hop,trap"));
+        artistList.add(new Artist(2015, Constants.AMPHITHEATER, 0, "16:30", "18:00", "jOBOT", "bass,dubstep,glitch hop,trap"));
         artistList.add(new Artist(2015, Constants.AMPHITHEATER, 0, "18:00", "19:30", "MORiLLO", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.AMPHITHEATER, 0, "19:30", "21:00", "Space Jesus", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.AMPHITHEATER, 0, "21:00", "22:30", "Self Evident", "house,electro,glitch hop"));
@@ -137,7 +137,7 @@ public class ArtistGenerator {
         artistList.add(new Artist(2015, Constants.AMPHITHEATER, 3, "21:00", "22:20", "Huglife (9-10:20PM)", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.AMPHITHEATER, 3, "22:20", "22:30", "Subscura (10:20-10:30PM)", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.AMPHITHEATER, 3, "22:30", "00:00", "Jackal", "house,electro,glitch hop"));
-        artistList.add(new Artist(2015, Constants.AMPHITHEATER, 3, "00:00", "01:30", "Crnkn", "bass music,trap"));
+        artistList.add(new Artist(2015, Constants.AMPHITHEATER, 3, "00:00", "01:30", "Crnkn", "bass,trap"));
         artistList.add(new Artist(2015, Constants.AMPHITHEATER, 3, "01:30", "03:00", "heRobust", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.AMPHITHEATER, 3, "03:00", "04:30", "Longwalkshortdock", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.AMPHITHEATER, 3, "04:30", "06:00", "Metafloor", "house,electro,glitch hop"));
@@ -190,7 +190,7 @@ public class ArtistGenerator {
         artistList.add(new Artist(2015, Constants.FOREST, 1, "16:30", "18:00", "Justin Hale", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.FOREST, 1, "18:00", "19:00", "Dan Solo", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.FOREST, 1, "19:00", "20:30", "Vinyl Ritchie", "house,electro,glitch hop"));
-        artistList.add(new Artist(2015, Constants.FOREST, 1, "20:30", "22:00", "Slynk", "breakbeats,drum & bass,ghetto funk,hip hop"));
+        artistList.add(new Artist(2015, Constants.FOREST, 1, "20:30", "22:00", "Slynk", "breaks,drum & bass,ghetto funk,hip hop"));
         artistList.add(new Artist(2015, Constants.FOREST, 1, "22:00", "23:30", "Fort Knox Five", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.FOREST, 1, "23:30", "01:00", "The Funk Hunters", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.FOREST, 1, "01:00", "02:30", "Stickybuds", "house,electro,glitch hop"));
@@ -247,7 +247,7 @@ public class ArtistGenerator {
         artistList.add(new Artist(2015, Constants.GROVE, 2, "22:00", "23:15", "Jpod the beat chef", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.GROVE, 2, "23:15", "00:30", "Big Wild", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.GROVE, 2, "00:30", "01:00", "Phadroid", "house,electro,glitch hop"));
-        artistList.add(new Artist(2015, Constants.GROVE, 2, "01:00", "02:00", "Tipper with Android Jones", "breakbeats,downtempo,trip hop"));
+        artistList.add(new Artist(2015, Constants.GROVE, 2, "01:00", "02:00", "Tipper with Android Jones", "breaks,downtempo,trip hop"));
         artistList.add(new Artist(2015, Constants.GROVE, 2, "02:00", "03:30", "Leon Switch", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.GROVE, 2, "03:30", "05:00", "Synkro", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.GROVE, 2, "05:00", "06:30", "AtYyA", "house,electro,glitch hop"));
@@ -273,8 +273,8 @@ public class ArtistGenerator {
         artistList.add(new Artist(2015, Constants.VILLAGE, 1, "21:00", "22:00", "ill.Gates", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.VILLAGE, 1, "22:00", "23:00", "Subvert", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.VILLAGE, 1, "23:00", "00:30", "Datsik", "house,electro,glitch hop"));
-        artistList.add(new Artist(2015, Constants.VILLAGE, 1, "00:30", "02:00", "Skrillex", "bass music,dubstep"));
-        artistList.add(new Artist(2015, Constants.VILLAGE, 1, "02:00", "03:00", "Downlink", "bass music,dubstep,trap"));
+        artistList.add(new Artist(2015, Constants.VILLAGE, 1, "00:30", "02:00", "Skrillex", "bass,dubstep"));
+        artistList.add(new Artist(2015, Constants.VILLAGE, 1, "02:00", "03:00", "Downlink", "bass,dubstep,trap"));
         artistList.add(new Artist(2015, Constants.VILLAGE, 1, "03:00", "04:30", "Drumsound & Bassline Smith", "drum & bass"));
         artistList.add(new Artist(2015, Constants.VILLAGE, 1, "04:30", "05:30", "Openend", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.VILLAGE, 1, "05:30", "06:30", "Mr. B", "house,electro,glitch hop"));
@@ -305,8 +305,8 @@ public class ArtistGenerator {
         artistList.add(new Artist(2015, Constants.VILLAGE, 3, "05:30", "06:30", "Scottie D", "house,electro,glitch hop"));
 
         //BIODOME
-        artistList.add(new Artist(2015, Constants.BIODOME, 1, "00:30", "02:00", "Skrillex", "bass music,dubstep"));
-        artistList.add(new Artist(2015, Constants.BIODOME, 1, "02:00", "03:00", "Downlink", "bass music,dubstep,trap"));
+        artistList.add(new Artist(2015, Constants.BIODOME, 1, "00:30", "02:00", "Skrillex", "bass,dubstep"));
+        artistList.add(new Artist(2015, Constants.BIODOME, 1, "02:00", "03:00", "Downlink", "bass,dubstep,trap"));
         artistList.add(new Artist(2015, Constants.BIODOME, 1, "03:00", "04:30", "Drumsound & Bassline Smith", "drum & bass"));
         artistList.add(new Artist(2015, Constants.BIODOME, 1, "04:30", "05:30", "Openend", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.BIODOME, 1, "05:30", "06:30", "Mr. B", "house,electro,glitch hop"));
@@ -344,7 +344,7 @@ public class ArtistGenerator {
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 0, "20:30", "22:00", "Morninglory", ""));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 0, "22:00", "23:00", "Just B", ""));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 0, "23:00", "00:00", "Justin Pleasure", ""));
-        artistList.add(new Artist(2016, Constants.LIVINGROOM, 0, "00:00", "01:00", "Breakfluid", "broken beat,dancehall,dub,hip hop,house,rare groove,reggae,soul"));
+        artistList.add(new Artist(2016, Constants.LIVINGROOM, 0, "00:00", "01:00", "Breakfluid", "breaks,dancehall,dub,hip hop,house,rare groove,reggae,soul"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 0, "01:00", "02:30", "An-ten-nae", "acid crunk"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 0, "02:30", "03:30", "Jorma", ""));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 0, "03:30", "04:30", "Braden Early", "House,Melodic"));
@@ -359,7 +359,7 @@ public class ArtistGenerator {
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 1, "19:00", "20:30", "Riddim Fernandez", ""));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 1, "20:30", "22:00", "Only Now (aka Kush Arora)", "experimental,industrial,kuduro"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 1, "22:00", "23:30", "Dirtwire", "Space cowboy swamptronica"));
-        artistList.add(new Artist(2016, Constants.LIVINGROOM, 1, "23:30", "01:00", "Sweet Anomaly", "bass music,downtempo,electro,global bass,techno"));
+        artistList.add(new Artist(2016, Constants.LIVINGROOM, 1, "23:30", "01:00", "Sweet Anomaly", "bass,downtempo,electro,global bass,techno"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 1, "01:00", "02:30", "Tyler Stadius", "House,Tech House,Techno"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 1, "02:30", "04:00", "Ryan Wells", "house,techno"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 1, "04:00", "05:30", "Leif", ""));
@@ -375,18 +375,18 @@ public class ArtistGenerator {
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "16:30", "18:00", "Val Kilmer & The New Coke", "80's Party"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "18:00", "19:00", "Cass Rhapsody", "Beach,Jams,tropical"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "19:00", "20:00", "Shasta", ""));
-        artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "20:00", "21:30", "Dubconcious", "bass music,dancehall,dubstep,garage,house"));
+        artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "20:00", "21:30", "Dubconcious", "bass,dancehall,dubstep,garage,house"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "21:30", "23:00", "Branko", "bass,carnival,tropical"));
-        artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "23:00", "00:30", "The Librarian", "bass music"));
+        artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "23:00", "00:30", "The Librarian", "bass"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "00:30", "02:00", "DJ Laura Low", "bass"));
-        artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "02:00", "04:00", "Lion-S", "Bass Music,Downtempo"));
-        artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "04:00", "05:30", "Leeland Riivr", "intelligent bass music"));
+        artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "02:00", "04:00", "Lion-S", "bass,Downtempo"));
+        artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "04:00", "05:30", "Leeland Riivr", "intelligent bass"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "05:30", "07:00", "Michael Red", "bass,live PA"));
-        artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "07:00", "09:00", "Sijay James", "bass music"));
+        artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "07:00", "09:00", "Sijay James", "bass"));
 
-        artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "11:00", "12:00", "Hoola Hoop Workshop with Dubconscious", "bass music,dancehall,dubstep,garage,house"));
+        artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "11:00", "12:00", "Hoola Hoop Workshop with Dubconscious", "bass,dancehall,dubstep,garage,house"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "12:00", "13:00", "Infinati", "downtempo,psychedelic"));
-        artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "13:00", "14:00", "intersect", "bass music,future bass"));
+        artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "13:00", "14:00", "intersect", "bass,future bass"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "14:00", "16:00", "Adham Shaikh", "global bass"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "16:00", "19:00", "Nightmares on Wax (DJ SET)", "electronic,experimental,hip hop"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "19:00", "20:30", "Lady V", ""));
@@ -395,21 +395,21 @@ public class ArtistGenerator {
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "22:30", "00:00", "Mich Duvernet", "old-school,electro,chunky house"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "00:00", "02:30", "Meow Mix", "bass,downtempo,house"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "02:30", "04:30", "El Papachango", "bass,electronica,hip hop,tropical"));
-        artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "04:30", "08:00", "Sabo", "cumbia,disco,dub,house,latin,moombahton,regga,soul,tropical"));
+        artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "04:30", "08:00", "Sabo", "cumbia,disco,dub,house,latin,moombahton,reggae,soul,tropical"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "08:00", "10:00", "The Pride", ""));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "10:00", "11:30", "Gemma Luna", "singer,songwriter"));
 
         //Amphitheater
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 0, "11:30", "12:00", "Hosted by Def3 & ThinkTank", ""));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 0, "12:00", "13:30", "zeke beats", ""));
-        artistList.add(new Artist(2016, Constants.AMPHITHEATER, 0, "13:30", "14:30", "Stylust Beats", "bass music,dubstep,good music,hip hop,trap"));
+        artistList.add(new Artist(2016, Constants.AMPHITHEATER, 0, "13:30", "14:30", "Stylust Beats", "bass,dubstep,good music,hip hop,trap"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 0, "14:30", "15:30", "Pigeon Hole", "future bass,hip hop,trap"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 0, "15:30", "17:00", "Skiitour", "Drum & bass,house,trap,twerk"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 0, "17:00", "18:30", "Fort Knox Five FT QDUP", "breaks,funk"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 0, "18:30", "20:00", "Soup", "disco,house"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 0, "20:00", "21:00", "Tennyson", "Electronic"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 0, "21:00", "22:30", "S2", "Emo Bap,Psy Jersey"));
-        artistList.add(new Artist(2016, Constants.AMPHITHEATER, 0, "22:30", "00:00", "space jesus", "bass music"));
+        artistList.add(new Artist(2016, Constants.AMPHITHEATER, 0, "22:30", "00:00", "space jesus", "bass"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 0, "00:00", "01:30", "Dabow", "hip hop,trap"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 0, "01:30", "03:00", "El Papachango", "bass,electronica,hip hop,tropical"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 0, "03:00", "04:30", "Woodhead", "Disco,House"));
@@ -417,11 +417,11 @@ public class ArtistGenerator {
 
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 1, "15:30", "17:00", "Barlee", "gangster bass,hip hop"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 1, "17:00", "18:30", "WLYN", "Electronic"));
-        artistList.add(new Artist(2016, Constants.AMPHITHEATER, 1, "18:30", "20:00", "Perkulat0r", "West Coast Future Bass,Bass Music"));
+        artistList.add(new Artist(2016, Constants.AMPHITHEATER, 1, "18:30", "20:00", "Perkulat0r", "West Coast Future Bass,bass"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 1, "20:00", "21:00", "Ramzoid", "bass"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 1, "21:00", "22:30", "Josh Pan", "beat scene,electronic,hybrid,trap"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 1, "22:30", "00:00", "Sam Gellaitry", "Electronic,Experimental,Hip Hop,House,Trap"));
-        artistList.add(new Artist(2016, Constants.AMPHITHEATER, 1, "00:00", "01:30", "The Gaslamp Killer", "bass music,eclectic"));
+        artistList.add(new Artist(2016, Constants.AMPHITHEATER, 1, "00:00", "01:30", "The Gaslamp Killer", "bass,eclectic"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 1, "01:30", "03:00", "Stwo", "Electronic,R&B"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 1, "03:00", "04:30", "Eprom", "bass,dark melodies"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 1, "04:30", "06:00", "Tails", "Bump Trap"));
@@ -430,9 +430,9 @@ public class ArtistGenerator {
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 2, "14:00", "15:00", "Fashion Fiasco Fantastico w/ DJ Faiith", ""));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 2, "15:00", "16:30", "MA/AM", "disco,house,techno"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 2, "16:30", "18:00", "Wmnstudies", "deep house,house,nu disco"));
-        artistList.add(new Artist(2016, Constants.AMPHITHEATER, 2, "18:00", "19:30", "Kid Kurse", "bass music"));
+        artistList.add(new Artist(2016, Constants.AMPHITHEATER, 2, "18:00", "19:30", "Kid Kurse", "bass"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 2, "19:30", "21:00", "Plastician", "bass,dubstep"));
-        artistList.add(new Artist(2016, Constants.AMPHITHEATER, 2, "21:00", "22:30", "Greazus", "bass music,drum & bass,footwork,grime,hip hop,house,jungle"));
+        artistList.add(new Artist(2016, Constants.AMPHITHEATER, 2, "21:00", "22:30", "Greazus", "bass,drum & bass,footwork,grime,hip hop,house,jungle"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 2, "22:30", "00:00", "Alix Perez", "electronica,soul"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 2, "00:00", "01:30", "Flava D", "garage,grime,house"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 2, "01:30", "03:00", "DJ Q", "electronic"));
@@ -442,11 +442,11 @@ public class ArtistGenerator {
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 3, "15:00", "16:30", "Boats", "funk,vibes"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 3, "16:30", "18:00", "BIOS", "grime,hip hop"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 3, "18:00", "19:30", "The Originalz", "Future bass,purple music"));
-        artistList.add(new Artist(2016, Constants.AMPHITHEATER, 3, "19:30", "21:00", "VNDMG", "bass music,electronic,hip hop"));
+        artistList.add(new Artist(2016, Constants.AMPHITHEATER, 3, "19:30", "21:00", "VNDMG", "bass,electronic,hip hop"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 3, "21:00", "22:30", "Conrank", "bass"));
-        artistList.add(new Artist(2016, Constants.AMPHITHEATER, 3, "22:30", "00:00", "Shades", "bass music"));
+        artistList.add(new Artist(2016, Constants.AMPHITHEATER, 3, "22:30", "00:00", "Shades", "bass"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 3, "00:00", "01:30", "TroyBoi", "bass,trap"));
-        artistList.add(new Artist(2016, Constants.AMPHITHEATER, 3, "01:30", "03:00", "Bleep Bloop", "bass music,electronic"));
+        artistList.add(new Artist(2016, Constants.AMPHITHEATER, 3, "01:30", "03:00", "Bleep Bloop", "bass,electronic"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 3, "03:00", "04:30", "Yheti", "bass,fusion"));
         artistList.add(new Artist(2016, Constants.AMPHITHEATER, 3, "04:30", "06:00", "Longwalkshortdock", "acid,death step,deathno,electronic,techno"));
 
@@ -468,7 +468,7 @@ public class ArtistGenerator {
         artistList.add(new Artist(2016, Constants.PAGODA, 2, "17:00", "18:00", "Freebound", ""));
         artistList.add(new Artist(2016, Constants.PAGODA, 2, "18:00", "19:00", "A Tribue to Pumpkin with Everyman", "love sauce"));
         artistList.add(new Artist(2016, Constants.PAGODA, 2, "19:00", "20:30", "2TIGHT", ""));
-        artistList.add(new Artist(2016, Constants.PAGODA, 2, "20:30", "22:00", "Hotel Garuda", "house music"));
+        artistList.add(new Artist(2016, Constants.PAGODA, 2, "20:30", "22:00", "Hotel Garuda", "house"));
         artistList.add(new Artist(2016, Constants.PAGODA, 2, "22:00", "23:20", "Autograf", "Live electronic"));
         artistList.add(new Artist(2016, Constants.PAGODA, 2, "23:20", "23:40", "Mat the Alien", "space music"));
         artistList.add(new Artist(2016, Constants.PAGODA, 2, "23:40", "01:00", "Beats Antique ft. David Satori & Tommy Sidecar", "World Electronica"));
@@ -484,7 +484,7 @@ public class ArtistGenerator {
         artistList.add(new Artist(2016, Constants.PAGODA, 3, "22:00", "23:30", "Mija", "bass,house,trap"));
         artistList.add(new Artist(2016, Constants.PAGODA, 3, "23:30", "01:00", "Getter", "electronic"));
         artistList.add(new Artist(2016, Constants.PAGODA, 3, "01:00", "02:30", "Marshmello", "house,trap"));
-        artistList.add(new Artist(2016, Constants.PAGODA, 3, "02:30", "04:00", "What So Not", "bass music,dub,electronic,house"));
+        artistList.add(new Artist(2016, Constants.PAGODA, 3, "02:30", "04:00", "What So Not", "bass,dub,electronic,house"));
         artistList.add(new Artist(2016, Constants.PAGODA, 3, "04:00", "05:30", "Destructo - Sunrise Sermon", "House"));
 
         //FOREST
@@ -506,9 +506,9 @@ public class ArtistGenerator {
         artistList.add(new Artist(2016, Constants.FOREST, 2, "20:00", "21:00", "Dj Nu Mark", "Elclectic Musical roots based in Hip HOp"));
         artistList.add(new Artist(2016, Constants.FOREST, 2, "21:00", "22:00", "Questlove", "auteur Dj,hip hop,Neo Soul"));
         artistList.add(new Artist(2016, Constants.FOREST, 2, "22:00", "23:00", "Cut Chemist", "Electronic,Hip Hop,Turntablism"));
-        artistList.add(new Artist(2016, Constants.FOREST, 2, "23:00", "00:00", "Skratch Bastid", "breakbeats,funk,hip hop,turntablism"));
+        artistList.add(new Artist(2016, Constants.FOREST, 2, "23:00", "00:00", "Skratch Bastid", "breaks,funk,hip hop,turntablism"));
         artistList.add(new Artist(2016, Constants.FOREST, 2, "00:00", "01:30", "Z-Trip", "breaks,hip hop,turntablism"));
-        artistList.add(new Artist(2016, Constants.FOREST, 2, "01:30", "03:00", "A.Skillz", "breakbeats,funk,hip hop,party"));
+        artistList.add(new Artist(2016, Constants.FOREST, 2, "01:30", "03:00", "A.Skillz", "breaks,funk,hip hop,party"));
         artistList.add(new Artist(2016, Constants.FOREST, 2, "03:00", "04:30", "Featurecast", "Breaks,NuFunk"));
         artistList.add(new Artist(2016, Constants.FOREST, 2, "04:30", "06:30", "Neighbor", "disco,house"));
 
@@ -517,16 +517,16 @@ public class ArtistGenerator {
         artistList.add(new Artist(2016, Constants.FOREST, 3, "21:00", "22:30", "Purple Disco Machine", "electronica,house,nu disco"));
         artistList.add(new Artist(2016, Constants.FOREST, 3, "22:30", "00:00", "Felix Da Housecat", "house"));
         artistList.add(new Artist(2016, Constants.FOREST, 3, "00:00", "01:30", "green velvet", "electronica,house"));
-        artistList.add(new Artist(2016, Constants.FOREST, 3, "01:30", "03:00", "Ghastly", "N/A"));
+        artistList.add(new Artist(2016, Constants.FOREST, 3, "01:30", "03:00", "Ghastly", ""));
         artistList.add(new Artist(2016, Constants.FOREST, 3, "03:00", "04:30", "Dr Fresch", "Future Ghetto"));
-        artistList.add(new Artist(2016, Constants.FOREST, 3, "04:30", "06:00", "Slynk", "breakbeats,drum & bass,ghetto funk,hip hop"));
+        artistList.add(new Artist(2016, Constants.FOREST, 3, "04:30", "06:00", "Slynk", "breaks,drum & bass,ghetto funk,hip hop"));
         artistList.add(new Artist(2016, Constants.FOREST, 3, "06:00", "12:00", "Rich-e-Rich", "My sets are like a box of chocolates"));
 
         //GROVE
 
         artistList.add(new Artist(2016, Constants.GROVE, 1, "13:00", "14:00", "Opening Ceremony with Soul Fire Dance", "world dance production"));
         artistList.add(new Artist(2016, Constants.GROVE, 1, "14:00", "15:00", "Adham Shaikh", "global bass"));
-        artistList.add(new Artist(2016, Constants.GROVE, 1, "15:00", "16:00", "Vespers", "future bass music,live sax"));
+        artistList.add(new Artist(2016, Constants.GROVE, 1, "15:00", "16:00", "Vespers", "future bass,live sax"));
         artistList.add(new Artist(2016, Constants.GROVE, 1, "16:00", "17:30", "The Russ Liquid Test", "electronic,live"));
         artistList.add(new Artist(2016, Constants.GROVE, 1, "17:30", "18:30", "Soulular", "Sexy Psychedelic Love Crunk Space Bass"));
         artistList.add(new Artist(2016, Constants.GROVE, 1, "18:30", "20:00", "Naasko", "budstep,deeptech,dub & bass"));
@@ -535,30 +535,30 @@ public class ArtistGenerator {
         artistList.add(new Artist(2016, Constants.GROVE, 1, "22:30", "00:00", "Headphone Activist", "Beats,electronic,vibe music"));
         artistList.add(new Artist(2016, Constants.GROVE, 1, "00:00", "01:30", "hermitude", "electronic,hip hop"));
         artistList.add(new Artist(2016, Constants.GROVE, 1, "01:30", "03:00", "TroyBoi", "bass,trap"));
-        artistList.add(new Artist(2016, Constants.GROVE, 1, "03:00", "04:30", "Om Unit", "Bass Music"));
+        artistList.add(new Artist(2016, Constants.GROVE, 1, "03:00", "04:30", "Om Unit", "bass"));
         artistList.add(new Artist(2016, Constants.GROVE, 1, "04:30", "05:45", "Michael Red", "bass,live PA"));
-        artistList.add(new Artist(2016, Constants.GROVE, 1, "05:45", "07:00", "goopsteppa", "bass music"));
+        artistList.add(new Artist(2016, Constants.GROVE, 1, "05:45", "07:00", "goopsteppa", "bass"));
 
         artistList.add(new Artist(2016, Constants.GROVE, 2, "15:30", "17:00", "Lazy Syrup Orchestra", "freestyle,hip hop,Downtempo"));
         artistList.add(new Artist(2016, Constants.GROVE, 2, "17:00", "18:00", "Love You Miss You", ""));
         artistList.add(new Artist(2016, Constants.GROVE, 2, "18:00", "19:00", "Natural Alchemy", "deep urban tribal tech"));
-        artistList.add(new Artist(2016, Constants.GROVE, 2, "19:00", "20:00", "Melo.Nade", "bass music,crunk"));
+        artistList.add(new Artist(2016, Constants.GROVE, 2, "19:00", "20:00", "Melo.Nade", "bass,crunk"));
         artistList.add(new Artist(2016, Constants.GROVE, 2, "20:00", "21:00", "Shiny Things", "footwork hyphy deep and such,weirdo futuristic trap"));
         artistList.add(new Artist(2016, Constants.GROVE, 2, "21:00", "22:30", "Dj Madd", "bass,dubwise"));
         artistList.add(new Artist(2016, Constants.GROVE, 2, "22:30", "23:00", "Subscura", "Performance Art"));
         artistList.add(new Artist(2016, Constants.GROVE, 2, "23:00", "0:30", "Thelem", "drum & bass,grime,hip hop,trap"));
-        artistList.add(new Artist(2016, Constants.GROVE, 2, "0:30", "2:30", "truth", "bass music,dubstep"));
+        artistList.add(new Artist(2016, Constants.GROVE, 2, "0:30", "2:30", "truth", "bass,dubstep"));
         artistList.add(new Artist(2016, Constants.GROVE, 2, "2:30", "4:00", "The Widdler", "dubstep"));
-        artistList.add(new Artist(2016, Constants.GROVE, 2, "4:00", "5:30", "Barisone", "bass music,dancehall,hip hop"));
+        artistList.add(new Artist(2016, Constants.GROVE, 2, "4:00", "5:30", "Barisone", "bass,dancehall,hip hop"));
         artistList.add(new Artist(2016, Constants.GROVE, 2, "5:30", "6:30", "Hakuu", "Downtempo Dream Beats"));
 
         artistList.add(new Artist(2016, Constants.GROVE, 3, "15:00", "16:00", "Theo Tzu", "dubstep,psy dub"));
         artistList.add(new Artist(2016, Constants.GROVE, 3, "16:00", "17:00", "Light Twerkerz", ""));
-        artistList.add(new Artist(2016, Constants.GROVE, 3, "17:00", "18:00", "Octaban", "bass music,hip hop,trap"));
+        artistList.add(new Artist(2016, Constants.GROVE, 3, "17:00", "18:00", "Octaban", "bass,hip hop,trap"));
         artistList.add(new Artist(2016, Constants.GROVE, 3, "18:00", "19:00", "Application", ""));
-        artistList.add(new Artist(2016, Constants.GROVE, 3, "19:00", "20:00", "Moontricks", "live bass music"));
+        artistList.add(new Artist(2016, Constants.GROVE, 3, "19:00", "20:00", "Moontricks", "live bass"));
         artistList.add(new Artist(2016, Constants.GROVE, 3, "20:00", "21:30", "Five Alarm Funk", "Insturmental,Rock"));
-        artistList.add(new Artist(2016, Constants.GROVE, 3, "21:30", "22:45", "jpod", "melodic bass music"));
+        artistList.add(new Artist(2016, Constants.GROVE, 3, "21:30", "22:45", "jpod", "melodic bass"));
         artistList.add(new Artist(2016, Constants.GROVE, 3, "22:45", "23:00", "Circus Acts Insomniacs ", "acrobatics,circus"));
         artistList.add(new Artist(2016, Constants.GROVE, 3, "23:00", "0:30", "Clozee", "Bass,chill trap,ethnofusion,future bass,glitch hop,trip hop"));
         artistList.add(new Artist(2016, Constants.GROVE, 3, "0:30", "2:00", "Emancipator", "Epic forest beats"));
@@ -569,22 +569,22 @@ public class ArtistGenerator {
 
         //VILLAGE
         artistList.add(new Artist(2016, Constants.VILLAGE, 1, "15:00", "19:00", "Ragga Jungle Rinse Out -  Hosted by Hush", ""));
-        artistList.add(new Artist(2016, Constants.VILLAGE, 1, "19:00", "20:00", "Lost City", "Bass,Future Dancehall,JNGL"));
+        artistList.add(new Artist(2016, Constants.VILLAGE, 1, "19:00", "20:00", "Lost City", "Bass,Future Dancehall,jungle"));
         artistList.add(new Artist(2016, Constants.VILLAGE, 1, "20:00", "21:00", "Kennedy Jones", "Bass,Big room house,dubstep,hard dance,hip hop,trap"));
         artistList.add(new Artist(2016, Constants.VILLAGE, 1, "21:00", "22:00", "KJ Sawka", "Bass,Dance,Electronic,Live Drums"));
         artistList.add(new Artist(2016, Constants.VILLAGE, 1, "22:00", "23:00", "ephwurd", "bass,house"));
         artistList.add(new Artist(2016, Constants.VILLAGE, 1, "23:00", "00:30", "Roni Size & Krust Present Full Cycle Ft. Dynamite MC", "Drum & Bass"));
-        artistList.add(new Artist(2016, Constants.VILLAGE, 1, "00:30", "02:00", "Caspa & Rusko", "bass music,dubstep"));
+        artistList.add(new Artist(2016, Constants.VILLAGE, 1, "00:30", "02:00", "Caspa & Rusko", "bass,dubstep"));
         artistList.add(new Artist(2016, Constants.VILLAGE, 1, "02:00", "03:30", "Excision", "drumstep,dubstep"));
         artistList.add(new Artist(2016, Constants.VILLAGE, 1, "03:30", "05:00", "TC", "drum & bass"));
-        artistList.add(new Artist(2016, Constants.VILLAGE, 1, "05:00", "07:00", "Liquid Stranger", "Bass Music,downtempo,experimental"));
+        artistList.add(new Artist(2016, Constants.VILLAGE, 1, "05:00", "07:00", "Liquid Stranger", "bass,downtempo,experimental"));
 
         artistList.add(new Artist(2016, Constants.VILLAGE, 2, "13:30", "19:00", "Hip Hop Showcase", ""));
         artistList.add(new Artist(2016, Constants.VILLAGE, 2, "19:00", "20:00", "vekked", "scratch punk"));
-        artistList.add(new Artist(2016, Constants.VILLAGE, 2, "20:00", "21:00", "Stylust Beats", "bass music,dubstep,good music,hip hop,trap"));
+        artistList.add(new Artist(2016, Constants.VILLAGE, 2, "20:00", "21:00", "Stylust Beats", "bass,dubstep,good music,hip hop,trap"));
         artistList.add(new Artist(2016, Constants.VILLAGE, 2, "21:00", "22:00", "Chali 2NA & The House of Vibe", "hip hop"));
-        artistList.add(new Artist(2016, Constants.VILLAGE, 2, "22:00", "23:00", "ill.Gates", "bass music,glitch hop"));
-        artistList.add(new Artist(2016, Constants.VILLAGE, 2, "23:00", "00:00", "Subvert", "bass music"));
+        artistList.add(new Artist(2016, Constants.VILLAGE, 2, "22:00", "23:00", "ill.Gates", "bass,glitch hop"));
+        artistList.add(new Artist(2016, Constants.VILLAGE, 2, "23:00", "00:00", "Subvert", "bass"));
         artistList.add(new Artist(2016, Constants.VILLAGE, 2, "00:00", "01:30", "Grandtheft", "club,house,trap"));
         artistList.add(new Artist(2016, Constants.VILLAGE, 2, "01:30", "03:00", "Sub Focus", "drum & bass,dubstep,house"));
         artistList.add(new Artist(2016, Constants.VILLAGE, 2, "03:00", "04:30", "The Upbeats", "drum & bass"));
@@ -592,14 +592,14 @@ public class ArtistGenerator {
 
         artistList.add(new Artist(2016, Constants.VILLAGE, 3, "17:00", "18:00", "Arlene", ""));
         artistList.add(new Artist(2016, Constants.VILLAGE, 3, "18:00", "19:00", "Two Timer", ""));
-        artistList.add(new Artist(2016, Constants.VILLAGE, 3, "19:00", "20:00", "Dua & Generic", "Bass Music,Drum & Bass,Turntablism"));
-        artistList.add(new Artist(2016, Constants.VILLAGE, 3, "20:00", "21:00", "DJ Anger", "bass music,hip hop,turntablism"));
+        artistList.add(new Artist(2016, Constants.VILLAGE, 3, "19:00", "20:00", "Dua & Generic", "bass,Drum & Bass,Turntablism"));
+        artistList.add(new Artist(2016, Constants.VILLAGE, 3, "20:00", "21:00", "DJ Anger", "bass,hip hop,turntablism"));
         artistList.add(new Artist(2016, Constants.VILLAGE, 3, "21:00", "22:00", "Haywyre", "electronic"));
-        artistList.add(new Artist(2016, Constants.VILLAGE, 3, "22:00", "23:00", "Manic Focus", "eletronic,soul"));
+        artistList.add(new Artist(2016, Constants.VILLAGE, 3, "22:00", "23:00", "Manic Focus", "electronic,soul"));
         artistList.add(new Artist(2016, Constants.VILLAGE, 3, "23:00", "00:00", "Keys N Krates", "electronic,hip hop,trap"));
-        artistList.add(new Artist(2016, Constants.VILLAGE, 3, "00:00", "01:30", "Snails", "Bass Music"));
+        artistList.add(new Artist(2016, Constants.VILLAGE, 3, "00:00", "01:30", "Snails", "bass"));
         artistList.add(new Artist(2016, Constants.VILLAGE, 3, "01:30", "03:00", "Andy C & Armanni Reign", "drum & bass"));
-        artistList.add(new Artist(2016, Constants.VILLAGE, 3, "03:00", "04:00", "G Jones", "bass music"));
+        artistList.add(new Artist(2016, Constants.VILLAGE, 3, "03:00", "04:00", "G Jones", "bass"));
         artistList.add(new Artist(2016, Constants.VILLAGE, 3, "04:00", "05:00", "Marvel Years", "electro soul,future funk,glitch hop,hip hop"));
         artistList.add(new Artist(2016, Constants.VILLAGE, 3, "05:00", "07:00", "Scottie D", "Drum & Bass"));
 
