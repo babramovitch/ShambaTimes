@@ -434,27 +434,7 @@ public class ArtistsFragment extends Fragment {
 
         if (genreAdapter == null) {
 
-            ArrayList<String> genres = new ArrayList<>();
-            genres.add("Bass Music");
-            genres.add("Breakbeats");
-            genres.add("Dance");
-            genres.add("Deep House");
-            genres.add("Downtempo");
-            genres.add("Dubstep");
-            genres.add("Electro");
-            genres.add("Electronic");
-            genres.add("Funk");
-            genres.add("Ghetto Funk");
-            genres.add("Glitch Hop");
-            genres.add("Hip Hop");
-            genres.add("House");
-            genres.add("Neon Nature");
-            genres.add("Soul");
-            genres.add("Space Music");
-            genres.add("Techno");
-            genres.add("Trap");
-            genres.add("Trip Hop");
-            genres.add("Turntablism");
+            ArrayList<String> genres = MainActivity.shambhala.generateGenreList();
 
             genreAdapter = new GenreAdapter(getActivity(), genres);
             listView = (ListView) layout.findViewById(R.id.genrelist);
@@ -469,9 +449,10 @@ public class ArtistsFragment extends Fragment {
         availableGenresByDate.clear();
 
         for (Artist artist : artists) {
-            String[] artistGenres = artist.getGenres().split(",");
+            String[] artistGenres = artist.getGenres().toLowerCase().split(",");
             for (String genre : artistGenres) {
-                if (!availableGenresByDate.contains(genre)) {
+                genre = genre.trim();
+                if (!genre.equals("") && !availableGenresByDate.contains(genre)) {
                     availableGenresByDate.add(genre);
                 }
             }
