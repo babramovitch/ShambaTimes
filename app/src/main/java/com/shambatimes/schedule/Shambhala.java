@@ -133,12 +133,12 @@ public class Shambhala {
             String[] genres = artist.getGenres().toLowerCase().split(",");
             for (String genre : genres) {
                 genre = genre.trim();
-                if (!genre.equals("") && !genreList.contains(genre)) {
+                if (!genreList.contains(genre)) {
                     genreList.add(genre);
                 }
             }
         }
-        
+
         Collections.sort(genreList, new Comparator<String>() {
             @Override
             public int compare(String s1, String s2) {

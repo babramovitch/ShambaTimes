@@ -452,7 +452,7 @@ public class ArtistsFragment extends Fragment {
             String[] artistGenres = artist.getGenres().toLowerCase().split(",");
             for (String genre : artistGenres) {
                 genre = genre.trim();
-                if (!genre.equals("") && !availableGenresByDate.contains(genre)) {
+                if (!availableGenresByDate.contains(genre)) {
                     availableGenresByDate.add(genre);
                 }
             }
