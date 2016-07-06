@@ -435,6 +435,7 @@ public class MainActivity extends AppCompatActivity {
                 TextView artistDay = (TextView) convertView.findViewById(R.id.artistDay);
                 TextView artistTime = (TextView) convertView.findViewById(R.id.artistTime);
                 TextView artistStage = (TextView) convertView.findViewById(R.id.artistStage);
+                TextView artistGenres = (TextView) convertView.findViewById(R.id.artistGenres);
                 final ImageView artistFavorite = (ImageView) convertView.findViewById(R.id.list_favorited);
                 View artistDivider = (View) convertView.findViewById(R.id.separator);
                 RelativeLayout artistLayout = (RelativeLayout) convertView.findViewById(R.id.artistLayout);
@@ -446,6 +447,15 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     artistFavorite.setImageResource(favoriteOutlineDrawables[artist.getStage()]);
                 }
+
+                String formattedGenres = artist.getGenres().replace(",", ", ").toLowerCase();
+                if(formattedGenres.length() == 0 || Shambhala.getFestivalYear(MainActivity.this).equals("2015")){
+                    artistGenres.setVisibility(View.GONE);
+                }else{
+                    artistGenres.setVisibility(View.VISIBLE);
+                }
+
+                artistGenres.setText(formattedGenres);
 
                 artistFavorite.setOnClickListener(new View.OnClickListener() {
                     @Override

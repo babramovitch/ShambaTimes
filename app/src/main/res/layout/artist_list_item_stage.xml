@@ -31,14 +31,14 @@
             android:layout_width="fill_parent"
             android:layout_below="@id/artistName"
             android:text="Hip hop, Electro, Funk"
-            android:paddingBottom="8dp"
             />
 
     <TextView
         android:fontFamily="sans-serif-condensed"
         android:id="@+id/artistTime"
         tools:text="Schedule Times"
-        style="@style/ListViewSmall" />
+        style="@style/ListViewSmall"
+        android:paddingTop="8dp"/>
 
 
 

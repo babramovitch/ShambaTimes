@@ -153,6 +153,7 @@ public class ArtistsFragment extends Fragment {
         private String[] stageNames = getActivity().getResources().getStringArray(R.array.stages);
         private boolean animateHeartsInwards = false;
         private boolean skipAnimations = true;
+        int yAxisAnimationDistance;
         //ItemFilter mFilter = new ItemFilter();
 
         int editTextWidth;
@@ -219,7 +220,14 @@ public class ArtistsFragment extends Fragment {
         public void onBindViewHolder(final ArtistViewHolder artistViewHolder, final int i) {
             final Artist artist = artistList.get(i);
 
-            String formattedGenres = artist.getGenres().replace(",", ", ");
+            String formattedGenres = artist.getGenres().replace(",", ", ").toLowerCase();
+            if(formattedGenres.length() == 0 || Shambhala.getFestivalYear(getActivity()).equals("2015")){
+                artistViewHolder.genres.setVisibility(View.GONE);
+                yAxisAnimationDistance = 20;
+            }else{
+                artistViewHolder.genres.setVisibility(View.VISIBLE);
+                yAxisAnimationDistance = 30;
+            }
 
             artistViewHolder.artistName.setText(artist.getAristName());
             artistViewHolder.artistDay.setText(dayOfWeek[artist.getDay()]);
@@ -289,10 +297,10 @@ public class ArtistsFragment extends Fragment {
                     artistViewHolder.image.animate()
                             .setDuration(Constants.ANIMATION_DURATION)
                             .translationX(Util.convertDpToPixel(-115, getActivity()))
-                            .translationY(Util.convertDpToPixel(30, getActivity()));
+                            .translationY(Util.convertDpToPixel(yAxisAnimationDistance, getActivity()));
                 } else {
                     artistViewHolder.image.setTranslationX(Util.convertDpToPixel(-115, getActivity()));
-                    artistViewHolder.image.setTranslationY(Util.convertDpToPixel(30, getActivity()));
+                    artistViewHolder.image.setTranslationY(Util.convertDpToPixel(yAxisAnimationDistance, getActivity()));
                 }
 
             } else {

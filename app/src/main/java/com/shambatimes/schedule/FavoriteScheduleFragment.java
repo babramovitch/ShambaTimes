@@ -96,10 +96,12 @@ public class FavoriteScheduleFragment extends Fragment  {
         protected TextView artistTime;
         protected TextView artistStartTimePosition;
         protected TextView artistStage;
+        protected TextView artistGenres;
         protected RelativeLayout artistLayout;
         protected View divider;
         protected ImageView alarm;
         protected ImageView image;
+
 
         public ArtistViewHolder(View v) {
 
@@ -109,10 +111,12 @@ public class FavoriteScheduleFragment extends Fragment  {
             artistTime = (TextView) v.findViewById(R.id.artistTime);
             artistStartTimePosition = (TextView) v.findViewById(R.id.artistStartTimePosition);
             artistStage = (TextView) v.findViewById(R.id.artistStage);
+            artistGenres = (TextView) v.findViewById(R.id.artistGenres);
             artistLayout = (RelativeLayout) v.findViewById(R.id.artistLayout);
             alarm = (ImageView) v.findViewById(R.id.list_alarm_set);
             image = (ImageView) v.findViewById(R.id.list_favorited);
             divider = v.findViewById(R.id.separator);
+
 
         }
     }
@@ -162,8 +166,15 @@ public class FavoriteScheduleFragment extends Fragment  {
         public void onBindViewHolder(final ArtistViewHolder artistViewHolder, int i) {
             final Artist artist = artistList.get(artistViewHolder.getAdapterPosition());
 
+            String formattedGenres = artist.getGenres().replace(",", ", ").toLowerCase();
+            if(formattedGenres.length() == 0 || Shambhala.getFestivalYear(getActivity()).equals("2015")){
+                artistViewHolder.artistGenres.setVisibility(View.GONE);
+            }else{
+                artistViewHolder.artistGenres.setVisibility(View.VISIBLE);
+            }
 
             artistViewHolder.artistName.setText(artist.getAristName());
+            artistViewHolder.artistGenres.setText(formattedGenres);
             artistViewHolder.artistTime.setText(artist.getStartTimeString() + " to " + artist.getEndTimeString());
             artistViewHolder.artistStartTimePosition.setText("" + artist.getStartPosition());
             artistViewHolder.artistStage.setText(stageNames[artist.getStage()]);

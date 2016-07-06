@@ -208,6 +208,7 @@ public class StageListScheduleFragment extends Fragment {
                 convertView.setTag(mViewHolder);
                 mViewHolder.artistName = (TextView) convertView.findViewById(R.id.artistName);
                 mViewHolder.artistTime = (TextView) convertView.findViewById(R.id.artistTime);
+                mViewHolder.artistGenres = (TextView) convertView.findViewById(R.id.artistGenres);
                 mViewHolder.artistStartTimePosition = (TextView) convertView.findViewById(R.id.artistStartTimePosition);
                 mViewHolder.artistLayout = (LinearLayout) convertView.findViewById(R.id.artistLayout);
                 mViewHolder.artistLayout.setBackgroundResource(getPressedColor(stage));
@@ -219,6 +220,15 @@ public class StageListScheduleFragment extends Fragment {
 
 
             mViewHolder.artistName.setText(getItem(position).getAristName());
+
+            String formattedGenres = currentlyPlayingArtist.getGenres().replace(",", ", ").toLowerCase();
+            if(formattedGenres.length() == 0 || Shambhala.getFestivalYear(getActivity()).equals("2015")){
+                mViewHolder.artistGenres.setVisibility(View.GONE);
+            }else{
+                mViewHolder.artistGenres.setVisibility(View.VISIBLE);
+            }
+            mViewHolder.artistGenres.setText(formattedGenres);
+
             if (currentlyPlayingArtist != null && getItem(position).getAristName().equals(currentlyPlayingArtist.getAristName())
                     && Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR)) {
                 mViewHolder.artistTime.setText(getItem(position).getStartTimeString() + " to " + getItem(position).getEndTimeString() + " - Now Playing");
@@ -261,7 +271,7 @@ public class StageListScheduleFragment extends Fragment {
         }
 
         private class MyViewHolder {
-            TextView artistName, artistTime, artistStartTimePosition;
+            TextView artistName, artistTime, artistStartTimePosition, artistGenres;
             LinearLayout artistLayout;
         }
     }

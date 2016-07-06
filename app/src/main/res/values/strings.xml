@@ -45,7 +45,6 @@
         <item>@string/stage_name_living_room</item>
         <item>@string/stage_name_village</item>
         <item>@string/stage_name_amphitheatre</item>
-        <item>@string/stage_name_biodome</item>
     </string-array>
 
     <string name="thursday">Thursday</string>

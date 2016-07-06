@@ -158,7 +158,7 @@ public class TimeCardScheduleFragment extends Fragment {
         }
 
         public int getCount() {
-            return 7;
+            return 6;
         }
 
         public Object getItem(int position) {
