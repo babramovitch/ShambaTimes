@@ -221,7 +221,7 @@ public class StageListScheduleFragment extends Fragment {
 
             mViewHolder.artistName.setText(getItem(position).getAristName());
 
-            String formattedGenres = currentlyPlayingArtist.getGenres().replace(",", ", ").toLowerCase();
+            String formattedGenres = getItem(position).getGenres().replace(",", ", ").toLowerCase();
             if(formattedGenres.length() == 0 || Shambhala.getFestivalYear(getActivity()).equals("2015")){
                 mViewHolder.artistGenres.setVisibility(View.GONE);
             }else{
