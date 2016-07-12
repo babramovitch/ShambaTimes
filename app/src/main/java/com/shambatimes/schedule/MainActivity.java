@@ -115,16 +115,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Initialize the preferences with default settings if
+        // this is the first time the application is ever opened
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
         }
-        //PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         festivalYear = Shambhala.getFestivalYear(this);
 
-        if (DateUtils.getCurrentDay() == 3) {
+        if (DateUtils.getCurrentDay() == 3 && Shambhala.getFestivalYear(MainActivity.this).equals("2015")) {
             Constants.REFERENCE_TIME = Constants.SUNDAY_REFERENCE_TIME;
         } else {
             Constants.REFERENCE_TIME = Constants.GENERAL_REFERENCE_TIME;
@@ -133,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         prepareAndLoadDatabase();
 
         if (savedInstanceState == null) {
-            currentTimePosition = DateUtils.getCurrentTimePosition();
+            currentTimePosition = DateUtils.getCurrentTimePosition(this);
             actionBarColor = getResources().getColor(R.color.pagoda_color);
             replaceFragment(R.id.content_frame, new TimeScheduleFragment(), "TIME", false);
         } else {
@@ -313,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                     currentDay = position;
 
-                    if (currentDay == 3) {
+                    if (currentDay == 3 && Shambhala.getFestivalYear(MainActivity.this).equals("2015")) {
                         Constants.REFERENCE_TIME = Constants.SUNDAY_REFERENCE_TIME;
                     } else {
                         Constants.REFERENCE_TIME = Constants.GENERAL_REFERENCE_TIME;
@@ -386,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
                     if (!firstSpinnerLoad) {
                         artistDateSelected = true;
                         currentDay = position - 1;
-                        if (currentDay == 3) {
+                        if (currentDay == 3 && Shambhala.getFestivalYear(MainActivity.this).equals("2015")) {
                             Constants.REFERENCE_TIME = Constants.SUNDAY_REFERENCE_TIME;
                         } else {
                             Constants.REFERENCE_TIME = Constants.GENERAL_REFERENCE_TIME;
@@ -450,9 +453,9 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 String formattedGenres = artist.getGenres().replace(",", ", ").toLowerCase();
-                if(formattedGenres.length() == 0 || Shambhala.getFestivalYear(MainActivity.this).equals("2015")){
+                if (formattedGenres.length() == 0 || Shambhala.getFestivalYear(MainActivity.this).equals("2015")) {
                     artistGenres.setVisibility(View.GONE);
-                }else{
+                } else {
                     artistGenres.setVisibility(View.VISIBLE);
                 }
 
@@ -584,7 +587,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onMenuItemActionExpand(MenuItem item) {
                         isSearchExpanded = true;
-                        if(genreFilteringActive && filterImage != null){
+                        if (genreFilteringActive && filterImage != null) {
                             filterImage.callOnClick();
                         }
                         EventBus.getDefault().post(new ToggleFilterVisibility(false));

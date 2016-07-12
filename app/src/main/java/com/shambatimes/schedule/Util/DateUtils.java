@@ -1,6 +1,9 @@
 package com.shambatimes.schedule.Util;
 
+import android.content.Context;
+
 import com.shambatimes.schedule.Constants;
+import com.shambatimes.schedule.Shambhala;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -10,9 +13,9 @@ import org.joda.time.Interval;
  */
 public final class DateUtils {
 
-    public static int getCurrentTimePosition() {
+    public static int getCurrentTimePosition(Context context) {
 
-        if(DateUtils.getCurrentDay() == 3){
+        if(DateUtils.getCurrentDay() == 3 && Shambhala.getFestivalYear(context).equals("2015")){
             Constants.REFERENCE_TIME = Constants.SUNDAY_REFERENCE_TIME;
         }else{
             Constants.REFERENCE_TIME = Constants.GENERAL_REFERENCE_TIME;

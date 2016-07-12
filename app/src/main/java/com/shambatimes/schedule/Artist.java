@@ -66,10 +66,10 @@ public class Artist extends SugarRecord {
         this.year = year;
 
         DateTime baseTime;
-        if(day != 3) {
-             baseTime = DateTime.now().withZone(Constants.timeZone).withTimeAtStartOfDay().plusMinutes(Constants.GENERAL_REFERENCE_TIME);
+        if(day == 3 && year == 2015) {
+            baseTime = DateTime.now().withZone(Constants.timeZone).withTimeAtStartOfDay().plusMinutes(Constants.SUNDAY_REFERENCE_TIME);
         }else{
-             baseTime = DateTime.now().withZone(Constants.timeZone).withTimeAtStartOfDay().plusMinutes(Constants.SUNDAY_REFERENCE_TIME);
+            baseTime = DateTime.now().withZone(Constants.timeZone).withTimeAtStartOfDay().plusMinutes(Constants.GENERAL_REFERENCE_TIME);
         }
 
         DateTimeFormatter dateStringFormat = DateTimeFormat.forPattern("HH:mm");

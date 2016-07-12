@@ -75,7 +75,7 @@ public class ScheduleWidget extends AppWidgetProvider {
     private RemoteViews updateArtist(RemoteViews views, Context context) {
 
 
-        int position = DateUtils.getCurrentTimePosition();
+        int position = DateUtils.getCurrentTimePosition(context);
         int day = DateUtils.getCurrentDay();
 
         DateTimeFormatter parseFormat = new DateTimeFormatterBuilder().appendPattern("HH:mm a").toFormatter();
@@ -152,7 +152,7 @@ public class ScheduleWidget extends AppWidgetProvider {
 
         if (artistStage != -1) {
 
-            int position = DateUtils.getCurrentTimePosition();
+            int position = DateUtils.getCurrentTimePosition(context);
 
             ArrayList<Artist> artist = (ArrayList) Artist.find(Artist.class, "stage = ? and start_Position <= ? and end_Position > ? and day = ? and year = ?", "" + artistStage, "" + position, "" + position, "" + day, Shambhala.getFestivalYear(context));
 

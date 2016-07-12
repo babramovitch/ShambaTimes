@@ -29,7 +29,8 @@ public class Shambhala {
 
         for (Artist currentArtist : artists) {
 
-            int endPosition = currentArtist.getEndPosition() == 0 ? 48 : currentArtist.getEndPosition(); //Start 11AM - 11AM = 0, so we need to manually set the last position
+            //If the end time is less than the start time, set the end time to the last position
+            int endPosition = currentArtist.getEndPosition() < currentArtist.getStartPosition() ? 48 : currentArtist.getEndPosition();
 
             if (currentArtist.getDay() == day && position >= currentArtist.getStartPosition() && position < endPosition) {
                 if (stage == currentArtist.getStage()) {

@@ -125,7 +125,7 @@ public class StageListScheduleFragment extends Fragment {
     private void updateSelectedListViewItems(boolean resetSearchName) {
 
         //TODO Currently hardcoded to 1 (friday) for testing.
-        Artist currentlyPlayingArtist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(1, DateUtils.getCurrentTimePosition(), stage);
+        Artist currentlyPlayingArtist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(1, DateUtils.getCurrentTimePosition(getActivity()), stage);
         View view;
         TextView artistNameTextView;
 
@@ -216,7 +216,7 @@ public class StageListScheduleFragment extends Fragment {
                 mViewHolder = (MyViewHolder) convertView.getTag();
             }
 
-            Artist currentlyPlayingArtist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(1, DateUtils.getCurrentTimePosition(), stage);
+            Artist currentlyPlayingArtist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(1, DateUtils.getCurrentTimePosition(getActivity()), stage);
 
 
             mViewHolder.artistName.setText(getItem(position).getAristName());

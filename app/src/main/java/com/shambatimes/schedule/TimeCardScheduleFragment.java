@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -119,9 +120,6 @@ public class TimeCardScheduleFragment extends Fragment {
         gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                //Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-                //v.vibrate(10);
-
                 LinearLayout childView = (LinearLayout) parent.getChildAt(position);
                 CardView cardView = (CardView) childView.getChildAt(0);
                 RelativeLayout relativeLayout = (RelativeLayout) cardView.getChildAt(0);
@@ -142,7 +140,6 @@ public class TimeCardScheduleFragment extends Fragment {
                 TextView artistNameTextView = (TextView) relativeLayout.getChildAt(0);
 
                 EventBus.getDefault().post(new ToggleToStageEvent(position, artistNameTextView.getText().toString()));
-
             }
         });
     }
@@ -183,7 +180,7 @@ public class TimeCardScheduleFragment extends Fragment {
             TextView artistTime = (TextView) gridView.findViewById(R.id.time_text);
 
             stageName.setText(stageNames[position]);
-            card.setCardBackgroundColor(getResources().getColor(stageColors[position]));
+            card.setCardBackgroundColor(ContextCompat.getColor(getActivity(),stageColors[position]));
 
             final ImageView image = (ImageView) gridView.findViewById(R.id.card_favorited);
             final Artist artist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(date, timePosition, position);
@@ -232,10 +229,12 @@ public class TimeCardScheduleFragment extends Fragment {
 
     public void onEventMainThread(ChangeDateEvent event) {
         if (event.getPosition() != date) {
-            if (date == 3 && event.getPosition() != 3) {
-                timePosition = timePosition + 2;
-            } else if (date != 3 && event.getPosition() == 3) {
-                timePosition = timePosition - 2;
+            if (Shambhala.getFestivalYear(getActivity()).equals("2015")) {
+                if (date == 3 && event.getPosition() != 3) {
+                    timePosition = timePosition + 2;
+                } else if (date != 3 && event.getPosition() == 3) {
+                    timePosition = timePosition - 2;
+                }
             }
 
             if (timePosition < 0) {
