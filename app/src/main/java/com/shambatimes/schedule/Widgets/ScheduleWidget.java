@@ -76,7 +76,7 @@ public class ScheduleWidget extends AppWidgetProvider {
 
 
         int position = DateUtils.getCurrentTimePosition(context);
-        int day = DateUtils.getCurrentDay();
+        int day = DateUtils.getCurrentDay(context);
 
         DateTimeFormatter parseFormat = new DateTimeFormatterBuilder().appendPattern("HH:mm a").toFormatter();
 
@@ -100,9 +100,9 @@ public class ScheduleWidget extends AppWidgetProvider {
             views.setImageViewResource(like_array[x], R.drawable.favorite_outline_white);
         }
 
-        if (!DateUtils.isPrePostFestival()) {
+        if (!DateUtils.isPrePostFestival(context)) {
 
-            ArrayList<Artist> artistList = (ArrayList) Artist.find(Artist.class, "start_Position <= ? and end_Position > ? and day = ? and year = ?", "" + position, "" + position, "" + day, Shambhala.getFestivalYear(context));
+            ArrayList<Artist> artistList = (ArrayList) Artist.find(Artist.class, "start_Position <= ? and end_Position > ? and day = ? and year = ?", "" + position, "" + position, "" + day, Shambhala.CURRENT_YEAR);
 
             for (Artist artist : artistList) {
 
@@ -147,14 +147,14 @@ public class ScheduleWidget extends AppWidgetProvider {
 
         RemoteViews remoteViews;
         remoteViews = new RemoteViews(context.getPackageName(), R.layout.schedule_widget_layout);
-        int day = DateUtils.getCurrentDay();
+        int day = DateUtils.getCurrentDay(context);
         int artistStage = getIntentID(intent.getAction());
 
         if (artistStage != -1) {
 
             int position = DateUtils.getCurrentTimePosition(context);
 
-            ArrayList<Artist> artist = (ArrayList) Artist.find(Artist.class, "stage = ? and start_Position <= ? and end_Position > ? and day = ? and year = ?", "" + artistStage, "" + position, "" + position, "" + day, Shambhala.getFestivalYear(context));
+            ArrayList<Artist> artist = (ArrayList) Artist.find(Artist.class, "stage = ? and start_Position <= ? and end_Position > ? and day = ? and year = ?", "" + artistStage, "" + position, "" + position, "" + day, Shambhala.CURRENT_YEAR);
 
             if (artist != null && artist.size() == 1) {
 
