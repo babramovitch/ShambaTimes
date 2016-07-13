@@ -70,12 +70,12 @@ public class TimeScheduleFragment extends Fragment {
             time = args.getInt("TIME", 0);
         } else {
 
-            if (DateUtils.isPrePostFestival()) {
+            if (DateUtils.isPrePostFestival(getActivity())) {
                 time = 0;
                 date = 0;
             } else {
                 time = DateUtils.getCurrentTimePosition(getActivity());
-                date = DateUtils.getCurrentDay();
+                date = DateUtils.getCurrentDay(getActivity());
             }
         }
 

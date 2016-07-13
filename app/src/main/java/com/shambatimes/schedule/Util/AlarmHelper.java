@@ -20,6 +20,10 @@ import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Shambhala;
 import com.shambatimes.schedule.myapplication.R;
 
+import org.joda.time.DateTime;
+
+import java.util.ArrayList;
+
 /**
  * Created by babramovitch on 11/24/2015.
  */
@@ -48,33 +52,35 @@ public class AlarmHelper {
 
     public void showSetAlarmSnackBar(Artist artist) {
 
-        if (Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR)) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String alarmMinutes = preferences.getString(SettingsActivity.ALARM_TIMES, "30");
 
-            this.artist = artist;
+        if (DateUtils.getFullDateTimeForArtist(artist).minus(60000*Integer.valueOf(alarmMinutes)).isAfter(System.currentTimeMillis())) {
+            if (Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR)) {
 
-            final View coordinatorLayoutView = layout.findViewById(R.id.snackbarPosition);
-            coordinatorLayoutView.setVisibility(View.VISIBLE);
+                this.artist = artist;
 
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-            String alarmMinutes = preferences.getString(SettingsActivity.ALARM_TIMES, "30");
+                final View coordinatorLayoutView = layout.findViewById(R.id.snackbarPosition);
+                coordinatorLayoutView.setVisibility(View.VISIBLE);
 
-            snackbar = Snackbar.make(coordinatorLayoutView, "Add alarm " + alarmMinutes + " minutes before " + artist.getAristName(), Snackbar.LENGTH_LONG)
-                    .setAction("OK", snackBarClickListener)
-                    .setDuration(Snackbar.LENGTH_LONG);
+                snackbar = Snackbar.make(coordinatorLayoutView, "Add alarm " + alarmMinutes + " minutes before " + artist.getAristName(), Snackbar.LENGTH_LONG)
+                        .setAction("OK", snackBarClickListener)
+                        .setDuration(Snackbar.LENGTH_LONG);
 
-            View snackbarView = snackbar.getView();
+                View snackbarView = snackbar.getView();
 
-            snackbarView.setBackgroundColor(context.getResources().getColor((stageColors[artist.getStage()])));
+                snackbarView.setBackgroundColor(context.getResources().getColor((stageColors[artist.getStage()])));
 
-            TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-            TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
+                TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
 
-            snackBarTextView.setTextColor(Color.WHITE);
-            snackBarActionTextView.setTextColor(Color.WHITE);
+                snackBarTextView.setTextColor(Color.WHITE);
+                snackBarActionTextView.setTextColor(Color.WHITE);
 
-            snackBarActionTextView.setTextSize(14);
+                snackBarActionTextView.setTextSize(14);
 
-            snackbar.show();
+                snackbar.show();
+            }
         }
     }
 
@@ -119,12 +125,15 @@ public class AlarmHelper {
             artist.setIsAlarmSet(true);
             artist.save();
 
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            int alarmMinutes = Integer.valueOf(preferences.getString(SettingsActivity.ALARM_TIMES, "30"));
+
 
             //TODO - Set the alarm to startTime minus [value from preferences] minutes.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                manager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000000, pendingIntent);
+                manager.setExact(AlarmManager.RTC_WAKEUP, getAlarmTime(artist, alarmMinutes), pendingIntent);
             } else {
-                manager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000000, pendingIntent);
+                manager.set(AlarmManager.RTC_WAKEUP, getAlarmTime(artist, alarmMinutes), pendingIntent);
             }
 
             if (onAlarmStateChangedListener != null) {
@@ -191,5 +200,57 @@ public class AlarmHelper {
             Log.i("AlarmHelper", "Snackbar dismissed");
             snackbar.dismiss();
         }
+    }
+
+    public static void recalculateAllAlarmTimes(Context context) {
+        recalculateAllAlarmTimes(context, 0);
+    }
+
+
+    public static void recalculateAllAlarmTimes(Context context, int alarmMinutes) {
+        try {
+
+            String[] query1 = {"1", Shambhala.CURRENT_YEAR};
+            ArrayList<Artist> artists = (ArrayList<Artist>) Artist.find(Artist.class, "is_Alarm_Set = ? and year = ?", query1, null, null, null);
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            if (alarmMinutes == 0) {
+                alarmMinutes = Integer.valueOf(preferences.getString(SettingsActivity.ALARM_TIMES, "30"));
+            }
+
+            for (Artist artist : artists) {
+
+                Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+                alarmIntent.putExtra("name", artist.getArtistName());
+                alarmIntent.putExtra("id", artist.getId().toString());
+
+                PendingIntent.getBroadcast(context, artist.getId().intValue(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT).cancel();
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, artist.getId().intValue(), alarmIntent, 0);
+
+                AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    manager.setExact(AlarmManager.RTC_WAKEUP, getAlarmTime(artist, alarmMinutes), pendingIntent);
+                } else {
+                    manager.set(AlarmManager.RTC_WAKEUP, getAlarmTime(artist, alarmMinutes), pendingIntent);
+                }
+
+            }
+            Log.i("Shambhala-AlarmUpdater", "There are " + artists.size() + " saved alarms");
+        } catch (Exception e) {
+            Log.e("Shambhala-AlarmUpdater", "BOOM", e);
+        }
+    }
+
+    private static long getAlarmTime(Artist artist, int minutes) {
+
+        DateTime startTime = DateUtils.getFullDateTimeForArtist(artist);
+
+        DateTime alarmTime = startTime.minus(60000 * minutes);
+        Log.i("AlarmHelper", "Artist Time:" + startTime.toString());
+        Log.i("AlarmHelper", "Alarm  Time: " + alarmTime.toString());
+
+        return alarmTime.getMillis();
+
     }
 }

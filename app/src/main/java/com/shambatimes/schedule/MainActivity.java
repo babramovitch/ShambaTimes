@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
         festivalYear = Shambhala.getFestivalYear(this);
 
-        if (DateUtils.getCurrentDay() == 3 && Shambhala.getFestivalYear(MainActivity.this).equals("2015")) {
+        if (DateUtils.getCurrentDay(this) == 3 && Shambhala.getFestivalYear(MainActivity.this).equals("2015")) {
             Constants.REFERENCE_TIME = Constants.SUNDAY_REFERENCE_TIME;
         } else {
             Constants.REFERENCE_TIME = Constants.GENERAL_REFERENCE_TIME;
@@ -337,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
             scheduleSpinner.setSelection(currentDay);
         } else {
 
-            int day = DateUtils.getCurrentDay();
+            int day = DateUtils.getCurrentDay(this);
             if (day != -1) {
                 scheduleSpinner.setSelection(day);
             }

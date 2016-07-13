@@ -47,12 +47,12 @@
         tools:text="30 minutes at the grove"
         android:layout_below="@id/artist_name"
         android:gravity="center"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/dismiss_alarm_button"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
     <Button
-        android:id="@+id/dismiss_alarm_button"
+        android:id="@id/dismiss_alarm_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Dismiss"

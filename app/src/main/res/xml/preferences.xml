@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:defaultValue="2016"
+        android:dialogTitle="Choose year"
+        android:entries="@array/ScheduleYears"
+        android:entryValues="@array/ScheduleYears"
+        android:key="FESTIVAL_YEAR"
+        android:summary="Schedule Year"
+        android:title="Schedule Year" />
+
+    <PreferenceCategory android:title="Schedule Alarms">
+
+        <RingtonePreference
+            android:key="ALARM_SOUND"
+            android:defaultValue="content://settings/system/alarm_alert"
+            android:ringtoneType="alarm"
+            android:showDefault="true"
+            android:summary="Choose the alarm sound"
+            android:title="Alarm Sound" />
+
+        <ListPreference
+            android:defaultValue="30"
+            android:dialogTitle="Minutes before set time"
+            android:entries="@array/AlarmTimeDisplayed"
+            android:entryValues="@array/AlarmTimeValue"
+            android:key="ALARM_TIMES"
+            android:title="Alarm Time" />
+
+        <ListPreference
+            android:defaultValue="5"
+            android:dialogTitle="Alarm Length"
+            android:entries="@array/AlarmLengthDisplayed"
+            android:entryValues="@array/AlarmLengthValue"
+            android:key="ALARM_LENGTH"
+            android:title="Alarm Length" />
+
+        <CheckBoxPreference
+            android:key="ALARM_VIBRATE"
+            android:title="Vibrate during alarm" />
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
