@@ -440,6 +440,7 @@ public class MainActivity extends AppCompatActivity {
                 TextView artistTime = (TextView) convertView.findViewById(R.id.artistTime);
                 TextView artistStage = (TextView) convertView.findViewById(R.id.artistStage);
                 TextView artistGenres = (TextView) convertView.findViewById(R.id.artistGenres);
+                artistGenres.setMinLines(2);
                 final ImageView artistFavorite = (ImageView) convertView.findViewById(R.id.list_favorited);
                 View artistDivider = (View) convertView.findViewById(R.id.separator);
                 RelativeLayout artistLayout = (RelativeLayout) convertView.findViewById(R.id.artistLayout);
