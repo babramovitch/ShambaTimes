@@ -395,7 +395,7 @@ public class ArtistGenerator {
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "22:30", "00:00", "Mich Duvernet", "old-school,electro,chunky house"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "00:00", "02:30", "Meow Mix", "bass,downtempo,house"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "02:30", "04:30", "El Papachango", "bass,electronica,hip hop,tropical"));
-        artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "04:30", "08:00", "Sabo", "cumbia,disco,dub,house,latin,moombahton,reggae,soul,tropical"));
+        artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "04:30", "08:00", "Sabo", "cumbia,disco,dub,house,latin,moombahton,regga,soul,tropical"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "08:00", "10:00", "The Pride", ""));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 3, "10:00", "11:30", "Gemma Luna", "singer,songwriter"));
 
