@@ -440,12 +440,27 @@ public class MainActivity extends AppCompatActivity {
                 TextView artistTime = (TextView) convertView.findViewById(R.id.artistTime);
                 TextView artistStage = (TextView) convertView.findViewById(R.id.artistStage);
                 TextView artistGenres = (TextView) convertView.findViewById(R.id.artistGenres);
-                artistGenres.setMinLines(2);
+
+
                 final ImageView artistFavorite = (ImageView) convertView.findViewById(R.id.list_favorited);
                 View artistDivider = (View) convertView.findViewById(R.id.separator);
                 RelativeLayout artistLayout = (RelativeLayout) convertView.findViewById(R.id.artistLayout);
 
                 final Artist artist = this.getItem(position);
+
+                /*
+                This is to solve an issue where a record is getting cut off (but can scroll) if the text wraps.
+                It only happens if there's one record though, so I'm adding extra space when that's the case.
+                */
+                if (getCount() == 1) {
+                    if (artist.getGenres() != null && artist.getGenres().length() > 45) {
+                        artistGenres.setMinLines(3);
+                    } else {
+                        artistGenres.setMinLines(2);
+                    }
+                } else {
+                    artistGenres.setMinLines(1);
+                }
 
                 if (artist.isFavorite()) {
                     artistFavorite.setImageResource(favoriteDrawables[artist.getStage()]);
