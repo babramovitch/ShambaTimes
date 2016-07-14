@@ -2,6 +2,7 @@ package com.shambatimes.schedule;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -19,8 +20,11 @@ import android.widget.TextView;
 
 import com.shambatimes.schedule.Util.AlarmHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
+import com.shambatimes.schedule.Util.DateUtils;
+import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
+import com.shambatimes.schedule.events.ChangeTimePagersTimeColorEvent;
 import com.shambatimes.schedule.events.ShowHideAlarmSnackbarEvent;
 import com.shambatimes.schedule.events.ToggleToStageEvent;
 import com.shambatimes.schedule.myapplication.R;
@@ -40,10 +44,12 @@ public class TimeCardScheduleFragment extends Fragment {
     private View rootView;
 
     private int date = 0;
+    private int stage;
     private BaseAdapter scheduleAdapter;
     private GridView gridView;
 
     AlarmHelper alarmHelper;
+    TextView editor;
 
     static TimeCardScheduleFragment newInstance(int position, int currentDate) {
         TimeCardScheduleFragment frag = new TimeCardScheduleFragment();
@@ -76,7 +82,6 @@ public class TimeCardScheduleFragment extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
 
-
         rootView = inflater.inflate(R.layout.schedule_by_time_grid, container, false);
         alarmHelper = new AlarmHelper(getActivity(), rootView);
 
@@ -91,7 +96,7 @@ public class TimeCardScheduleFragment extends Fragment {
 
     private void setHeaderTimes() {
 
-        TextView editor = (TextView) rootView.findViewById(R.id.headline_time);
+        editor = (TextView) rootView.findViewById(R.id.headline_time);
 
         DateTime startTime = DateTime.now().withZone(Constants.timeZone).withTimeAtStartOfDay().plusMinutes(Constants.REFERENCE_TIME);
         DateTime endTime;
@@ -102,7 +107,20 @@ public class TimeCardScheduleFragment extends Fragment {
         DateTimeFormatter dateStringFormat = DateTimeFormat.forPattern("HH:mm aa");
 
         editor.setText(dateStringFormat.print(startTime) + " to " + dateStringFormat.print(endTime));
+    }
 
+    public void onEventMainThread(ChangeTimePagersTimeColorEvent event) {
+        final TextView editor = (TextView) rootView.findViewById(R.id.headline_time);
+        int[] stageColors = ColorUtil.getStageColors();
+        if (editor != null && timePosition == DateUtils.getCurrentTimePosition(getActivity())) {
+            editor.setTextColor(ContextCompat.getColor(getActivity(), stageColors[stage]));
+            editor.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    editor.setTextColor(Color.BLACK);
+                }
+            }, 300);
+        }
     }
 
     private void setupGridView() {
@@ -180,7 +198,7 @@ public class TimeCardScheduleFragment extends Fragment {
             TextView artistTime = (TextView) gridView.findViewById(R.id.time_text);
 
             stageName.setText(stageNames[position]);
-            card.setCardBackgroundColor(ContextCompat.getColor(getActivity(),stageColors[position]));
+            card.setCardBackgroundColor(ContextCompat.getColor(getActivity(), stageColors[position]));
 
             final ImageView image = (ImageView) gridView.findViewById(R.id.card_favorited);
             final Artist artist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(date, timePosition, position);
@@ -242,9 +260,7 @@ public class TimeCardScheduleFragment extends Fragment {
             }
 
             setHeaderTimes();
-
             date = event.getPosition();
-
             scheduleAdapter.notifyDataSetChanged();
         }
     }
@@ -257,6 +273,10 @@ public class TimeCardScheduleFragment extends Fragment {
             scheduleAdapter = new ScheduleAdapter(getActivity());
             gridView.setAdapter(scheduleAdapter);
         }
+    }
+
+    public void onEventMainThread(ActionBarColorEvent event) {
+        stage = event.getStage();
     }
 
     @Override

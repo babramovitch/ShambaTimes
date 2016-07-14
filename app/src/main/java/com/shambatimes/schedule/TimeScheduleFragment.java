@@ -24,6 +24,7 @@ import de.greenrobot.event.EventBus;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DatabaseLoadFinishedEvent;
+import com.shambatimes.schedule.events.ChangeTimePagersTimeColorEvent;
 import com.shambatimes.schedule.events.SearchSelectedEvent;
 import com.shambatimes.schedule.events.ShowHideAlarmSnackbarEvent;
 import com.shambatimes.schedule.events.UpdateScheduleByTimeEvent;
@@ -109,6 +110,20 @@ public class TimeScheduleFragment extends Fragment {
         listView.getLayoutParams().width = (int) (getWidestView(getActivity(), adapter) * 1.05);
 
         return (result);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().registerSticky(this);
+    }
+
+    public void setPagerToNow() {
+        if (pager != null) {
+            int time = DateUtils.getCurrentTimePosition(getActivity());
+            pager.setCurrentItem(time, false);
+            EventBus.getDefault().post(new ChangeTimePagersTimeColorEvent());
+        }
     }
 
     public class ListTimeAdapter extends BaseAdapter {
@@ -332,12 +347,6 @@ public class TimeScheduleFragment extends Fragment {
         if (timeAdapter != null) {
             timeAdapter.setDate(date);
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().registerSticky(this);
     }
 
     @Override

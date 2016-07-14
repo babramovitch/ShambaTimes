@@ -1,7 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:compat="http://schemas.android.com/apk/res-auto/android"
     tools:context=".MainActivity">
 
     <item
@@ -12,12 +11,17 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/now_playing"
+        android:icon="@drawable/ic_access_time_white_36dp"
+        android:title="Now Playing"
+        app:showAsAction="ifRoom|collapseActionView" />
+
+    <item
         android:id="@+id/global_search"
         android:icon="@drawable/ic_search_white_36dp"
         android:title="Search"
-        app:showAsAction="ifRoom|collapseActionView"
         app:actionLayout="@layout/actionbar_search"
-        />
+        app:showAsAction="ifRoom|collapseActionView" />
 
 
 </menu>

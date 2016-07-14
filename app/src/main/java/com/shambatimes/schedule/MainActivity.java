@@ -578,7 +578,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
 
         this.menu = menu;
 
@@ -597,6 +597,7 @@ public class MainActivity extends AppCompatActivity {
                         imm.hideSoftInputFromWindow(searchTextView.getWindowToken(), 0);
                         isSearchExpanded = false;
                         EventBus.getDefault().post(new ToggleFilterVisibility(true));
+                        invalidateOptionsMenu();
                         return true; // Return true to collapse action view
                     }
 
@@ -607,6 +608,10 @@ public class MainActivity extends AppCompatActivity {
                             filterImage.callOnClick();
                         }
                         EventBus.getDefault().post(new ToggleFilterVisibility(false));
+                        MenuItem nowPlaying = menu.findItem(R.id.now_playing);
+                        if(nowPlaying != null){
+                            nowPlaying.setVisible(false);
+                        }
                         return true; // Return true to expand action view
                     }
                 });
@@ -711,9 +716,14 @@ public class MainActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem globalSearchItem = menu.findItem(R.id.global_search);
         MenuItem filterListItem = menu.findItem(R.id.filter);
+        MenuItem nowPlaying = menu.findItem(R.id.now_playing);
 
         if (globalSearchItem != null) {
             globalSearchItem.setVisible(!isDrawerOpen);
+        }
+
+        if (nowPlaying != null) {
+            nowPlaying.setVisible(!isDrawerOpen && currentFragment == FRAGMENT_TIME && !DateUtils.isPrePostFestival(this) && !isSearchExpanded);
         }
 
         if (!Shambhala.getFestivalYear(this).equals("2015") && !isSearchExpanded) {
@@ -734,22 +744,32 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        if (id == R.id.global_search) {
-            View actionView = menu.findItem(R.id.global_search).getActionView();
-            if (actionView != null) {
-                final ClearableAutoCompleteTextView searchTextView = (ClearableAutoCompleteTextView) actionView.findViewById(R.id.search_box);
-                searchTextView.setText("");
-                searchTextView.requestFocus();
+        switch(id){
+            case  R.id.now_playing:
+                TimeScheduleFragment timeScheduleFragment = (TimeScheduleFragment) getSupportFragmentManager().findFragmentByTag("TIME");
+                if(timeScheduleFragment != null){
+                    timeScheduleFragment.setPagerToNow();
+                    scheduleSpinner.setSelection(DateUtils.getCurrentDay(this));
+                }
+                break;
 
-                //Keyboard isn't raising unless I delay the command, even with the requestFocus above.
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(searchTextView, InputMethodManager.SHOW_IMPLICIT);
-                    }
-                }, 200);
-            }
+            case R.id.global_search:
+                View actionView = menu.findItem(R.id.global_search).getActionView();
+                if (actionView != null) {
+                    final ClearableAutoCompleteTextView searchTextView = (ClearableAutoCompleteTextView) actionView.findViewById(R.id.search_box);
+                    searchTextView.setText("");
+                    searchTextView.requestFocus();
+
+                    //Keyboard isn't raising unless I delay the command, even with the requestFocus above.
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.showSoftInput(searchTextView, InputMethodManager.SHOW_IMPLICIT);
+                        }
+                    }, 200);
+                }
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -1011,7 +1031,9 @@ public class MainActivity extends AppCompatActivity {
         if (actionView != null) {
             MenuItem item = menu.findItem(R.id.global_search);
             item.collapseActionView();
+            isSearchExpanded = false;
         }
+
     }
 
 
