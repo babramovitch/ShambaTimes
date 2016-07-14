@@ -51,7 +51,7 @@ public final class DateUtils {
             return true;
         }
 
-        DateTime startThursday = new DateTime(2016, 8, 4, 10, 59, 0, 0).withZone(Constants.timeZone);
+        DateTime startThursday = new DateTime(2016, 8, 4, 11, 0, 0, 0).withZone(Constants.timeZone);
         DateTime endThursday = new DateTime(2016, 8, 5, 10, 59, 59, 99).withZone(Constants.timeZone);
         interval = new Interval(startThursday, endThursday);
 
@@ -59,7 +59,7 @@ public final class DateUtils {
             day = 0;
         }
 
-        DateTime startFriday = new DateTime(2016, 8, 5, 10, 59, 0, 0).withZone(Constants.timeZone);
+        DateTime startFriday = new DateTime(2016, 8, 5, 11, 0, 0, 0).withZone(Constants.timeZone);
         DateTime endFriday = new DateTime(2016, 8, 6, 10, 59, 59, 99).withZone(Constants.timeZone);
         interval = new Interval(startFriday, endFriday);
 
@@ -67,7 +67,7 @@ public final class DateUtils {
             day = 1;
         }
 
-        DateTime startSaturday = new DateTime(2016, 8, 6, 10, 59, 0, 0).withZone(Constants.timeZone);
+        DateTime startSaturday = new DateTime(2016, 8, 6, 11, 0, 0, 0).withZone(Constants.timeZone);
         DateTime endSaturday = new DateTime(2016, 8, 7, 10, 59, 59, 99).withZone(Constants.timeZone);
         interval = new Interval(startSaturday, endSaturday);
 
@@ -75,7 +75,7 @@ public final class DateUtils {
             day = 2;
         }
 
-        DateTime startSunday = new DateTime(2016, 8, 7, 10, 59, 0, 0).withZone(Constants.timeZone);
+        DateTime startSunday = new DateTime(2016, 8, 7, 11, 0, 0, 0).withZone(Constants.timeZone);
         DateTime endSunday = new DateTime(2016, 8, 8, 11, 59, 59, 99).withZone(Constants.timeZone);
         interval = new Interval(startSunday, endSunday);
 
@@ -100,7 +100,7 @@ public final class DateUtils {
             return 0;
         }
 
-        DateTime startThursday = new DateTime(2016, 8, 4, 10, 59, 0, 0).withZone(Constants.timeZone);
+        DateTime startThursday = new DateTime(2016, 8, 4, 11, 0, 0, 0).withZone(Constants.timeZone);
         DateTime endThursday = new DateTime(2016, 8, 5, 10, 59, 59, 99).withZone(Constants.timeZone);
         interval = new Interval(startThursday, endThursday);
 
@@ -108,7 +108,7 @@ public final class DateUtils {
             day = 0;
         }
 
-        DateTime startFriday = new DateTime(2016, 8, 5, 10, 59, 0, 0).withZone(Constants.timeZone);
+        DateTime startFriday = new DateTime(2016, 8, 5, 11, 0, 0, 0).withZone(Constants.timeZone);
         DateTime endFriday = new DateTime(2016, 8, 6, 10, 59, 59, 99).withZone(Constants.timeZone);
         interval = new Interval(startFriday, endFriday);
 
@@ -116,7 +116,7 @@ public final class DateUtils {
             day = 1;
         }
 
-        DateTime startSaturday = new DateTime(2016, 8, 6, 10, 59, 0, 0).withZone(Constants.timeZone);
+        DateTime startSaturday = new DateTime(2016, 8, 6, 11, 0, 0, 0).withZone(Constants.timeZone);
         DateTime endSaturday = new DateTime(2016, 8, 7, 10, 59, 59, 99).withZone(Constants.timeZone);
         interval = new Interval(startSaturday, endSaturday);
 
@@ -124,7 +124,7 @@ public final class DateUtils {
             day = 2;
         }
 
-        DateTime startSunday = new DateTime(2016, 8, 7, 10, 59, 0, 0).withZone(Constants.timeZone);
+        DateTime startSunday = new DateTime(2016, 8, 7, 11, 0, 0, 0).withZone(Constants.timeZone);
         DateTime endSunday = new DateTime(2016, 8, 8, 11, 59, 59, 99).withZone(Constants.timeZone);
         interval = new Interval(startSunday, endSunday);
 
