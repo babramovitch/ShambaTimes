@@ -124,8 +124,7 @@ public class StageListScheduleFragment extends Fragment {
 
     private void updateSelectedListViewItems(boolean resetSearchName) {
 
-        //TODO Currently hardcoded to 1 (friday) for testing.
-        Artist currentlyPlayingArtist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(1, DateUtils.getCurrentTimePosition(getActivity()), stage);
+        Artist currentlyPlayingArtist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(DateUtils.getCurrentDay(getActivity()), DateUtils.getCurrentTimePosition(getActivity()), stage);
         View view;
         TextView artistNameTextView;
 
@@ -151,7 +150,8 @@ public class StageListScheduleFragment extends Fragment {
                     break; //exit loop as there's nothing left to select
                 }
 
-            } else if (currentlyPlayingArtist != null && artistNameTextView.getText().toString().equals(currentlyPlayingArtist.getAristName())
+            } else if (currentlyPlayingArtist != null && !DateUtils.isPrePostFestival(getActivity())
+                    && artistNameTextView.getText().toString().equals(currentlyPlayingArtist.getAristName())
                     && Shambhala.getFestivalYear(getActivity()).equals(Shambhala.CURRENT_YEAR)) {
                 listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
                 listView.setItemChecked(i, true);
@@ -216,7 +216,10 @@ public class StageListScheduleFragment extends Fragment {
                 mViewHolder = (MyViewHolder) convertView.getTag();
             }
 
-            Artist currentlyPlayingArtist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(1, DateUtils.getCurrentTimePosition(getActivity()), stage);
+            Artist currentlyPlayingArtist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(
+                    DateUtils.getCurrentDay(getActivity()),
+                    DateUtils.getCurrentTimePosition(getActivity()),
+                    stage);
 
 
             mViewHolder.artistName.setText(getItem(position).getAristName());
@@ -230,7 +233,7 @@ public class StageListScheduleFragment extends Fragment {
             mViewHolder.artistGenres.setText(formattedGenres);
 
             if (currentlyPlayingArtist != null && getItem(position).getAristName().equals(currentlyPlayingArtist.getAristName())
-                    && Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR)) {
+                    && Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR) && !DateUtils.isPrePostFestival(getActivity())) {
                 mViewHolder.artistTime.setText(getItem(position).getStartTimeString() + " to " + getItem(position).getEndTimeString() + " - Now Playing");
             } else {
                 mViewHolder.artistTime.setText(getItem(position).getStartTimeString() + " to " + getItem(position).getEndTimeString());
