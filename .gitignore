@@ -9,3 +9,6 @@ app/build/intermediates/
 app/build/generated/
 .idea/
 app/build/
+app/app.iml
+ShambaTimes.iml
+app/fabric.properties
