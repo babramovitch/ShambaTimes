@@ -303,25 +303,7 @@ public class ArtistGenerator {
         artistList.add(new Artist(2015, Constants.VILLAGE, 3, "03:00", "04:30", "GTA", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.VILLAGE, 3, "04:30", "05:30", "Spiral Architects", "house,electro,glitch hop"));
         artistList.add(new Artist(2015, Constants.VILLAGE, 3, "05:30", "06:30", "Scottie D", "house,electro,glitch hop"));
-
-        //BIODOME
-        artistList.add(new Artist(2015, Constants.BIODOME, 1, "00:30", "02:00", "Skrillex", "bass,dubstep"));
-        artistList.add(new Artist(2015, Constants.BIODOME, 1, "02:00", "03:00", "Downlink", "bass,dubstep,trap"));
-        artistList.add(new Artist(2015, Constants.BIODOME, 1, "03:00", "04:30", "Drumsound & Bassline Smith", "drum & bass"));
-        artistList.add(new Artist(2015, Constants.BIODOME, 1, "04:30", "05:30", "Openend", "house,electro,glitch hop"));
-        artistList.add(new Artist(2015, Constants.BIODOME, 1, "05:30", "06:30", "Mr. B", "house,electro,glitch hop"));
-
-        artistList.add(new Artist(2015, Constants.BIODOME, 2, "00:00", "01:30", "Terravita", "house,electro,glitch hop"));
-        artistList.add(new Artist(2015, Constants.BIODOME, 2, "01:30", "03:00", "Excision", "house,electro,glitch hop"));
-        artistList.add(new Artist(2015, Constants.BIODOME, 2, "03:00", "04:30", "Tantrum Desire", "house,electro,glitch hop"));
-        artistList.add(new Artist(2015, Constants.BIODOME, 2, "04:30", "07:00", "Liquid Sunrise Jam", "house,electro,glitch hop"));
-
-        artistList.add(new Artist(2015, Constants.BIODOME, 3, "01:30", "03:00", "Zomboy", "house,electro,glitch hop"));
-        artistList.add(new Artist(2015, Constants.BIODOME, 3, "03:00", "04:30", "GTA", "house,electro,glitch hop"));
-        artistList.add(new Artist(2015, Constants.BIODOME, 3, "04:30", "05:30", "Spiral Architects", "house,electro,glitch hop"));
-        artistList.add(new Artist(2015, Constants.BIODOME, 3, "05:30", "06:30", "Scottie D", "house,electro,glitch hop"));
-
-
+        
         for (Artist artist : artistList) {
             artist.save();
         }
