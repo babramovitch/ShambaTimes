@@ -160,6 +160,11 @@ public class MainActivity extends AppCompatActivity {
     private void prepareAndLoadDatabase() {
 
         if (prefs.contains("database_loaded")) {
+
+            if(!prefs.contains("2016_loaded")) {
+                Toast.makeText(this, "Preparing Database", Toast.LENGTH_LONG).show();
+            }
+
             new Thread(new Runnable() {
                 public void run() {
                     DatabaseScheduleUpdates.scheduleUpdateOne2015(MainActivity.this);
