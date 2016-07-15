@@ -3,6 +3,7 @@ package com.shambatimes.schedule;
 import android.content.Context;
 
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -719,6 +720,11 @@ public class ArtistsFragment extends Fragment {
     }
 
     public void showGenres(boolean animate) {
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            genreCardView.setPreventCornerOverlap (false);
+            genreCardView.setCardElevation(20);
+        }
 
         if (genreCardView.getVisibility() == View.GONE) {
             genreCardView.setVisibility(View.VISIBLE);
