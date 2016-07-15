@@ -3,7 +3,6 @@ package com.shambatimes.schedule;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.shambatimes.schedule.Settings.SettingsActivity;
 
@@ -111,12 +110,26 @@ public class Shambhala {
     public ArrayList<Artist> loadAllArtistsForYear(String year) {
         String[] query1 = {"" + year};
         ArrayList<Artist> artistList = (ArrayList<Artist>) Artist.find(Artist.class, "year = ?", query1, null, "lower(artist_Name) asc", null);
+
+        if(artistList.size() > 1 && artistList.get(0) != null && artistList.get(0).getArtistName().equals("2TIGHT")){
+            Artist artist = artistList.get(0);
+            artistList.remove(0);
+            artistList.add(artist);
+        }
+
         return artistList;
     }
 
     public ArrayList<Artist> loadAllArtistsForYearAndDay(String year, String day) {
         String[] query1 = {year, day};
         ArrayList<Artist> artistList = (ArrayList<Artist>) Artist.find(Artist.class, "year = ? and day = ?", query1, null, "lower(artist_Name) asc", null);
+
+        if(artistList.size() > 1 && artistList.get(0) != null && artistList.get(0).getArtistName().equals("2TIGHT")){
+            Artist artist = artistList.get(0);
+            artistList.remove(0);
+            artistList.add(artist);
+        }
+
         return artistList;
     }
 
@@ -124,7 +137,6 @@ public class Shambhala {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(SettingsActivity.FESTIVAL_YEAR, "2016");
     }
-
 
     public ArrayList<String> generateGenreList() {
 
@@ -134,7 +146,7 @@ public class Shambhala {
             String[] genres = artist.getGenres().toLowerCase().split(",");
             for (String genre : genres) {
                 genre = genre.trim();
-                if (!genreList.contains(genre)) {
+                if (!genre.equals("") && !genreList.contains(genre)) {
                     genreList.add(genre);
                 }
             }
@@ -146,6 +158,8 @@ public class Shambhala {
                 return s1.compareToIgnoreCase(s2);
             }
         });
+
+        genreList.add("");
 
         return genreList;
     }
