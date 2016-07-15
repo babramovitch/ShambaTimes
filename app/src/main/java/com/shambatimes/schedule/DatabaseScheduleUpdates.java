@@ -168,8 +168,7 @@ public class DatabaseScheduleUpdates {
         if (!prefs.contains("update_two_complete")) {
 
             try {
-
-                String[] query0 = {"0"};
+                
                 Iterator<Artist> artists = Artist.findAll(Artist.class);
 
                 while (artists.hasNext()) {
@@ -179,9 +178,6 @@ public class DatabaseScheduleUpdates {
                         artist.save();
                     }
                 }
-
-                ArtistGenerator artistGenerator = new ArtistGenerator(context);
-                artistGenerator.get2016Artists();
 
                 prefs.edit().putBoolean("update_two_complete", true).apply();
 
