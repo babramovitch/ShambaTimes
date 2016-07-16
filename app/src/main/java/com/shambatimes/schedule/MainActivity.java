@@ -11,6 +11,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -161,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (prefs.contains("database_loaded")) {
 
-            if(!prefs.contains("2016_loaded")) {
+            if (!prefs.contains("2016_loaded")) {
                 Toast.makeText(this, "Preparing Database", Toast.LENGTH_LONG).show();
             }
 
@@ -614,7 +615,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         EventBus.getDefault().post(new ToggleFilterVisibility(false));
                         MenuItem nowPlaying = menu.findItem(R.id.now_playing);
-                        if(nowPlaying != null){
+                        if (nowPlaying != null) {
                             nowPlaying.setVisible(false);
                         }
                         return true; // Return true to expand action view
@@ -749,10 +750,10 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        switch(id){
-            case  R.id.now_playing:
+        switch (id) {
+            case R.id.now_playing:
                 TimeScheduleFragment timeScheduleFragment = (TimeScheduleFragment) getSupportFragmentManager().findFragmentByTag("TIME");
-                if(timeScheduleFragment != null){
+                if (timeScheduleFragment != null) {
                     timeScheduleFragment.setPagerToNow();
                     scheduleSpinner.setSelection(DateUtils.getCurrentDay(this));
                 }
@@ -1137,6 +1138,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
+        if (drawerLayout != null) {
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return;
+            }
+        }
 
         if (isSearchExpanded) {
             super.onBackPressed();
