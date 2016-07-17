@@ -2,7 +2,9 @@ package com.shambatimes.schedule;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MyViewPager;
 import android.support.v4.view.PagerAdapter;
@@ -15,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.AlarmHelper;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.Util.DateUtils;
@@ -223,10 +226,11 @@ public class TimeScheduleFragment extends Fragment {
     private String[] generateListTimes() {
 
         String[] times = new String[48];
-        String time = "01/01/2001 10:00:00";
 
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
-        DateTimeFormatter dateStringFormat = DateTimeFormat.forPattern("HH:mm aa");
+
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        DateTimeFormatter dateStringFormat = DateUtils.getTimeFormatTwo(preferences.getString(SettingsActivity.TIME_FORMAT,"24"));
 
         for (int x = 0; x < 48; x++) {
             DateTime dateTime = DateTime.now().withZone(Constants.timeZone).withTimeAtStartOfDay().plusMinutes(Constants.REFERENCE_TIME);

@@ -1,6 +1,8 @@
 package com.shambatimes.schedule.Util;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.shambatimes.schedule.Artist;
@@ -9,11 +11,44 @@ import com.shambatimes.schedule.Shambhala;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * Created by Ben on 21/02/2015.
  */
 public final class DateUtils {
+
+    public static DateTimeFormatter getTimeFormat(String format){
+
+        DateTimeFormatter dateStringFormat;
+
+        if(format.equals("24")){
+            dateStringFormat = DateTimeFormat.forPattern("HH:mm");
+        }else{
+            dateStringFormat = DateTimeFormat.forPattern("h:mm aa");
+        }
+
+        return dateStringFormat;
+    }
+
+    public static DateTimeFormatter getTimeFormatTwo(String format){
+
+        DateTimeFormatter dateStringFormat;
+
+        if(format.equals("24")){
+            dateStringFormat = DateTimeFormat.forPattern("HH:mm aa");
+        }else{
+            dateStringFormat = DateTimeFormat.forPattern("h:mm aa");
+        }
+
+        return dateStringFormat;
+    }
+
+    public static String formatTime(DateTimeFormatter dateStringFormat, String time){
+        return dateStringFormat.print(new LocalTime(time, Constants.timeZone));
+    }
 
     public static int getCurrentTimePosition(Context context) {
 

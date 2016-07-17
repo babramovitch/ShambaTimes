@@ -1,8 +1,10 @@
 package com.shambatimes.schedule;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,13 +19,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.AlarmHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
+import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
 import com.shambatimes.schedule.myapplication.R;
+
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 
@@ -47,6 +53,7 @@ public class FavoriteScheduleFragment extends Fragment  {
     ArtistRecyclerAdapter adapter;
     RecyclerView recyclerView;
     View result;
+    DateTimeFormatter dateStringFormat;
 
     boolean ignoreSelfEvent = true;
     AlarmHelper alarmHelper;
@@ -64,6 +71,9 @@ public class FavoriteScheduleFragment extends Fragment  {
         artists = (ArrayList<Artist>) Artist.find(Artist.class, "favorite = ? and day = ? and year = ?", args, null, "day ASC, start_Position ASC", null);
 
         stageNames = getActivity().getResources().getStringArray(R.array.stages);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        dateStringFormat = DateUtils.getTimeFormat(preferences.getString(SettingsActivity.TIME_FORMAT,"24"));
 
         recyclerView = (RecyclerView) result.findViewById(R.id.listView_schedule);
         recyclerView.setHasFixedSize(true);
@@ -175,7 +185,11 @@ public class FavoriteScheduleFragment extends Fragment  {
 
             artistViewHolder.artistName.setText(artist.getAristName());
             artistViewHolder.artistGenres.setText(formattedGenres);
-            artistViewHolder.artistTime.setText(artist.getStartTimeString() + " to " + artist.getEndTimeString());
+
+            artistViewHolder.artistTime.setText(DateUtils.formatTime(dateStringFormat,artist.getStartTimeString()) +
+                    " - "
+                    + DateUtils.formatTime(dateStringFormat,artist.getEndTimeString()));
+
             artistViewHolder.artistStartTimePosition.setText("" + artist.getStartPosition());
             artistViewHolder.artistStage.setText(stageNames[artist.getStage()]);
             artistViewHolder.divider.setBackground(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));

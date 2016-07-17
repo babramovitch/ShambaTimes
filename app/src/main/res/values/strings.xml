@@ -118,6 +118,16 @@
         <item>5</item>
     </string-array>
 
+    <string-array name="TimeFormatDisplayed">
+        <item>24 hour</item>
+        <item>12 hour</item>
+    </string-array>
+
+    <string-array name="TimeFormatValue">
+        <item>24</item>
+        <item>12</item>
+    </string-array>
+
 </resources>
 
 

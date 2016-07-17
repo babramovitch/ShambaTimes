@@ -2,8 +2,10 @@ package com.shambatimes.schedule;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -18,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.AlarmHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
@@ -30,6 +33,8 @@ import com.shambatimes.schedule.events.ToggleToStageEvent;
 import com.shambatimes.schedule.myapplication.R;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -50,6 +55,7 @@ public class TimeCardScheduleFragment extends Fragment {
 
     AlarmHelper alarmHelper;
     TextView editor;
+    DateTimeFormatter dateStringFormat;
 
     static TimeCardScheduleFragment newInstance(int position, int currentDate) {
         TimeCardScheduleFragment frag = new TimeCardScheduleFragment();
@@ -88,6 +94,9 @@ public class TimeCardScheduleFragment extends Fragment {
         timePosition = getArguments().getInt(TIME_POSITION, 0);
         date = getArguments().getInt(DATE_POSITION, 0);
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        dateStringFormat = DateUtils.getTimeFormat(preferences.getString(SettingsActivity.TIME_FORMAT,"24"));
+
         setHeaderTimes();
         setupGridView();
 
@@ -104,7 +113,8 @@ public class TimeCardScheduleFragment extends Fragment {
         startTime = startTime.plusMinutes(30 * timePosition);
         endTime = startTime.plusMinutes(30);
 
-        DateTimeFormatter dateStringFormat = DateTimeFormat.forPattern("HH:mm aa");
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        DateTimeFormatter dateStringFormat = DateUtils.getTimeFormatTwo(preferences.getString(SettingsActivity.TIME_FORMAT,"24"));
 
         editor.setText(dateStringFormat.print(startTime) + " to " + dateStringFormat.print(endTime));
     }
@@ -170,6 +180,7 @@ public class TimeCardScheduleFragment extends Fragment {
 
         public ScheduleAdapter(Context context) {
             mContext = context;
+
         }
 
         public int getCount() {
@@ -183,7 +194,6 @@ public class TimeCardScheduleFragment extends Fragment {
         public long getItemId(int position) {
             return 0;
         }
-
 
         public View getView(final int position, View convertView, ViewGroup parent) {
 
@@ -205,7 +215,10 @@ public class TimeCardScheduleFragment extends Fragment {
 
             if (artist != null) {
                 artistName.setText(artist.getAristName());
-                artistTime.setText(artist.getStartTimeString() + " - " + artist.getEndTimeString());
+
+                artistTime.setText(DateUtils.formatTime(dateStringFormat,artist.getStartTimeString()) +
+                        " - "
+                        + DateUtils.formatTime(dateStringFormat,artist.getEndTimeString()));
 
                 if (artist.isFavorite()) {
                     image.setImageResource(R.drawable.favorite_white);

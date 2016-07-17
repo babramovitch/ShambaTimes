@@ -53,6 +53,7 @@ import com.shambatimes.schedule.events.ShowHideAutoCompleteSearchClearButtonEven
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DatabaseLoadFinishedEvent;
 import com.shambatimes.schedule.events.SearchSelectedEvent;
+
 import com.shambatimes.schedule.events.ToggleFilterVisibility;
 import com.shambatimes.schedule.events.ToggleToStageEvent;
 import com.shambatimes.schedule.events.ToggleToTimeEvent;
@@ -60,6 +61,8 @@ import com.shambatimes.schedule.events.UpdateScheduleByTimeEvent;
 import com.shambatimes.schedule.myapplication.BuildConfig;
 import com.shambatimes.schedule.myapplication.R;
 import com.shambatimes.schedule.views.ClearableAutoCompleteTextView;
+
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
     Handler handler = new Handler();
 
     String festivalYear;
+    String timeFormatPreference;
 
     boolean genreFilteringActive = false;
 
@@ -125,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        timeFormatPreference = prefs.getString(SettingsActivity.TIME_FORMAT,"24");
 
         festivalYear = Shambhala.getFestivalYear(this);
 
@@ -429,6 +435,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupGlobalSearch() {
 
+        final DateTimeFormatter dateStringFormat = DateUtils.getTimeFormat(prefs.getString(SettingsActivity.TIME_FORMAT,"24"));
+
         //TODO - Remove duplication and see if the recyclerview genreAdapter in ArtistFragment can be reused
         searchAdapter = new ArrayAdapter<Artist>(this, R.layout.artist_list_item_artists) {
             private Filter filter;
@@ -534,7 +542,9 @@ public class MainActivity extends AppCompatActivity {
                 artistName.setText(artist.getAristName());
                 artistDay.setText(dayOfWeek[artist.getDay()]);
                 artistStage.setText(stageNames[artist.getStage()]);
-                artistTime.setText(artist.getStartTimeString() + " to " + artist.getEndTimeString());
+                artistTime.setText(DateUtils.formatTime(dateStringFormat,artist.getStartTimeString()) +
+                        " - "
+                        + DateUtils.formatTime(dateStringFormat,artist.getEndTimeString()));
                 artistDivider.setBackground(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, gradientColors));
                 artistLayout.setBackgroundResource(getBackgroundSelector());
 
@@ -949,10 +959,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         didFestivalYearChange();
+        didTimeFormatChange();
         super.onResume();
     }
 
     private void didFestivalYearChange() {
+        String newTimeFormat = prefs.getString(SettingsActivity.TIME_FORMAT,"24");
+        if (!timeFormatPreference.equals(newTimeFormat)) {
+            Intent intent = getIntent();
+            overridePendingTransition(0, 0);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            finish();
+            overridePendingTransition(0, 0);
+            startActivity(intent);
+        }
+    }
+
+    private void didTimeFormatChange() {
         String newFestivalYear = Shambhala.getFestivalYear(this);
         if (!newFestivalYear.equals(festivalYear)) {
             Intent intent = getIntent();

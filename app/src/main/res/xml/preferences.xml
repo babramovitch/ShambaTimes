@@ -10,6 +10,14 @@
         android:summary="Schedule Year"
         android:title="Schedule Year" />
 
+    <ListPreference
+        android:defaultValue="24"
+        android:dialogTitle="Time Format"
+        android:entries="@array/TimeFormatDisplayed"
+        android:entryValues="@array/TimeFormatValue"
+        android:key="TIME_FORMAT"
+        android:title="Schedule Time Format" />
+
     <PreferenceCategory android:title="Schedule Alarms">
 
         <RingtonePreference

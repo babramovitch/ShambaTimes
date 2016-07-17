@@ -12,7 +12,6 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
-import com.shambatimes.schedule.Shambhala;
 import com.shambatimes.schedule.Util.AlarmHelper;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.myapplication.R;
@@ -29,6 +28,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     public final static String ALARM_SOUND = "ALARM_SOUND";
     public final static String ALARM_VIBRATE = "ALARM_VIBRATE";
     public final static String ALARM_LENGTH = "ALARM_LENGTH";
+    public final static String TIME_FORMAT = "TIME_FORMAT";
     int actionBarColor;
 
 
@@ -93,20 +93,21 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     public static class SettingsFragment extends PreferenceFragment {
 
-        boolean firstLoad = true;
+        boolean firstLoadAlarmTimes = true;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-            if(savedInstanceState != null){
-                firstLoad = savedInstanceState.getBoolean("firstLoad",true);
+            if (savedInstanceState != null) {
+                firstLoadAlarmTimes = savedInstanceState.getBoolean("firstLoadAlarmTimes", true);
             }
 
             addPreferencesFromResource(R.xml.preferences);
             bindPreferenceSummaryToValue(findPreference(FESTIVAL_YEAR));
             bindPreferenceSummaryToValue(findPreference(ALARM_TIMES));
             bindPreferenceSummaryToValue(findPreference(ALARM_LENGTH));
+            bindPreferenceSummaryToValue(findPreference(TIME_FORMAT));
         }
 
         /**
@@ -146,10 +147,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     // Set the summary to reflect the new value.
                     if (preference.getKey().equals(ALARM_TIMES)) {
                         message = "The time an alarm will go off before a set.  This time is for all alarms.\n\n";
-                        if(!firstLoad) {
+                        if (!firstLoadAlarmTimes) {
                             AlarmHelper.recalculateAllAlarmTimes(getActivity(), Integer.valueOf(stringValue));
                         }
-                        firstLoad = false;
+                        firstLoadAlarmTimes = false;
                     }
 
                     preference.setSummary(
@@ -169,7 +170,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         @Override
         public void onSaveInstanceState(Bundle savedInstanceState) {
-            savedInstanceState.putBoolean("firstLoad", firstLoad);
+            savedInstanceState.putBoolean("firstLoadAlarmTimes", firstLoadAlarmTimes);
             super.onSaveInstanceState(savedInstanceState);
         }
 

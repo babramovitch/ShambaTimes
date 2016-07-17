@@ -2,10 +2,12 @@ package com.shambatimes.schedule;
 
 import android.content.Context;
 
+import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,8 +23,10 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.AlarmHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
+import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.Util.Util;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
@@ -30,6 +34,8 @@ import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.SearchSelectedEvent;
 import com.shambatimes.schedule.events.FilterEvent;
 import com.shambatimes.schedule.myapplication.R;
+
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 
@@ -155,6 +161,8 @@ public class ArtistsFragment extends Fragment {
         private boolean animateHeartsInwards = false;
         private boolean skipAnimations = true;
         int yAxisAnimationDistance;
+        DateTimeFormatter dateStringFormat;
+
         //ItemFilter mFilter = new ItemFilter();
 
         int editTextWidth;
@@ -165,6 +173,8 @@ public class ArtistsFragment extends Fragment {
 
         public ArtistRecyclerAdapter(ArrayList<Artist> artistList) {
             this.artistList = artistList;
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            dateStringFormat = DateUtils.getTimeFormat(preferences.getString(SettingsActivity.TIME_FORMAT,"24"));
         }
 
         public void setArtistList(ArrayList<Artist> artistList) {
@@ -233,7 +243,11 @@ public class ArtistsFragment extends Fragment {
             artistViewHolder.artistName.setText(artist.getAristName());
             artistViewHolder.artistDay.setText(dayOfWeek[artist.getDay()]);
             artistViewHolder.genres.setText(formattedGenres);
-            artistViewHolder.artistTime.setText(artist.getStartTimeString() + " to " + artist.getEndTimeString());
+
+            artistViewHolder.artistTime.setText(DateUtils.formatTime(dateStringFormat,artist.getStartTimeString()) +
+                    " - "
+                    + DateUtils.formatTime(dateStringFormat,artist.getEndTimeString()));
+
             artistViewHolder.artistStartTimePosition.setText("" + artist.getStartPosition());
             artistViewHolder.artistStage.setText(stageNames[artist.getStage()]);
             artistViewHolder.divider.setBackground(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));

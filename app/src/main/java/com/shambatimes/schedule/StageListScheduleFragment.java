@@ -2,8 +2,10 @@ package com.shambatimes.schedule;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.AlarmHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
@@ -53,6 +56,7 @@ public class StageListScheduleFragment extends Fragment {
     ArrayList<Artist> artists;
     View rootView;
     AlarmHelper alarmHelper;
+    DateTimeFormatter dateStringFormat;
 
     static StageListScheduleFragment newInstance(int position, int date, String name, int dividerColor) {
         StageListScheduleFragment frag = new StageListScheduleFragment();
@@ -81,6 +85,9 @@ public class StageListScheduleFragment extends Fragment {
         searchName = getArguments().getString(SEARCH_NAME, "");
         artists = MainActivity.shambhala.getArtistsByDayAndStage(date, stage);
         alarmHelper = new AlarmHelper(getActivity(), rootView);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        dateStringFormat = DateUtils.getTimeFormat(preferences.getString(SettingsActivity.TIME_FORMAT,"24"));
 
         listView = (ListView) rootView.findViewById(R.id.listView_schedule);
 
@@ -173,6 +180,7 @@ public class StageListScheduleFragment extends Fragment {
         LayoutInflater inflater;
         Context context;
 
+
         int[] favoriteDrawables = ColorUtil.getStageFavoriteDrawables();
         int[] favoriteOutlineDrawables = ColorUtil.getStageFavoriteOutlineDrawables();
 
@@ -234,9 +242,16 @@ public class StageListScheduleFragment extends Fragment {
 
             if (currentlyPlayingArtist != null && getItem(position).getAristName().equals(currentlyPlayingArtist.getAristName())
                     && Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR) && !DateUtils.isPrePostFestival(getActivity())) {
-                mViewHolder.artistTime.setText(getItem(position).getStartTimeString() + " to " + getItem(position).getEndTimeString() + " - Now Playing");
+                mViewHolder.artistTime.setText(
+                        DateUtils.formatTime(dateStringFormat,getItem(position).getStartTimeString())
+                                + " to "
+                                + DateUtils.formatTime(dateStringFormat,getItem(position).getEndTimeString())
+                                + " - Now Playing");
             } else {
-                mViewHolder.artistTime.setText(getItem(position).getStartTimeString() + " to " + getItem(position).getEndTimeString());
+                mViewHolder.artistTime.setText(
+                        DateUtils.formatTime(dateStringFormat,getItem(position).getStartTimeString())
+                                + " to "
+                                + DateUtils.formatTime(dateStringFormat,getItem(position).getEndTimeString()));
             }
             mViewHolder.artistStartTimePosition.setText(getItem(position).getStartTimeString());
 
