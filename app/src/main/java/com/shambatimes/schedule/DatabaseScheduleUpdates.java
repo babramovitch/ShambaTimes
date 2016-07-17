@@ -6,6 +6,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.shambatimes.schedule.Util.AlarmHelper;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -196,10 +198,53 @@ public class DatabaseScheduleUpdates {
                 ArtistGenerator artistGenerator = new ArtistGenerator(context);
                 artistGenerator.get2016Artists();
                 prefs.edit().putBoolean("2016_loaded", true).apply();
+                prefs.edit().putBoolean("update_one_complete_2016", true).apply();
             }catch(Exception e){
                 Toast.makeText(context,"Error Loading 2016 Schedule", Toast.LENGTH_LONG).show();
             }
         }
     }
 
+    public static void scheduleUpdateOne2016(Context context) {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (!prefs.contains("update_one_complete_2016")) {
+
+            try {
+                ArrayList<Artist> artists;
+
+                String[] query5 = {"the noisy freaks", "3","2016"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query5, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setArtistName("SkiiTour");
+                    artist.setGenres("house,electro,glitch hop");
+                    artist.setIsAlarmSet(false);
+                    artist.setFavorite(false);
+                    artist.save();
+
+                    AlarmHelper.cancelAlarmIntent(context, artist);
+                }
+
+                String[] query6 = {"isick", "2","2016"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query6, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setArtistName("Kermode");
+                    artist.setGenres("bass,downtempo,dubstep,electronic");
+                    artist.setIsAlarmSet(false);
+                    artist.setFavorite(false);
+                    artist.save();
+
+                    AlarmHelper.cancelAlarmIntent(context, artist);
+                }
+
+                prefs.edit().putBoolean("update_one_complete_2016", true).apply();
+
+            } catch (Exception e) {
+                Log.e("UpdateDatabase", "Error Updating", e);
+            }
+        }
+    }
 }

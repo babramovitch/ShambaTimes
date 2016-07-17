@@ -353,7 +353,7 @@ public class ArtistGenerator {
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "12:30", "13:30", "Marty Carter w/ Russ", "Folk Fusion,World"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "13:30", "14:30", "Russ-2-Fari", ""));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "14:30", "15:30", "Jittabug", ""));
-        artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "15:30", "16:30", "iSick", ""));
+        artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "15:30", "16:30", "Kermode", "bass,downtempo,dubstep,electronic"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "16:30", "18:00", "Val Kilmer & The New Coke", "80's Party"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "18:00", "19:00", "Cass Rhapsody", "Beach,Jams,tropical"));
         artistList.add(new Artist(2016, Constants.LIVINGROOM, 2, "19:00", "20:00", "Shasta", ""));
@@ -495,7 +495,7 @@ public class ArtistGenerator {
         artistList.add(new Artist(2016, Constants.FOREST, 2, "04:30", "06:30", "Neighbour", "disco,house"));
 
         artistList.add(new Artist(2016, Constants.FOREST, 3, "14:30", "19:30", "Fractal Funk Jam - Hosted by Smalltown DJs", ""));
-        artistList.add(new Artist(2016, Constants.FOREST, 3, "19:30", "21:00", "The Noisy Freaks", "french house,nu funk"));
+        artistList.add(new Artist(2016, Constants.FOREST, 3, "19:30", "21:00", "SkiiTour", "house,electro,glitch hop"));
         artistList.add(new Artist(2016, Constants.FOREST, 3, "21:00", "22:30", "Purple Disco Machine", "electronica,house,nu disco"));
         artistList.add(new Artist(2016, Constants.FOREST, 3, "22:30", "00:00", "Felix Da Housecat", "house"));
         artistList.add(new Artist(2016, Constants.FOREST, 3, "00:00", "01:30", "Green Velvet", "electronica,house"));

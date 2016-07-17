@@ -55,7 +55,7 @@ public class AlarmHelper {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String alarmMinutes = preferences.getString(SettingsActivity.ALARM_TIMES, "30");
 
-        if (DateUtils.getFullDateTimeForArtist(artist).minus(60000*Integer.valueOf(alarmMinutes)).isAfter(System.currentTimeMillis())) {
+        if (DateUtils.getFullDateTimeForArtist(artist).minus(60000 * Integer.valueOf(alarmMinutes)).isAfter(System.currentTimeMillis())) {
             if (Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR)) {
 
                 this.artist = artist;
@@ -236,9 +236,9 @@ public class AlarmHelper {
                 }
 
             }
-            Log.i("Shambhala-AlarmUpdater", "There are " + artists.size() + " saved alarms");
+            Log.i("AlarmHelper", "There are " + artists.size() + " saved alarms");
         } catch (Exception e) {
-            Log.e("Shambhala-AlarmUpdater", "BOOM", e);
+            Log.e("AlarmHelper", "BOOM", e);
         }
     }
 
@@ -252,5 +252,17 @@ public class AlarmHelper {
 
         return alarmTime.getMillis();
 
+    }
+
+    public static void cancelAlarmIntent(Context context, Artist artist) {
+        try {
+            Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+            alarmIntent.putExtra("name", artist.getArtistName());
+            alarmIntent.putExtra("id", artist.getId().toString());
+
+            PendingIntent.getBroadcast(context, artist.getId().intValue(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT).cancel();
+        } catch (Exception e) {
+            Log.e("AlarmHelper", "Exception clearing alarm", e);
+        }
     }
 }

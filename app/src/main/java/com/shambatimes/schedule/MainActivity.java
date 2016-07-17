@@ -168,9 +168,14 @@ public class MainActivity extends AppCompatActivity {
 
             new Thread(new Runnable() {
                 public void run() {
+                    //2015 updates
                     DatabaseScheduleUpdates.scheduleUpdateOne2015(MainActivity.this);
                     DatabaseScheduleUpdates.scheduleUpdateTwo2015(MainActivity.this);
+
+                    //2016 updates
                     DatabaseScheduleUpdates.load2016Database(MainActivity.this);
+                    DatabaseScheduleUpdates.scheduleUpdateOne2016(MainActivity.this);
+
                     fetchAllArtistsForYear(festivalYear);
                 }
             }).start();
