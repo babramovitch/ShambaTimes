@@ -219,7 +219,7 @@ public class DatabaseScheduleUpdates {
                 if (artists.size() > 0) {
                     Artist artist = artists.get(0);
                     artist.setArtistName("SkiiTour");
-                    artist.setGenres("house,electro,glitch hop");
+                    artist.setGenres("Drum & bass,house,trap,twerk");
                     artist.setIsAlarmSet(false);
                     artist.setFavorite(false);
                     artist.save();

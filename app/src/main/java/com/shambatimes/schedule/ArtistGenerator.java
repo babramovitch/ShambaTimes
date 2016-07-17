@@ -495,7 +495,7 @@ public class ArtistGenerator {
         artistList.add(new Artist(2016, Constants.FOREST, 2, "04:30", "06:30", "Neighbour", "disco,house"));
 
         artistList.add(new Artist(2016, Constants.FOREST, 3, "14:30", "19:30", "Fractal Funk Jam - Hosted by Smalltown DJs", ""));
-        artistList.add(new Artist(2016, Constants.FOREST, 3, "19:30", "21:00", "SkiiTour", "house,electro,glitch hop"));
+        artistList.add(new Artist(2016, Constants.FOREST, 3, "19:30", "21:00", "SkiiTour", "Drum & bass,house,trap,twerk"));
         artistList.add(new Artist(2016, Constants.FOREST, 3, "21:00", "22:30", "Purple Disco Machine", "electronica,house,nu disco"));
         artistList.add(new Artist(2016, Constants.FOREST, 3, "22:30", "00:00", "Felix Da Housecat", "house"));
         artistList.add(new Artist(2016, Constants.FOREST, 3, "00:00", "01:30", "Green Velvet", "electronica,house"));
