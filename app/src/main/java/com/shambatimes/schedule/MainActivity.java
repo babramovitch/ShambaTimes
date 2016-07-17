@@ -469,9 +469,9 @@ public class MainActivity extends AppCompatActivity {
 
                 /*
                 This is to solve an issue where a record is getting cut off (but can scroll) if the text wraps.
-                It only happens if there's one record though, so I'm adding extra space when that's the case.
+                It only happens on the last record though, so I'm adding extra space when that's the case.
                 */
-                if (getCount() == 1) {
+                if (getCount() == 1 || getCount() == position+1) {
                     if (artist.getGenres() != null && artist.getGenres().length() > 45) {
                         artistGenres.setMinLines(3);
                     } else {
