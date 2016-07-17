@@ -55,7 +55,7 @@
         android:fontFamily="sans-serif-condensed"
         android:id="@+id/artistDay"
         style="@style/ListViewSmall"
-        android:layout_width="70dp"
+        android:layout_width="65dp"
         android:layout_below="@id/artistStage"
         android:text="Saturday"
 
