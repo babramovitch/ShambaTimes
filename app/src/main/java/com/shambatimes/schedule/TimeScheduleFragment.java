@@ -178,7 +178,12 @@ public class TimeScheduleFragment extends Fragment {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            viewHolder.time.setText(scheduleTimes[position]);
+            if(scheduleTimes[position].substring(2,3).equals(":")) {
+                viewHolder.time.setText(scheduleTimes[position]);
+            }else{
+                viewHolder.time.setText("  " +scheduleTimes[position]);
+            }
+
             viewHolder.time.setTextColor(getResources().getColorStateList(getSelectorBackground(stageId)));
             viewHolder.time.setOnClickListener(new View.OnClickListener() {
                 @Override
