@@ -38,6 +38,9 @@
         android:textStyle="italic"
         android:layout_width="fill_parent"
         android:layout_below="@id/artistName"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/list_favorited"
+        android:layout_toStartOf="@id/list_favorited"
         android:text="Hip hop, Electro, Funk"
         />
 
