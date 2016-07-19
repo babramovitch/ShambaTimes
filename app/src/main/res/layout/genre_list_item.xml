@@ -69,11 +69,11 @@
             />
 
         <android.support.v7.widget.AppCompatCheckBox
-            android:id="@+id/genreboxBioDome"
+            android:id="@+id/genreboxCedarLounge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            app:buttonTint="@color/amphitheatre_color"
+            app:buttonTint="@color/cedar_lounge_color"
             android:visibility="gone"
             />
 

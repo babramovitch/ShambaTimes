@@ -17,6 +17,8 @@
     <color name="living_room_color">#9C27B0</color>
     <color name="village_color">#FF2432</color>
     <color name="amphitheatre_color">#00B38C</color>
+    <color name="cedar_lounge_color">#008cff</color>
+
 
     <color name="living_room_color_pressed">#F5E9F7</color>
     <color name="fractal_forest_color_pressed">#ECF6E6</color>
@@ -24,6 +26,7 @@
     <color name="village_color_pressed">#FFE9EA</color>
     <color name="amphitheatre_color_pressed">#E6F7F4</color>
     <color name="grove_color_pressed">#ECEEF8</color>
+    <color name="cedar_lounge_pressed">#e6f4ff</color>
 
     <color name="pagoda_color_light">#F5A766</color>
     <color name="fractal_forest_color_light">#7EBD4D</color>
@@ -31,6 +34,8 @@
     <color name="living_room_color_light">#BA68C8</color>
     <color name="village_color_light">#FF6670</color>
     <color name="amphitheatre_color_light">#4DCAAE</color>
+    <color name="cedar_lounge_color_light">#66baff</color>
+
 
 
     <array name="stage_colors">
@@ -40,7 +45,7 @@
         <item>@color/living_room_color</item>
         <item>@color/village_color</item>
         <item>@color/amphitheatre_color</item>
-        <item>@color/amphitheatre_color</item>
+        <item>@color/cedar_lounge_color</item>
     </array>
 
     <array name="stage_light_colors">
@@ -50,7 +55,7 @@
         <item>@color/living_room_color_light</item>
         <item>@color/village_color_light</item>
         <item>@color/amphitheatre_color_light</item>
-        <item>@color/amphitheatre_color_light</item>
+        <item>@color/cedar_lounge_color_light</item>
     </array>
 
     <color name="black_overlay">#66000000</color>

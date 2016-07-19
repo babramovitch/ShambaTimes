@@ -197,8 +197,25 @@ public class DatabaseScheduleUpdates {
             try {
                 ArtistGenerator artistGenerator = new ArtistGenerator(context);
                 artistGenerator.get2016Artists();
+                artistGenerator.get2016CedarLoungeArtists();
                 prefs.edit().putBoolean("2016_loaded", true).apply();
                 prefs.edit().putBoolean("update_one_complete_2016", true).apply();
+                prefs.edit().putBoolean("cedar_lounge_loaded_2016", true).apply();
+            }catch(Exception e){
+                Toast.makeText(context,"Error Loading 2016 Schedule", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    public static void load2016CedarLounge(Context context) {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (!prefs.contains("cedar_lounge_loaded_2016")) {
+            try {
+                ArtistGenerator artistGenerator = new ArtistGenerator(context);
+                artistGenerator.get2016CedarLoungeArtists();
+                prefs.edit().putBoolean("cedar_lounge_loaded_2016", true).apply();
             }catch(Exception e){
                 Toast.makeText(context,"Error Loading 2016 Schedule", Toast.LENGTH_LONG).show();
             }

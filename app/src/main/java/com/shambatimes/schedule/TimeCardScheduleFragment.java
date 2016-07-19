@@ -184,7 +184,7 @@ public class TimeCardScheduleFragment extends Fragment {
         }
 
         public int getCount() {
-            return 6;
+            return 7;
         }
 
         public Object getItem(int position) {
@@ -212,6 +212,12 @@ public class TimeCardScheduleFragment extends Fragment {
 
             final ImageView image = (ImageView) gridView.findViewById(R.id.card_favorited);
             final Artist artist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(date, timePosition, position);
+
+            if(Shambhala.getFestivalYear(getActivity()).equals("2015") && position == 6) {
+                card.setVisibility(View.GONE);
+            }else{
+                card.setVisibility(View.VISIBLE);
+            }
 
             if (artist != null) {
                 artistName.setText(artist.getAristName());

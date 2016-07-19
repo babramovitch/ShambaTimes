@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        timeFormatPreference = prefs.getString(SettingsActivity.TIME_FORMAT,"24");
+        timeFormatPreference = prefs.getString(SettingsActivity.TIME_FORMAT, "24");
 
         festivalYear = Shambhala.getFestivalYear(this);
 
@@ -169,7 +169,9 @@ public class MainActivity extends AppCompatActivity {
         if (prefs.contains("database_loaded")) {
 
             if (!prefs.contains("2016_loaded")) {
-                Toast.makeText(this, "Preparing Database", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Preparing 2016 Database", Toast.LENGTH_LONG).show();
+            } else if (!prefs.contains("cedar_lounge_loaded_2016")) {
+                Toast.makeText(this, "Updating 2016 Database - Cedar Lounge", Toast.LENGTH_LONG).show();
             }
 
             new Thread(new Runnable() {
@@ -180,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
 
                     //2016 updates
                     DatabaseScheduleUpdates.load2016Database(MainActivity.this);
+                    DatabaseScheduleUpdates.load2016CedarLounge(MainActivity.this);
                     DatabaseScheduleUpdates.scheduleUpdateOne2016(MainActivity.this);
 
                     fetchAllArtistsForYear(festivalYear);
@@ -196,14 +199,22 @@ public class MainActivity extends AppCompatActivity {
 
                     prefs.edit().putBoolean("database_load_started", true).apply();
                     ArtistGenerator artistGenerator = new ArtistGenerator(MainActivity.this);
+
+                    //2015
                     artistGenerator.get2015Artists();
-                    shambhala.setArtists(artistGenerator.get2016Artists());
                     prefs.edit().putBoolean("database_loaded", true).apply();
-                    prefs.edit().putBoolean("2016_loaded", true).apply();
                     prefs.edit().putBoolean("update_one_complete", true).apply();
                     prefs.edit().putBoolean("update_two_complete", true).apply();
+
+                    //2016
+                    artistGenerator.get2016Artists();
+                    artistGenerator.get2016CedarLoungeArtists();
+                    prefs.edit().putBoolean("2016_loaded", true).apply();
+                    prefs.edit().putBoolean("cedar_lounge_loaded_2016", true).apply();
+                    prefs.edit().putBoolean("update_one_complete_2016", true).apply();
+
                     prefs.edit().putString(SettingsActivity.FESTIVAL_YEAR, "2016").apply();
-                    EventBus.getDefault().postSticky(new DatabaseLoadFinishedEvent());
+                    fetchAllArtistsForYear(festivalYear);
 
                 }
             }).start();
@@ -435,7 +446,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupGlobalSearch() {
 
-        final DateTimeFormatter dateStringFormat = DateUtils.getTimeFormat(prefs.getString(SettingsActivity.TIME_FORMAT,"24"));
+        final DateTimeFormatter dateStringFormat = DateUtils.getTimeFormat(prefs.getString(SettingsActivity.TIME_FORMAT, "24"));
 
         //TODO - Remove duplication and see if the recyclerview genreAdapter in ArtistFragment can be reused
         searchAdapter = new ArrayAdapter<Artist>(this, R.layout.artist_list_item_artists) {
@@ -471,14 +482,16 @@ public class MainActivity extends AppCompatActivity {
                 This is to solve an issue where a record is getting cut off (but can scroll) if the text wraps.
                 It only happens if there's one record though, so I'm adding extra space when that's the case.
                 */
-                if (getCount() == 1) {
-                    if (artist.getGenres() != null && artist.getGenres().length() > 45) {
-                        artistGenres.setMinLines(3);
+                if (artist.getGenres() != null) {
+                    if (getCount() == 1) {
+                        if (artist.getGenres().length() > 45) {
+                            artistGenres.setMinLines(3);
+                        } else {
+                            artistGenres.setMinLines(2);
+                        }
                     } else {
-                        artistGenres.setMinLines(2);
+                        artistGenres.setMinLines(1);
                     }
-                } else {
-                    artistGenres.setMinLines(1);
                 }
 
                 if (artist.isFavorite()) {
@@ -542,9 +555,9 @@ public class MainActivity extends AppCompatActivity {
                 artistName.setText(artist.getAristName());
                 artistDay.setText(dayOfWeek[artist.getDay()]);
                 artistStage.setText(stageNames[artist.getStage()]);
-                artistTime.setText(DateUtils.formatTime(dateStringFormat,artist.getStartTimeString()) +
+                artistTime.setText(DateUtils.formatTime(dateStringFormat, artist.getStartTimeString()) +
                         " - "
-                        + DateUtils.formatTime(dateStringFormat,artist.getEndTimeString()));
+                        + DateUtils.formatTime(dateStringFormat, artist.getEndTimeString()));
                 artistDivider.setBackground(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, gradientColors));
                 artistLayout.setBackgroundResource(getBackgroundSelector());
 
@@ -593,6 +606,10 @@ public class MainActivity extends AppCompatActivity {
             case 5:
                 color = R.drawable.list_amphitheatre_selector;
                 break;
+            case 6:
+                color = R.drawable.cedar_lounge_selector;
+                break;
+
         }
 
         return color;
@@ -963,8 +980,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    private void didFestivalYearChange() {
-        String newTimeFormat = prefs.getString(SettingsActivity.TIME_FORMAT,"24");
+    private void didTimeFormatChange() {
+        String newTimeFormat = prefs.getString(SettingsActivity.TIME_FORMAT, "24");
         if (!timeFormatPreference.equals(newTimeFormat)) {
             Intent intent = getIntent();
             overridePendingTransition(0, 0);
@@ -975,9 +992,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void didTimeFormatChange() {
+    private void didFestivalYearChange() {
         String newFestivalYear = Shambhala.getFestivalYear(this);
         if (!newFestivalYear.equals(festivalYear)) {
+
+            //I don't want to show the cedar lounge if it's 2015, but even though I'm restarting the activity
+            //if I don't notify it of change in size, it crashes the app, so I'm notifying it.
+            StageScheduleFragment stageScheduleFragment = (StageScheduleFragment) getSupportFragmentManager().findFragmentByTag("STAGE");
+            if(stageScheduleFragment != null){
+                stageScheduleFragment.notifyStageAdapter();
+            }
+
             Intent intent = getIntent();
             overridePendingTransition(0, 0);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

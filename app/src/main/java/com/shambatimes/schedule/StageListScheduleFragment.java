@@ -318,6 +318,9 @@ public class StageListScheduleFragment extends Fragment {
             case 5:
                 color = R.drawable.list_amphitheatre_selector;
                 break;
+            case 6:
+                color = R.drawable.cedar_lounge_selector;
+                break;
         }
 
         return color;

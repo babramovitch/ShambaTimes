@@ -142,7 +142,7 @@ public class TimeScheduleFragment extends Fragment {
                 R.color.time_selector_living_room,
                 R.color.time_selector_village,
                 R.color.time_selector_amphitheatre,
-                R.color.time_selector_amphitheatre};
+                R.color.time_selector_cedar_lounge};
 
         public ListTimeAdapter(Context context, String[] scheduleTimes) {
             this.scheduleTimes = scheduleTimes;
@@ -210,6 +210,8 @@ public class TimeScheduleFragment extends Fragment {
                     return textSelectors[4];
                 case 5:
                     return textSelectors[5];
+                case 6:
+                    return textSelectors[6];
                 default:
                     return textSelectors[0];
             }

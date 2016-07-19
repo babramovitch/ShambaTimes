@@ -14,7 +14,7 @@ public class ColorUtil {
                 R.drawable.favorite_living_room,
                 R.drawable.favorite_village,
                 R.drawable.favorite_amphitheatre,
-                R.drawable.favorite_amphitheatre};
+                R.drawable.favorite_cedar_lounge};
     }
 
     public static int[] getStageFavoriteOutlineDrawables(){
@@ -24,7 +24,7 @@ public class ColorUtil {
                 R.drawable.favorite_outline_living_room,
                 R.drawable.favorite_outline_village,
                 R.drawable.favorite_outline_amphitheatre,
-                R.drawable.favorite_outline_amphitheatre};
+                R.drawable.favorite_outline_cedar_lounge};
 
     }
 
@@ -35,7 +35,7 @@ public class ColorUtil {
                 R.color.living_room_color,
                 R.color.village_color,
                 R.color.amphitheatre_color,
-                R.color.amphitheatre_color};
+                R.color.cedar_lounge_color};
 
     }
 }

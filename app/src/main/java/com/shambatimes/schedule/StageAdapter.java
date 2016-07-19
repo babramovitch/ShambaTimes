@@ -31,7 +31,11 @@ public class StageAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return stageTitles.length;
+        if(!Shambhala.getFestivalYear(context).equals("2015")) {
+            return stageTitles.length;
+        }else{
+            return stageTitles.length-1;
+        }
     }
 
     @Override

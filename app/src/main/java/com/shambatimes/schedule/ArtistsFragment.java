@@ -541,7 +541,7 @@ public class ArtistsFragment extends Fragment {
                 mViewHolder.genreboxLivingRoom = (CheckBox) convertView.findViewById(R.id.genreboxLivingRoomm);
                 mViewHolder.genreboxVillage = (CheckBox) convertView.findViewById(R.id.genreboxVillage);
                 mViewHolder.genreboxAmphitheatre = (CheckBox) convertView.findViewById(R.id.genreboxAmph);
-                mViewHolder.genreboxBioDome = (CheckBox) convertView.findViewById(R.id.genreboxBioDome);
+                mViewHolder.genreboxCedarLounge = (CheckBox) convertView.findViewById(R.id.genreboxCedarLounge);
                 mViewHolder.textView = (TextView) convertView.findViewById(R.id.textView);
             } else {
                 mViewHolder = (MyViewHolder) convertView.getTag();
@@ -559,7 +559,7 @@ public class ArtistsFragment extends Fragment {
             setupItemChecked(mViewHolder.genreboxLivingRoom, position);
             setupItemChecked(mViewHolder.genreboxVillage, position);
             setupItemChecked(mViewHolder.genreboxAmphitheatre, position);
-            setupItemChecked(mViewHolder.genreboxBioDome, position);
+            setupItemChecked(mViewHolder.genreboxCedarLounge, position);
 
             mViewHolder.textView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -601,7 +601,7 @@ public class ArtistsFragment extends Fragment {
                     viewHolder.genreboxAmphitheatre.setVisibility(View.VISIBLE);
                     break;
                 case 6:
-                    viewHolder.genreboxBioDome.setVisibility(View.VISIBLE);
+                    viewHolder.genreboxCedarLounge.setVisibility(View.VISIBLE);
                     break;
             }
         }
@@ -613,7 +613,7 @@ public class ArtistsFragment extends Fragment {
             mViewHolder.genreboxLivingRoom.setAlpha(alpha);
             mViewHolder.genreboxVillage.setAlpha(alpha);
             mViewHolder.genreboxAmphitheatre.setAlpha(alpha);
-            mViewHolder.genreboxBioDome.setAlpha(alpha);
+            mViewHolder.genreboxCedarLounge.setAlpha(alpha);
         }
 
         private void setupItemChecked(CheckBox view, final int position) {
@@ -673,7 +673,7 @@ public class ArtistsFragment extends Fragment {
                     checkBoxClick(viewHolder.genreboxAmphitheatre);
                     break;
                 case 6:
-                    checkBoxClick(viewHolder.genreboxBioDome);
+                    checkBoxClick(viewHolder.genreboxCedarLounge);
                     break;
             }
         }
@@ -695,7 +695,7 @@ public class ArtistsFragment extends Fragment {
             CheckBox genreboxLivingRoom;
             CheckBox genreboxVillage;
             CheckBox genreboxAmphitheatre;
-            CheckBox genreboxBioDome;
+            CheckBox genreboxCedarLounge;
 
             TextView textView;
             boolean isChecked;

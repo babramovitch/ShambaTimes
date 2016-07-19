@@ -591,4 +591,52 @@ public class ArtistGenerator {
 
         return artistList;
     }
+
+    public ArrayList<Artist> get2016CedarLoungeArtists() {
+
+        ArrayList<Artist> artistList = new ArrayList<>();
+
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 1, "14:00", "15:00", "Soniko: The Power Of A Seed", ""));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 1, "15:00", "16:30", "Yoga of Bass Talk w/ FreQ Nasty", "bass,bass yoga,meditation"));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 1, "16:30", "18:00", "Dash: Live Looping", "funk,hip hop,midtempo"));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 1, "18:00", "19:30", "Acro Yoga Jam", ""));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 1, "20:00", "21:00", "Slohand", "deep house"));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 1, "21:00", "22:00", "J Jonah", ""));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 1, "22:00", "23:00", "Willa", "anthem,chill,drum & bass,dubstep,glitch hop,hip hop"));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 1, "23:00", "00:30", "Dash", "funk,hip hop,midtempo"));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 1, "00:30", "02:00", "Late Night Radio", "electronic,funk,hip hop,soul"));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 1, "02:00", "03:30", "R@ngo", "deep house,funky,house,nu disco,tech house"));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 1, "03:30", "05:00", "Mr Diggler", "deep house,funky,house,nu disco,tech house"));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 1, "10:00", "11:30", "SubPac Sound Healing w/ FreQ Nasty", ""));
+
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 2, "11:00", "11:30", "SubPac Sound Healing w/ FreQ Nasty (10am-11:30am)", ""));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 2, "11:30", "13:00", "Breathing Ground: Yin Yoga w Ashleigh Burns & Matsya", ""));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 2, "13:00", "14:30", "David 'Avocado' Wolfe Unplugged", ""));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 2, "14:30", "15:30", "Tactical Audio w/ FreQ Nasty", ""));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 2, "15:30", "17:00", "Thisissami", ""));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 2, "21:00", "23:00", "Gnome Party: Footprints, Pete Moss, Seathtron, Dirty Beat Farmer", ""));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 2, "23:00", "00:00", "OQO", "cinematic,operatic,synthesizer,voice"));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 2, "00:00", "01:30", "Matsya", "ambient,bass"));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 2, "01:30", "03:00", "AtYyA", "bass,psydub"));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 2, "03:00", "04:30", "Soulacybin", "psydub"));
+
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 3, "11:30", "13:30", "Church of Reggae Yoga", ""));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 3, "13:30", "15:00", "Neil Johnson: Permaculture - The Art (and Science) of Life", ""));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 3, "15:00", "16:00", "Mads Alice: Mindful Eating", ""));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 3, "16:00", "17:30", "Vespers: Electronic Music Production & Songwriting", ""));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 3, "20:30", "21:30", "Mr B", "pop appeal,underground sensibility"));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 3, "21:30", "22:30", "Frase", "future soul"));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 3, "22:30", "23:30", "Hachey The MouthPEACE", "beatbox,live looping"));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 3, "23:30", "01:00", "Sam Klass", "rock loops,trippy funk"));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 3, "01:00", "02:30", "Das Booty", "bass,breaks,house"));
+        artistList.add(new Artist(2016, Constants.CEDAR_LOUNGE, 3, "02:30", "04:00", "Westerley", "dubstep"));
+
+
+        for (Artist artist : artistList) {
+            artist.save();
+        }
+
+        return artistList;
+    }
 }
+

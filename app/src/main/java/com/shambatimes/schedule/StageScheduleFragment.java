@@ -120,6 +120,10 @@ public class StageScheduleFragment extends Fragment {
         changeColor(stageColors[event.getArtist().getStage()], event.getArtist().getStage());
     }
 
+    public void notifyStageAdapter(){
+        stageAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onStart() {
         super.onStart();
