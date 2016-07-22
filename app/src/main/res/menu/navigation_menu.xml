@@ -1,6 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group
+        android:id="@+id/group1"
         android:checkableBehavior="single">
 
         <item
@@ -26,9 +27,15 @@
             android:title="Artist List"/>
 
         <item
+            android:id="@+id/ankors"
+            android:icon="@drawable/ic_bulletin_board_black_24dp"
+            android:title="Ankors bulletin"/>
+
+        <item
             android:id="@+id/settings"
             android:icon="@drawable/ic_settings_grey_600_24dp"
             android:title="Settings"/>
 
     </group>
+
 </menu>

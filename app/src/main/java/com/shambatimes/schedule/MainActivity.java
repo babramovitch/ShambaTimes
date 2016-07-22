@@ -1,11 +1,13 @@
 package com.shambatimes.schedule;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.os.Handler;
@@ -46,6 +49,7 @@ import com.crashlytics.android.Crashlytics;
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
+import com.shambatimes.schedule.Util.Util;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ArtistListLoadDoneEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
@@ -115,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
 
     boolean genreFilteringActive = false;
 
+    AlertDialog ankorsDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,6 +163,10 @@ public class MainActivity extends AppCompatActivity {
             searchText = savedInstanceState.getString("SEARCH_TEXT", "");
             artistDateSelected = savedInstanceState.getBoolean("artistDateSelected", false);
             genreFilteringActive = savedInstanceState.getBoolean("genreFilteringActive", false);
+
+            if (savedInstanceState.getBoolean("ankorsDialogShowing", false)) {
+                showAnkorsDialog();
+            }
         }
 
         setupNavigationDrawer();
@@ -247,6 +257,11 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationMenu = navigationView.getMenu();
+
+        MenuItem ankorsMenuItem = navigationMenu.findItem(R.id.ankors);
+        if (ankorsMenuItem != null && DateUtils.isPrePostFestival(this)) {
+            ankorsMenuItem.setVisible(false);
+        }
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -949,10 +964,16 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
 
+            case R.id.ankors:
+                showAnkorsDialog();
+                break;
+
             case R.id.settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 break;
+
+
         }
 
         adapterBaseScheduleDays.notifyDataSetChanged();
@@ -980,6 +1001,37 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    private void showAnkorsDialog() {
+        ankorsDialog = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle).create();
+
+        ankorsDialog.setTitle("Ankors Bulletin");
+        ankorsDialog.setMessage("DISCLAIMER: You are about to leave ShambaTimes. Clicking OK will take you to an external website.\n\nThe content on that site is provided by Ankors for information purposes only and we (ShambaTimes) do not make any claim to their validity.\n\nWe may not be held accountable for any harm that is a result of any information posted there.\n");
+
+        ankorsDialog.setCanceledOnTouchOutside(false);
+
+        ankorsDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK - I understand", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                try {
+                    String url = "http://94.242.202.166/shambs/bulliten.html";
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    startActivity(i);
+                } catch (Exception e) {
+                    Log.e("MainActivity", "Error launching intent", e);
+                }
+                ankorsDialog.dismiss();
+            }
+        });
+
+        ankorsDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                ankorsDialog.dismiss();
+            }
+        });
+
+        ankorsDialog.show();
+    }
+
     private void didTimeFormatChange() {
         String newTimeFormat = prefs.getString(SettingsActivity.TIME_FORMAT, "24");
         if (!timeFormatPreference.equals(newTimeFormat)) {
@@ -999,7 +1051,7 @@ public class MainActivity extends AppCompatActivity {
             //I don't want to show the cedar lounge if it's 2015, but even though I'm restarting the activity
             //if I don't notify it of change in size, it crashes the app, so I'm notifying it.
             StageScheduleFragment stageScheduleFragment = (StageScheduleFragment) getSupportFragmentManager().findFragmentByTag("STAGE");
-            if(stageScheduleFragment != null){
+            if (stageScheduleFragment != null) {
                 stageScheduleFragment.notifyStageAdapter();
             }
 
@@ -1242,6 +1294,10 @@ public class MainActivity extends AppCompatActivity {
         savedInstanceState.putBoolean("artistDateSelected", artistDateSelected);
         savedInstanceState.putBoolean("genreFilteringActive", genreFilteringActive);
 
+        if (ankorsDialog != null) {
+            savedInstanceState.putBoolean("ankorsDialogShowing", ankorsDialog.isShowing());
+        }
+
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -1294,5 +1350,13 @@ public class MainActivity extends AppCompatActivity {
                 searchTextView.hideClearButton();
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (ankorsDialog != null && ankorsDialog.isShowing()) {
+            ankorsDialog.dismiss();
+        }
+        super.onDestroy();
     }
 }
