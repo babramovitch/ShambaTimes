@@ -6,9 +6,12 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 
 import com.shambatimes.schedule.Constants;
+import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Shambhala;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.events.DataChangedEvent;
@@ -17,12 +20,10 @@ import com.shambatimes.schedule.myapplication.R;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.DateTimeFormatterBuilder;
 
 import java.util.ArrayList;
 
 import de.greenrobot.event.EventBus;
-
 
 /**
  * Implementation of App Widget functionality.
@@ -36,11 +37,12 @@ public class ScheduleWidget extends AppWidgetProvider {
     private static final String SYNC_CLICKED_LIVINGROOM = "livingroom";
     private static final String SYNC_CLICKED_VILLAGE = "village";
     private static final String SYNC_CLICKED_AMPH = "amph";
+    private static final String SYNC_CLICKED_CEDAR_LOUNGE = "cedar";
 
-    Integer[] artist_array = {R.id.pagoda_artist, R.id.forest_artist, R.id.grove_artist, R.id.living_room_artist, R.id.village_artist, R.id.amphitheatre_artist};
-    Integer[] like_array = {R.id.pagoda_like, R.id.forest_like, R.id.grove_like, R.id.living_room_like, R.id.village_like, R.id.amphitheatre_like};
-    Integer[] time_array = {R.id.pagoda_time, R.id.forest_time, R.id.grove_time, R.id.living_room_time, R.id.village_time, R.id.amphitheatre_time};
-    String[] stage_array = {SYNC_CLICKED_PAGODA, SYNC_CLICKED_FOREST, SYNC_CLICKED_GROVE_, SYNC_CLICKED_LIVINGROOM, SYNC_CLICKED_VILLAGE, SYNC_CLICKED_AMPH};
+    Integer[] artist_array = {R.id.pagoda_artist, R.id.forest_artist, R.id.grove_artist, R.id.living_room_artist, R.id.village_artist, R.id.amphitheatre_artist,R.id.cedar_lounge_artist};
+    Integer[] like_array = {R.id.pagoda_like, R.id.forest_like, R.id.grove_like, R.id.living_room_like, R.id.village_like, R.id.amphitheatre_like,R.id.cedar_lounge_like};
+    Integer[] time_array = {R.id.pagoda_time, R.id.forest_time, R.id.grove_time, R.id.living_room_time, R.id.village_time, R.id.amphitheatre_time,R.id.cedar_lounge_time};
+    String[] stage_array = {SYNC_CLICKED_PAGODA, SYNC_CLICKED_FOREST, SYNC_CLICKED_GROVE_, SYNC_CLICKED_LIVINGROOM, SYNC_CLICKED_VILLAGE, SYNC_CLICKED_AMPH,SYNC_CLICKED_CEDAR_LOUNGE};
 
 //http://stackoverflow.com/questions/14798073/button-click-event-for-android-widget
 
@@ -72,25 +74,23 @@ public class ScheduleWidget extends AppWidgetProvider {
 
     }
 
+    DateTimeFormatter dateStringFormat;
     private RemoteViews updateArtist(RemoteViews views, Context context) {
-
 
         int position = DateUtils.getCurrentTimePosition(context);
         int day = DateUtils.getCurrentDay(context);
 
-        DateTimeFormatter parseFormat = new DateTimeFormatterBuilder().appendPattern("HH:mm a").toFormatter();
-
-
-//        Log.i(TAG, "Position " + position);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        dateStringFormat = DateUtils.getTimeFormat(preferences.getString(SettingsActivity.TIME_FORMAT,"24"));
 
         CharSequence widgetText;
 
-        widgetText = DateTime.now().withZone(Constants.timeZone).toString(parseFormat);
+        widgetText = DateTime.now().withZone(Constants.timeZone).toString(dateStringFormat);
 
         views.setTextViewText(R.id.appwidget_time, "Tap to Update - Last Updated: " + widgetText);
 
         //Reset the widget views to empty since the next refresh may include a new empty slot which won't get updated.
-        for (int x = 0; x < 5; x++) {
+        for (int x = 0; x < 6; x++) {
             widgetText = "";
             views.setTextViewText(artist_array[x], widgetText);
 
@@ -111,7 +111,7 @@ public class ScheduleWidget extends AppWidgetProvider {
                 widgetText = "" + artist.getAristName();
                 views.setTextViewText(artist_array[artistStage], widgetText);
 
-                widgetText = "" + artist.getStartTimeString() + " - " + artist.getEndTimeString();
+                widgetText = "" + DateUtils.formatTime(dateStringFormat,artist.getStartTimeString()) + " - " + DateUtils.formatTime(dateStringFormat,artist.getEndTimeString());
                 views.setTextViewText(time_array[artistStage], widgetText);
 
 
@@ -134,11 +134,8 @@ public class ScheduleWidget extends AppWidgetProvider {
 
         views.setOnClickPendingIntent(R.id.widget_layout, getPendingSelfIntent(context, "update", -1));
 
-
         return views;
-
     }
-
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -207,6 +204,10 @@ public class ScheduleWidget extends AppWidgetProvider {
             case SYNC_CLICKED_AMPH:
                 id = 5;
                 break;
+
+            case SYNC_CLICKED_CEDAR_LOUNGE:
+                id = 6;
+                break;
         }
         return id;
     }
@@ -216,13 +217,6 @@ public class ScheduleWidget extends AppWidgetProvider {
         Intent intent = new Intent(context, getClass());
         intent.setAction(action);
 
-        //I could never get the correct ID out of this, sometimes they were right, sometimes id-1
-        //intent.putExtra("" + action, id);
-
         return PendingIntent.getBroadcast(context, 0, intent, 0);
-
     }
-
 }
-
-

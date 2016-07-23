@@ -1,3 +1,4 @@
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_layout"
     android:layout_width="match_parent"
@@ -245,6 +246,42 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/cedar_lounge_widget"
+        style="@style/widget_container"
+        android:background="@color/cedar_lounge_color"
+        android:layout_below="@id/amphitheatre_widget">
 
+        <TextView
+            android:id="@+id/cedar_lounge_title"
+            android:layout_alignParentTop="true"
+            android:text="@string/stage_name_cedar_lounge"
+            style="@style/widget_title"/>
+
+        <TextView
+            android:id="@+id/cedar_lounge_artist"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/cedar_lounge_like"
+            android:layout_below="@id/cedar_lounge_title"
+            style="@style/widget_textview"/>
+
+        <TextView
+            android:id="@+id/cedar_lounge_time"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/cedar_lounge_artist"
+            style="@style/widget_textview"/>
+
+        <ImageView
+            android:id="@id/cedar_lounge_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/cedar_lounge_artist"
+            android:layout_alignBottom="@id/cedar_lounge_time"
+            android:paddingRight="15dp"
+            android:src="@drawable/favorite_outline_white"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>
+
