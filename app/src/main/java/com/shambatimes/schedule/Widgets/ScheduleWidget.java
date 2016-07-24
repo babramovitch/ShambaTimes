@@ -90,7 +90,7 @@ public class ScheduleWidget extends AppWidgetProvider {
         views.setTextViewText(R.id.appwidget_time, "Tap to Update - Last Updated: " + widgetText);
 
         //Reset the widget views to empty since the next refresh may include a new empty slot which won't get updated.
-        for (int x = 0; x < 6; x++) {
+        for (int x = 0; x < 7; x++) {
             widgetText = "";
             views.setTextViewText(artist_array[x], widgetText);
 
