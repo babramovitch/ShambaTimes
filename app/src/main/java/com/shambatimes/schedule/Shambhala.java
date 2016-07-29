@@ -72,6 +72,12 @@ public class Shambhala {
             }
         }
 
+        if(artistsByDay.size() > 1 && artistsByDay.get(0) != null && artistsByDay.get(0).getArtistName().equals("2TIGHT")){
+            Artist artist = artistsByDay.get(0);
+            artistsByDay.remove(0);
+            artistsByDay.add(artist);
+        }
+
         return artistsByDay;
     }
 
@@ -86,6 +92,16 @@ public class Shambhala {
 //    }
 
     public boolean updateArtistById(long id) {
+        for (int x = 0; x < artists.size(); x++) {
+            if (artists.get(x).getId() == id) {
+                artists.set(x, Artist.findById(Artist.class, id));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean updateArtistById(ArrayList<Artist> artists, long id) {
         for (int x = 0; x < artists.size(); x++) {
             if (artists.get(x).getId() == id) {
                 artists.set(x, Artist.findById(Artist.class, id));

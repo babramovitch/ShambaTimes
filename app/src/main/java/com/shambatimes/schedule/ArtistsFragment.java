@@ -31,6 +31,7 @@ import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.Util.Util;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
+import com.shambatimes.schedule.events.DataChangedEvent;
 import com.shambatimes.schedule.events.SearchSelectedEvent;
 import com.shambatimes.schedule.events.FilterEvent;
 import com.shambatimes.schedule.myapplication.R;
@@ -119,7 +120,7 @@ public class ArtistsFragment extends Fragment {
             }
         });
 
-        artists = MainActivity.shambhala.loadAllArtistsForYear(Shambhala.getFestivalYear(getActivity()));
+        artists = MainActivity.shambhala.getArtists();
 
         adapter = new ArtistRecyclerAdapter(artists);
         recyclerView.setAdapter(adapter);
@@ -223,9 +224,10 @@ public class ArtistsFragment extends Fragment {
             return -1;
         }
 
-//        public Filter getFilter() {
-//            return mFilter;
-//        }
+        public ArrayList<Artist> getArtistList(){
+            return artistList;
+        }
+
 
         @Override
         public void onBindViewHolder(final ArtistViewHolder artistViewHolder, final int i) {
@@ -422,7 +424,7 @@ public class ArtistsFragment extends Fragment {
             LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
             llm.scrollToPositionWithOffset(artistPosition, 20);
         } else {
-            artists = MainActivity.shambhala.loadAllArtistsForYearAndDay(Shambhala.getFestivalYear(getActivity()), "" + event.getArtist().getDay());
+            artists = MainActivity.shambhala.getArtistsByDay(event.getArtist().getDay());
             adapter.notifyDataSetChanged();
 
             Handler handler = new Handler();
@@ -719,9 +721,9 @@ public class ArtistsFragment extends Fragment {
         if (event.isArtistEvent()) {
 
             if (event.getPosition() == -1) {
-                artists = MainActivity.shambhala.loadAllArtistsForYear(Shambhala.getFestivalYear(getActivity()));
+                artists = MainActivity.shambhala.getArtists();
             } else {
-                artists = MainActivity.shambhala.loadAllArtistsForYearAndDay(Shambhala.getFestivalYear(getActivity()), "" + event.getPosition());
+                artists = MainActivity.shambhala.getArtistsByDay(event.getPosition());
             }
 
             adapter.setArtistList(artists);
@@ -729,7 +731,14 @@ public class ArtistsFragment extends Fragment {
             generateFilteredGenreList();
             genreAdapter.notifyDataSetChanged();
             EventBus.getDefault().postSticky(new FilterEvent(selectedGenres));
+        }
+    }
 
+    public void onEventMainThread(DataChangedEvent event) {
+        EventBus.getDefault().removeStickyEvent(event);
+        if (event.isChanged() && adapter != null) {
+            MainActivity.shambhala.updateArtistById(adapter.getArtistList(),event.getArtistId());
+            adapter.notifyDataSetChanged();
         }
     }
 
