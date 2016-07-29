@@ -1005,14 +1005,14 @@ public class MainActivity extends AppCompatActivity {
         ankorsDialog = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle).create();
 
         ankorsDialog.setTitle("Ankors Bulletin");
-        ankorsDialog.setMessage("DISCLAIMER: You are about to leave ShambaTimes. Clicking OK will take you to an external website.\n\nThe content on that site is provided by Ankors for information purposes only and we (ShambaTimes) do not make any claim to their validity.\n\nWe may not be held accountable for any harm that is a result of any information posted there.\n");
+        ankorsDialog.setMessage("DISCLAIMER: You are about to leave ShambaTimes. Clicking OK will take you to an external website.\n\nThe content on that site is provided by Ankors for information purposes only and we (ShambaTimes) and the website host do not make any claim to their validity.\n\nWe may not be held accountable for any harm that is a result of any information posted there.\n");
 
         ankorsDialog.setCanceledOnTouchOutside(false);
 
         ankorsDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK - I understand", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 try {
-                    String url = "http://94.242.202.166/shambs/bulliten.html";
+                    String url = "http://shambs.epg.ninja";
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(url));
                     startActivity(i);
