@@ -1067,12 +1067,7 @@ public class MainActivity extends AppCompatActivity {
     public void onEventMainThread(UpdateScheduleByTimeEvent event) {
         currentTimePosition = event.getPosition();
     }
-
-    public void onEventMainThread(DatabaseLoadFinishedEvent event) {
-        EventBus.getDefault().removeStickyEvent(event);
-        searchAdapter.addAll(shambhala.getArtists());
-    }
-
+    
     public void onEventMainThread(ActionBarColorEvent event) {
         actionBarColor = event.getColor();
         actionBarStage = event.getStage();
