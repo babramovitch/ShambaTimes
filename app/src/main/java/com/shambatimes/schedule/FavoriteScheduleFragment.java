@@ -153,7 +153,7 @@ public class FavoriteScheduleFragment extends Fragment  {
 
         public void removeItem(int position) {
             try {
-                if (position > 0 && position < getItemCount()) {
+                if (position >= 0 && position < getItemCount()) {
                     artistList.remove(position);
                     notifyItemRemoved(position);
                     Log.i(TAG, "Removing item " + position);
