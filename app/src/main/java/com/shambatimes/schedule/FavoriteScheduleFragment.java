@@ -55,7 +55,7 @@ public class FavoriteScheduleFragment extends Fragment  {
     View result;
     DateTimeFormatter dateStringFormat;
 
-    boolean ignoreSelfEvent = true;
+    boolean ignoreSelfEvent = false;
     AlarmHelper alarmHelper;
 
     @Override
@@ -153,7 +153,7 @@ public class FavoriteScheduleFragment extends Fragment  {
 
         public void removeItem(int position) {
             try {
-                if (position < getItemCount()) {
+                if (position > 0 && position < getItemCount()) {
                     artistList.remove(position);
                     notifyItemRemoved(position);
                     Log.i(TAG, "Removing item " + position);
@@ -210,8 +210,9 @@ public class FavoriteScheduleFragment extends Fragment  {
                 @Override
                 public void onClick(View v) {
 
-                    if (artist.isFavorite()) {
+                    alarmHelper.setOnAlarmStateChangedListener(null);
 
+                    if (artist.isFavorite()) {
                         snackWasAlarmSet = artist.isAlarmSet();
                         snackArtist = artist;
                         snackPosition = artistViewHolder.getAdapterPosition();
