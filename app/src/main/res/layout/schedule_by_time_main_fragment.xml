@@ -6,36 +6,21 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <LinearLayout
+    <ListView
+        android:id="@+id/listViewTimes"
+        android:layout_width="105dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="horizontal">
+        android:minHeight="30dp"
+        android:textColor="#FFF" />
 
-
-        <ListView
-            android:id="@+id/listViewTimes"
-            android:layout_width="105dp"
-            android:layout_height="wrap_content"
-            android:minHeight="30dp"
-            android:textColor="#FFF" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-
-            <android.support.v4.view.MyViewPager
-                android:id="@+id/pager"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:context=".HomeActivity" />
-
-        </LinearLayout>
-
-    </LinearLayout>
+    <android.support.v4.view.MyViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/listViewTimes"
+        tools:context=".HomeActivity" />
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/snackbarPosition"

@@ -1,8 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -11,16 +11,13 @@
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
             android:background="@color/pagoda_color"
->
+            android:fitsSystemWindows="true">
 
         </android.support.v7.widget.Toolbar>
     </LinearLayout>
-
 
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
@@ -29,17 +26,10 @@
         android:background="@color/background_material_light"
         tools:context=".HomeActivity">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <FrameLayout
-                android:id="@+id/content_frame"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
+        <FrameLayout
+            android:id="@+id/content_frame"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
 
         <android.support.design.widget.NavigationView
             android:id="@+id/navigation"
@@ -47,10 +37,10 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:background="@color/background_material_light"
-            app:itemBackground="@drawable/navigation_selector"
-            app:itemTextColor="@color/black"
-            app:itemIconTint="@color/gray"
             app:headerLayout="@layout/drawer_header"
+            app:itemBackground="@drawable/navigation_selector"
+            app:itemIconTint="@color/gray"
+            app:itemTextColor="@color/black"
             app:menu="@menu/navigation_menu" />
 
     </android.support.v4.widget.DrawerLayout>
