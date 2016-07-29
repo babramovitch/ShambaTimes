@@ -779,10 +779,12 @@ public class MainActivity extends AppCompatActivity {
             nowPlaying.setVisible(!isDrawerOpen && currentFragment == FRAGMENT_TIME && !DateUtils.isPrePostFestival(this) && !isSearchExpanded);
         }
 
-        if (!Shambhala.getFestivalYear(this).equals("2015") && !isSearchExpanded) {
-            filterListItem.setVisible(!isDrawerOpen && currentFragment == FRAGMENT_ARTISTS);
-        } else {
-            filterListItem.setVisible(false);
+        if (filterListItem != null) {
+            if (!Shambhala.getFestivalYear(this).equals("2015") && !isSearchExpanded) {
+                filterListItem.setVisible(!isDrawerOpen && currentFragment == FRAGMENT_ARTISTS);
+            } else {
+                filterListItem.setVisible(false);
+            }
         }
 
         return true;
@@ -1067,7 +1069,7 @@ public class MainActivity extends AppCompatActivity {
     public void onEventMainThread(UpdateScheduleByTimeEvent event) {
         currentTimePosition = event.getPosition();
     }
-    
+
     public void onEventMainThread(ActionBarColorEvent event) {
         actionBarColor = event.getColor();
         actionBarStage = event.getStage();
