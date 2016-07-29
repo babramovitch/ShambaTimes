@@ -314,9 +314,10 @@ public class FavoriteScheduleFragment extends Fragment  {
 
                 adapter.addItem(position, artist);
 
+                MainActivity.shambhala.updateArtistById(artist.getId());
+
                 ignoreSelfEvent = true;
                 EventBus.getDefault().postSticky(new DataChangedEvent(true, id));
-
             }
         }
     };
