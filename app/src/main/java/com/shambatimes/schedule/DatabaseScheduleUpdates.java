@@ -199,8 +199,9 @@ public class DatabaseScheduleUpdates {
                 artistGenerator.get2016Artists();
                 artistGenerator.get2016CedarLoungeArtists();
                 prefs.edit().putBoolean("2016_loaded", true).apply();
-                prefs.edit().putBoolean("update_one_complete_2016", true).apply();
                 prefs.edit().putBoolean("cedar_lounge_loaded_2016", true).apply();
+                prefs.edit().putBoolean("update_one_complete_2016", true).apply();
+                prefs.edit().putBoolean("update_two_complete_2016", true).apply();
             }catch(Exception e){
                 Toast.makeText(context,"Error Loading 2016 Schedule", Toast.LENGTH_LONG).show();
             }
@@ -258,6 +259,45 @@ public class DatabaseScheduleUpdates {
                 }
 
                 prefs.edit().putBoolean("update_one_complete_2016", true).apply();
+
+            } catch (Exception e) {
+                Log.e("UpdateDatabase", "Error Updating", e);
+            }
+        }
+    }
+
+    public static void scheduleUpdateTwo2016(Context context) {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (!prefs.contains("update_two_complete_2016")) {
+
+            try {
+                ArrayList<Artist> artists;
+
+                String[] query5 = {"justin martin", "1","2016"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query5, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setEndTimeString("00:00");
+                    artist.setEndPosition(26);
+
+                    artist.save();
+                }
+
+                String[] query6 = {"alunageorge", "1","2016"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query6, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("00:00");
+                    artist.setStartPosition(26);
+
+                    artist.save();
+                }
+
+                prefs.edit().putBoolean("update_two_complete_2016", true).apply();
 
             } catch (Exception e) {
                 Log.e("UpdateDatabase", "Error Updating", e);

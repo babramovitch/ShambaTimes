@@ -194,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
                     DatabaseScheduleUpdates.load2016Database(MainActivity.this);
                     DatabaseScheduleUpdates.load2016CedarLounge(MainActivity.this);
                     DatabaseScheduleUpdates.scheduleUpdateOne2016(MainActivity.this);
+                    DatabaseScheduleUpdates.scheduleUpdateTwo2016(MainActivity.this);
 
                     fetchAllArtistsForYear(festivalYear);
                 }
@@ -222,8 +223,9 @@ public class MainActivity extends AppCompatActivity {
                     prefs.edit().putBoolean("2016_loaded", true).apply();
                     prefs.edit().putBoolean("cedar_lounge_loaded_2016", true).apply();
                     prefs.edit().putBoolean("update_one_complete_2016", true).apply();
-
+                    prefs.edit().putBoolean("update_two_complete_2016", true).apply();
                     prefs.edit().putString(SettingsActivity.FESTIVAL_YEAR, "2016").apply();
+
                     fetchAllArtistsForYear(festivalYear);
 
                 }

@@ -439,8 +439,8 @@ public class ArtistGenerator {
         artistList.add(new Artist(2016, Constants.PAGODA, 1, "18:30", "20:00", "DJ Soup", "disco,house"));
         artistList.add(new Artist(2016, Constants.PAGODA, 1, "20:00", "21:00", "Nora En Pure", "Deep House,Indie Dance"));
         artistList.add(new Artist(2016, Constants.PAGODA, 1, "21:00", "22:00", "SNBRN", "house,indie dance"));
-        artistList.add(new Artist(2016, Constants.PAGODA, 1, "22:00", "23:30", "Justin Martin", "house,techno"));
-        artistList.add(new Artist(2016, Constants.PAGODA, 1, "23:30", "01:00", "AlunaGeorge", "hip pop,r&b"));
+        artistList.add(new Artist(2016, Constants.PAGODA, 1, "22:00", "00:00", "Justin Martin", "house,techno"));
+        artistList.add(new Artist(2016, Constants.PAGODA, 1, "00:00", "01:00", "AlunaGeorge", "hip pop,r&b"));
         artistList.add(new Artist(2016, Constants.PAGODA, 1, "01:00", "02:30", "Gorgon City", "house"));
         artistList.add(new Artist(2016, Constants.PAGODA, 1, "02:30", "04:00", "Boys Noize", "acid house,electro house,electronic,techno"));
         artistList.add(new Artist(2016, Constants.PAGODA, 1, "04:00", "05:30", "Chris Lorenzo", "bass,house"));
