@@ -164,7 +164,11 @@ public abstract class BaseActivity extends AppCompatActivity implements WeekView
             public String interpretTime(int hour, int minutes) {
                 String strMinutes = String.format("%02d", minutes);
                 if (hour > 11) {
-                    return (hour - 12) + ":" + strMinutes + " PM";
+                    if(hour == 12) {
+                        return "12:" + strMinutes + " PM";
+                    }else {
+                        return (hour - 12) + ":" + strMinutes + " PM";
+                    }
                 } else {
                     if (hour == 0) {
                         return "12:" + strMinutes + " AM";

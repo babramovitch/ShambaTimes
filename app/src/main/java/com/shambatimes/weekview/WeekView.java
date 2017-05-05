@@ -731,6 +731,12 @@ public class WeekView extends View {
             // Calculate the top of the rectangle where the time text will go
             float top = mHeaderHeight + mHeaderRowPadding * 2 + mCurrentOrigin.y + timeSpacing * i + mHeaderMarginBottom;
 
+            //Adjust for an 11am to 11am schedule format
+            hour = hour + 11;
+            if(hour > 24){
+                hour = hour - 24;
+            }
+
             // Get the time to be displayed, as a String.
             String time = getDateTimeInterpreter().interpretTime(hour, minutes);
 
@@ -959,7 +965,7 @@ public class WeekView extends View {
 
     }
 
-    String stageNames[]  = new String[]{"Pagoda", "Fractal\nForest", "Village","Amphitheater","Living Room","Grove", "Cedar Lounge"};
+    String stageNames[]  = new String[]{"Pagoda", "Fractal\nForest", "Grove","Living Room","The Village","Ampthitheatre", "Cedar Lounge"};
 
 
 
@@ -1377,26 +1383,26 @@ public class WeekView extends View {
 
         List<WeekViewEvent> currentPeriodEvents = new ArrayList<WeekViewEvent>();
 
-        ArrayList<Artist> artists = MainActivity.shambhala.getArtistsByDayAndStage(1, stage);
+        ArrayList<Artist> artists = MainActivity.shambhala.getArtistsByDayAndStage(MainActivity.currentDay, stage);
 
         int x = 0;
 
         for(Artist artist : artists){
 
-
             DateTime startTime = DateUtils.getFullDateTimeForArtist(artist);
             DateTime endTime = DateUtils.getFullDateEndTimeForArtist(artist);
 
-            WeekViewEvent event = new WeekViewEvent(1,artist.getAristName(),startTime.toGregorianCalendar(),endTime.toGregorianCalendar());
+            WeekViewEvent event = new WeekViewEvent(1, artist.getAristName(), startTime.toGregorianCalendar(), endTime.toGregorianCalendar());
             event.setStage(stage);
 
-            int color = ContextCompat.getColor(getContext(),ColorUtil.getStageColors()[stage]);
-            if(x++ % 2 == 0) {
+            int color = ContextCompat.getColor(getContext(), ColorUtil.getStageColors()[stage]);
+            if (x++ % 2 == 1) {
                 color = ColorUtil.adjustAlpha(color, 0.80f);
             }
 
             event.setColor(color);
             currentPeriodEvents.add(event);
+
         }
 
         return currentPeriodEvents;
@@ -1413,7 +1419,7 @@ public class WeekView extends View {
         List<WeekViewEvent> splitedEvents = event.splitWeekViewEvents();
         for (WeekViewEvent splitedEvent : splitedEvents) {
             mEventRects.add(new EventRect(splitedEvent, event, null));
-        }
+         }
     }
 
     /**
@@ -1462,16 +1468,16 @@ public class WeekView extends View {
         for (EventRect eventRect : eventRects) {
             boolean isPlaced = false;
 
-            outerLoop:
-            for (List<EventRect> collisionGroup : collisionGroups) {
-                for (EventRect groupEvent : collisionGroup) {
-                    if (isEventsCollide(groupEvent.event, eventRect.event) && groupEvent.event.isAllDay() == eventRect.event.isAllDay()) {
-                        collisionGroup.add(eventRect);
-                        isPlaced = true;
-                        break outerLoop;
-                    }
-                }
-            }
+//            outerLoop:
+//            for (List<EventRect> collisionGroup : collisionGroups) {
+//                for (EventRect groupEvent : collisionGroup) {
+//                    if (isEventsCollide(groupEvent.event, eventRect.event) && groupEvent.event.isAllDay() == eventRect.event.isAllDay()) {
+//                        collisionGroup.add(eventRect);
+//                        isPlaced = true;
+//                        break outerLoop;
+//                    }
+//                }
+//            }
 
             if (!isPlaced) {
                 List<EventRect> newGroup = new ArrayList<EventRect>();
@@ -1530,8 +1536,36 @@ public class WeekView extends View {
                     eventRect.width = 1f / columns.size();
                     eventRect.left = j / columns.size();
                     if (!eventRect.event.isAllDay()) {
-                        eventRect.top = eventRect.event.getStartTime().get(Calendar.HOUR_OF_DAY) * 60 + eventRect.event.getStartTime().get(Calendar.MINUTE);
-                        eventRect.bottom = eventRect.event.getEndTime().get(Calendar.HOUR_OF_DAY) * 60 + eventRect.event.getEndTime().get(Calendar.MINUTE);
+
+                        int topHour = ((eventRect.event.getStartTime().get(Calendar.HOUR_OF_DAY) - 11) * 60);
+                        int topMinute =  eventRect.event.getStartTime().get(Calendar.MINUTE);
+
+                        int bottomHour = (eventRect.event.getEndTime().get(Calendar.HOUR_OF_DAY) - 11) * 60;
+                        int bottomMinute =  eventRect.event.getEndTime().get(Calendar.MINUTE);
+
+                        if(topHour < 0){
+                            topHour = topHour + (24 * 60);
+
+                            if(bottomHour == 0){
+                                bottomHour = bottomHour + (24 * 60);
+
+                                if(bottomHour > (24 * 60)){
+                                    bottomHour = 24 * 60;
+                                }
+                            }
+                        }
+
+                        if(bottomHour < 0){
+                            bottomHour = bottomHour + (24 * 60);
+
+                            if(bottomHour > (24 * 60)){
+                                bottomHour = 24 * 60;
+                            }
+                        }
+
+
+                        eventRect.top = topHour + topMinute;
+                        eventRect.bottom = bottomHour + bottomMinute;
                     } else {
                         eventRect.top = 0;
                         eventRect.bottom = mAllDayEventHeight;

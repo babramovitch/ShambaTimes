@@ -202,50 +202,55 @@ public class WeekViewEvent {
     }
 
     public List<WeekViewEvent> splitWeekViewEvents(){
-        //This function splits the WeekViewEvent in WeekViewEvents by day
         List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
-        // The first millisecond of the next day is still the same day. (no need to split events for this).
-        Calendar endTime = (Calendar) this.getEndTime().clone();
-        endTime.add(Calendar.MILLISECOND, -1);
-        if (!isSameDay(this.getStartTime(), endTime)) {
-            endTime = (Calendar) this.getStartTime().clone();
-            endTime.set(Calendar.HOUR_OF_DAY, 23);
-            endTime.set(Calendar.MINUTE, 59);
-            WeekViewEvent event1 = new WeekViewEvent(this.getId(), this.getName(), this.getLocation(), this.getStartTime(), endTime, this.isAllDay());
-            event1.setColor(this.getColor());
-            events.add(event1);
-
-            // Add other days.
-            Calendar otherDay = (Calendar) this.getStartTime().clone();
-            otherDay.add(Calendar.DATE, 1);
-            while (!isSameDay(otherDay, this.getEndTime())) {
-                Calendar overDay = (Calendar) otherDay.clone();
-                overDay.set(Calendar.HOUR_OF_DAY, 0);
-                overDay.set(Calendar.MINUTE, 0);
-                Calendar endOfOverDay = (Calendar) overDay.clone();
-                endOfOverDay.set(Calendar.HOUR_OF_DAY, 23);
-                endOfOverDay.set(Calendar.MINUTE, 59);
-                WeekViewEvent eventMore = new WeekViewEvent(this.getId(), this.getName(), null, overDay, endOfOverDay, this.isAllDay());
-                eventMore.setColor(this.getColor());
-                events.add(eventMore);
-
-                // Add next day.
-                otherDay.add(Calendar.DATE, 1);
-            }
-
-            // Add last day.
-            Calendar startTime = (Calendar) this.getEndTime().clone();
-            startTime.set(Calendar.HOUR_OF_DAY, 0);
-            startTime.set(Calendar.MINUTE, 0);
-            WeekViewEvent event2 = new WeekViewEvent(this.getId(), this.getName(), this.getLocation(), startTime, this.getEndTime(), this.isAllDay());
-            event2.setColor(this.getColor());
-            events.add(event2);
-        }
-        else{
-            events.add(this);
-        }
-
+        events.add(this);
         return events;
+
+        //Commenting all of this out as it would cause anything crossing 12am to split into 2 records
+        //This function splits the WeekViewEvent in WeekViewEvents by day
+       // List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
+//        // The first millisecond of the next day is still the same day. (no need to split events for this).
+//        Calendar endTime = (Calendar) this.getEndTime().clone();
+//        endTime.add(Calendar.MILLISECOND, -1);
+//        if (!isSameDay(this.getStartTime(), endTime)) {
+//            endTime = (Calendar) this.getStartTime().clone();
+//            endTime.set(Calendar.HOUR_OF_DAY, 23);
+//            endTime.set(Calendar.MINUTE, 59);
+//            WeekViewEvent event1 = new WeekViewEvent(this.getId(), this.getName(), this.getLocation(), this.getStartTime(), endTime, this.isAllDay());
+//            event1.setColor(this.getColor());
+//            events.add(event1);
+//
+//            // Add other days.
+//            Calendar otherDay = (Calendar) this.getStartTime().clone();
+//            otherDay.add(Calendar.DATE, 1);
+//            while (!isSameDay(otherDay, this.getEndTime())) {
+//                Calendar overDay = (Calendar) otherDay.clone();
+//                overDay.set(Calendar.HOUR_OF_DAY, 0);
+//                overDay.set(Calendar.MINUTE, 0);
+//                Calendar endOfOverDay = (Calendar) overDay.clone();
+//                endOfOverDay.set(Calendar.HOUR_OF_DAY, 23);
+//                endOfOverDay.set(Calendar.MINUTE, 59);
+//                WeekViewEvent eventMore = new WeekViewEvent(this.getId(), this.getName(), null, overDay, endOfOverDay, this.isAllDay());
+//                eventMore.setColor(this.getColor());
+//                events.add(eventMore);
+//
+//                // Add next day.
+//                otherDay.add(Calendar.DATE, 1);
+//            }
+//
+//            // Add last day.
+//            Calendar startTime = (Calendar) this.getEndTime().clone();
+//            startTime.set(Calendar.HOUR_OF_DAY, 0);
+//            startTime.set(Calendar.MINUTE, 0);
+//            WeekViewEvent event2 = new WeekViewEvent(this.getId(), this.getName(), this.getLocation(), startTime, this.getEndTime(), this.isAllDay());
+//            event2.setColor(this.getColor());
+//            events.add(event2);
+//        }
+//        else{
+//            events.add(this);
+// }
+//
+//       return events;
     }
 
     public int getStage() {
