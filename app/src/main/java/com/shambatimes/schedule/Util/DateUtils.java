@@ -190,6 +190,25 @@ public final class DateUtils {
         return new DateTime(artist.getYear(), 8, day, Integer.valueOf(setTime[0]), Integer.valueOf(setTime[1]), 0, 0).withZone(Constants.timeZone);
     }
 
+    public static DateTime getFullDateEndTimeForArtist(Artist artist) {
+
+        int day = artist.getDay();
+
+        //TODO THIS IS NOT TRUE!  Not all artists had a leading 0 (OOPS!) and cedar lounge had one starting at 10:00am
+        //Since I don't have full dates available, and no sets begin before 10:00AM, 0 means next day
+        boolean addDay = artist.getEndTimeString().substring(0, 1).equals("0");
+
+        if (addDay) {
+            day = getDayOfWeek(day) + 1;
+        } else {
+            day = getDayOfWeek(day);
+        }
+
+        String[] setTime = artist.getEndTimeString().split(":");
+
+        return new DateTime(artist.getYear(), 8, day, Integer.valueOf(setTime[0]), Integer.valueOf(setTime[1]), 0, 0).withZone(Constants.timeZone);
+    }
+
     private static int getDayOfWeek(int day) {
 
         switch (day) {

@@ -65,6 +65,7 @@ import com.shambatimes.schedule.events.UpdateScheduleByTimeEvent;
 import com.shambatimes.schedule.myapplication.BuildConfig;
 import com.shambatimes.schedule.myapplication.R;
 import com.shambatimes.schedule.views.ClearableAutoCompleteTextView;
+import com.shambatimes.weekview.BasicActivity;
 
 import org.joda.time.format.DateTimeFormatter;
 
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
     private final int FRAGMENT_STAGE = 1;
     private final int FRAGMENT_FAVORITES = 2;
     private final int FRAGMENT_ARTISTS = 3;
+    private final int FRAGMENT_CALENDAR = 4;
 
     //nav bar
     Spinner scheduleSpinner;
@@ -965,6 +967,32 @@ public class MainActivity extends AppCompatActivity {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 //toolbar.setTitle("Artist List");
 
+
+                break;
+
+            case R.id.drawer_calendar_schedule:
+
+                //fetchArtistDataForQuickLoad();
+
+                fragment = fragmentManager.findFragmentByTag("CALENDAR");
+                if (fragment == null) {
+                    fragment = new ArtistsFragment();
+                    replaceFragment(R.id.content_frame, fragment, "CALENDAR", false);
+                } else {
+
+                }
+
+                scheduleBy = "Calendar";
+                currentFragment = FRAGMENT_CALENDAR;
+                toolbar.removeView(scheduleSpinner);
+                artistDateSelected = false;
+                setupArtistListSpinner();
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                //toolbar.setTitle("Artist List");
+
+
+                Intent intent2 = new Intent(this, BasicActivity.class);
+                startActivity(intent2);
 
                 break;
 

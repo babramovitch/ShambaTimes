@@ -1,5 +1,7 @@
 package com.shambatimes.schedule.Util;
 
+import android.graphics.Color;
+
 import com.shambatimes.schedule.myapplication.R;
 
 /**
@@ -37,5 +39,13 @@ public class ColorUtil {
                 R.color.amphitheatre_color,
                 R.color.cedar_lounge_color};
 
+    }
+
+    public static int adjustAlpha(int color, float factor) {
+        int alpha = Math.round(Color.alpha(color) * factor);
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        return Color.argb(alpha, red, green, blue);
     }
 }
