@@ -854,7 +854,7 @@ public class WeekView extends View {
             mScrollListener.onFirstVisibleDayChanged(mFirstVisibleDay, oldFirstVisibleDay);
         }
 
-        for (int stageNumber = leftStagesWithGaps + 1; stageNumber <= leftStagesWithGaps + getRealNumberOfVisibleStages() + 1; stageNumber++) {
+        for (int stageNumber = leftStagesWithGaps ; stageNumber <= leftStagesWithGaps + getRealNumberOfVisibleStages() + 1; stageNumber++) {
 
 //            // Check if the day is today.
 //            day = (Calendar) mHomeDate.clone();
@@ -1392,13 +1392,13 @@ public class WeekView extends View {
 
             int color = ContextCompat.getColor(getContext(),ColorUtil.getStageColors()[stage]);
             if(x++ % 2 == 0) {
-                color = ColorUtil.adjustAlpha(color, 0.85f);
+                color = ColorUtil.adjustAlpha(color, 0.80f);
             }
 
             event.setColor(color);
             currentPeriodEvents.add(event);
         }
-        
+
         return currentPeriodEvents;
     }
 
