@@ -33,6 +33,9 @@ public class AlarmHelper {
         void alarmStateChanged();
     }
 
+    // TODO - REVIEW THIS http://pguardiola.com/blog/darealfragmentation-alarms/
+    // TODO - REVIEW THIS https://github.com/evernote/android-job
+
     Context context;
     Artist artist;
     View layout;

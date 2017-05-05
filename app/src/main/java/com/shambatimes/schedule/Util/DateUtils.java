@@ -175,6 +175,7 @@ public final class DateUtils {
 
         int day = artist.getDay();
 
+        //TODO THIS IS NOT TRUE!  Not all artists had a leading 0 (OOPS!) and cedar lounge had one starting at 10:00am
         //Since I don't have full dates available, and no sets begin before 10:00AM, 0 means next day
         boolean addDay = artist.getStartTimeString().substring(0, 1).equals("0");
 
