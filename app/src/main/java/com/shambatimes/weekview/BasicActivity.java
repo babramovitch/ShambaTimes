@@ -4,6 +4,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.TypedValue;
 
+import com.shambatimes.schedule.MainActivity;
 import com.shambatimes.schedule.myapplication.R;
 import com.shambatimes.weekview.WeekViewEvent;
 
@@ -22,18 +23,28 @@ public class BasicActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Typeface customTypeface = Typeface.createFromAsset(this.getAssets(), "fonts/Raleway/Raleway-Medium.ttf");
-        //mWeekView.setTypeface(customTypeface);
+        //TODO something is broken on Sunday on living room.   Nothing between 8am and 10am
+
+        Typeface customTypeface = Typeface.create("sans-serif-light", Typeface.NORMAL);
+        mWeekView.setTypeface(customTypeface);
 
         mWeekView.setMinDate(Calendar.getInstance());
         mWeekView.setMaxDate(Calendar.getInstance());
         mWeekView.setStages(7);
 
         // Lets change some dimensions to best fit the view.
-        mWeekView.setNumberOfVisibleDays(7);
+
+        if(MainActivity.currentDay == 3) {
+            mWeekView.setNumberOfVisibleDays(4);
+        }else{
+            mWeekView.setNumberOfVisibleDays(7);
+        }
+
+        "A.Skillz is a true party rocker behind the turntables, captivating crowds with his ability to embrace all aspects of music that he takes inspiration from and mash them up into a unique cocktail infused with his own signature flavour of funk. His fierce production skills and turntable dexterity has won him prime time slots touring across the globe. From spinning on the slopes, grooving the night away at various festivals and raising the roof at nightclubs all over the world.\n\nIt would be easier to list the places where he hasn’t had the dance floor pumping!\n\nA.Skillz’ talent as a producer were first recognised by London Breakbeat label Fingerlickin Records in 2003 when he released his debut album TrickaTechnolgy along side long time collaborator Krafty Kuts. He has been integral in the breaks scene ever since, picking up a handful of awards along the way including Breakspoll Best DJ 2012 and 2013.\n\nHe has made quite an impact with his music releases over the years from his earlier work with Fingerlickin’to countless official remixes, his ‘Insane Bangers’ series, to his Soundcloud give-aways and mixtapes that have collectively clocked up millions of plays.. and counting. You can even find his production on music for Channel 4, Renault TV advertising and for Sony Playstation on Gran Turismo 4.\n\nSkillz is firmly established over the pond, and has smashed through various Canadian and U.S Tours since 2008. Back home in the UK he is a well-respected artist and has collaborated with the likes of Nick Thayer, Beardyman and DJ Yoda to name a few.\n\nIt is fair to say.. you never know what to expect from him so if you have never witnessed an A.Skillz set then keep your eyes peeled and get down to the next party with his name on the bill!"
+
         mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
-        mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
-        mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
+        mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 13, getResources().getDisplayMetrics()));
+        mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 13, getResources().getDisplayMetrics()));
     }
 
     @Override

@@ -23,4 +23,8 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
+    <style name="TempWeekTheme" parent="AppTheme.Base"/>
+
+
+
 </resources>

@@ -860,6 +860,8 @@ public class WeekView extends View {
             mScrollListener.onFirstVisibleDayChanged(mFirstVisibleDay, oldFirstVisibleDay);
         }
 
+        int test = getRealNumberOfVisibleStages();
+
         for (int stageNumber = leftStagesWithGaps ; stageNumber <= leftStagesWithGaps + getRealNumberOfVisibleStages() + 1; stageNumber++) {
 
 //            // Check if the day is today.
@@ -958,7 +960,6 @@ public class WeekView extends View {
 
             canvas.drawText(dayLabel, startPixel + mWidthPerStage / 2, (mHeaderTextHeight*2) + mHeaderRowPadding,  mHeaderTextPaint);
 
-            //  drawAllDayEvents(day, startPixel, canvas);
 
             startPixel += mWidthPerStage + mColumnGap;
         }
@@ -966,8 +967,6 @@ public class WeekView extends View {
     }
 
     String stageNames[]  = new String[]{"Pagoda", "Fractal\nForest", "Grove","Living Room","The Village","Ampthitheatre", "Cedar Lounge"};
-
-
 
     /**
      * Get the time and date where the user clicked on.
@@ -1042,51 +1041,6 @@ public class WeekView extends View {
                             drawEventTitle(mEventRects.get(i).event, mEventRects.get(i).rectF, canvas, top, left);
                         else
                             drawEmptyImage(mEventRects.get(i).event, mEventRects.get(i).rectF, canvas, top, left);
-                    } else
-                        mEventRects.get(i).rectF = null;
-                }
-            }
-        }
-    }
-
-    /**
-     * Draw all the Allday-events of a particular day.
-     *
-     * @param date           The day.
-     * @param startFromPixel The left position of the day area. The events will never go any left from this value.
-     * @param canvas         The canvas to draw upon.
-     */
-    private void drawAllDayEvents(Calendar date, float startFromPixel, Canvas canvas) {
-        if (mEventRects != null && mEventRects.size() > 0) {
-            for (int i = 0; i < mEventRects.size(); i++) {
-                if (isSameDay(mEventRects.get(i).event.getStartTime(), date) && mEventRects.get(i).event.isAllDay()) {
-
-                    // Calculate top.
-                    float top = mHeaderRowPadding * 2 + mHeaderMarginBottom + +mTimeTextHeight / 2 + mEventMarginVertical;
-
-                    // Calculate bottom.
-                    float bottom = top + mEventRects.get(i).bottom;
-
-                    // Calculate left and right.
-                    float left = startFromPixel + mEventRects.get(i).left * mWidthPerStage;
-                    if (left < startFromPixel)
-                        left += mOverlappingEventGap;
-                    float right = left + mEventRects.get(i).width * mWidthPerStage;
-                    if (right < startFromPixel + mWidthPerStage)
-                        right -= mOverlappingEventGap;
-
-                    // Draw the event and the event name on top of it.
-                    if (left < right &&
-                            left < getWidth() &&
-                            top < getHeight() &&
-                            right > mHeaderColumnWidth &&
-                            bottom > 0
-                            ) {
-                        mEventRects.get(i).rectF = new RectF(left, top, right, bottom);
-                        mEventBackgroundPaint.setColor(mEventRects.get(i).event.getColor() == 0 ? mDefaultEventColor : mEventRects.get(i).event.getColor());
-                        mEventBackgroundPaint.setShader(mEventRects.get(i).event.getShader());
-                        canvas.drawRoundRect(mEventRects.get(i).rectF, mEventCornerRadius, mEventCornerRadius, mEventBackgroundPaint);
-                        drawEventTitle(mEventRects.get(i).event, mEventRects.get(i).rectF, canvas, top, left);
                     } else
                         mEventRects.get(i).rectF = null;
                 }
@@ -1857,7 +1811,7 @@ public class WeekView extends View {
     public void setTextSize(int textSize) {
         mTextSize = textSize;
         mTodayHeaderTextPaint.setTextSize(mTextSize);
-        mHeaderTextPaint.setTextSize(mTextSize);
+        mHeaderTextPaint.setTextSize(mTextSize-3);
         mTimeTextPaint.setTextSize(mTextSize);
         invalidate();
     }
@@ -2461,6 +2415,7 @@ public class WeekView extends View {
         // Check after call of mGestureDetector, so mCurrentFlingDirection and mCurrentScrollDirection are set.
         if (event.getAction() == MotionEvent.ACTION_UP && !mIsZooming && mCurrentFlingDirection == Direction.NONE) {
             if (mCurrentScrollDirection == Direction.RIGHT || mCurrentScrollDirection == Direction.LEFT) {
+                //TODO maybe get rid of this if I do scrolling, snapping makes it feel more rigid
                 goToNearestOrigin();
             }
             mCurrentScrollDirection = Direction.NONE;

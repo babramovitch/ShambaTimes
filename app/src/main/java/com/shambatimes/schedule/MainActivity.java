@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
     private int actionBarColor = 0xFF666666;
     private int actionBarStage = 0;
     private int currentFragment = FRAGMENT_TIME;
-    private int currentDay = -1;
+    static public int currentDay = -1; //TODO THIS IS ONLY TEMPORARY FOR TESTING WEEKVIEW EASIER
     private int currentTimePosition;
 
     private String scheduleBy = "Schedule by Time";
@@ -974,20 +974,20 @@ public class MainActivity extends AppCompatActivity {
 
                 //fetchArtistDataForQuickLoad();
 
-                fragment = fragmentManager.findFragmentByTag("CALENDAR");
-                if (fragment == null) {
-                    fragment = new ArtistsFragment();
-                    replaceFragment(R.id.content_frame, fragment, "CALENDAR", false);
-                } else {
+//                fragment = fragmentManager.findFragmentByTag("CALENDAR");
+//                if (fragment == null) {
+//                    fragment = new ArtistsFragment();
+//                    replaceFragment(R.id.content_frame, fragment, "CALENDAR", false);
+//                } else {
+//
+//                }
 
-                }
-
-                scheduleBy = "Calendar";
-                currentFragment = FRAGMENT_CALENDAR;
-                toolbar.removeView(scheduleSpinner);
-                artistDateSelected = false;
-                setupArtistListSpinner();
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//                scheduleBy = "Calendar";
+//                currentFragment = FRAGMENT_CALENDAR;
+//                toolbar.removeView(scheduleSpinner);
+//                artistDateSelected = false;
+//                setupArtistListSpinner();
+//                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 //toolbar.setTitle("Artist List");
 
 
