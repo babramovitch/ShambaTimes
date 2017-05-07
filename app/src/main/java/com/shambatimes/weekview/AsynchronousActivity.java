@@ -134,4 +134,9 @@ public class AsynchronousActivity extends BaseActivity  {
         return events;
     }
 
+    @Override
+    public List<? extends WeekViewEvent> onLoadStage(int stage) {
+        return null;
+    }
+
 }

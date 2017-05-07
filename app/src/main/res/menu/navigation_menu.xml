@@ -15,6 +15,11 @@
             android:icon="@drawable/ic_store_black_24dp"
             android:title="Schedules by Stage"/>
 
+        <item
+            android:id="@+id/drawer_calendar_schedule"
+            android:icon="@drawable/ic_list_black_24dp"
+            android:title="Schedule by Grid"/>
+
 
         <item
             android:id="@+id/drawer_my_schedule"
@@ -26,10 +31,6 @@
             android:icon="@drawable/ic_list_black_24dp"
             android:title="Artist List"/>
 
-        <item
-            android:id="@+id/drawer_calendar_schedule"
-            android:icon="@drawable/ic_list_black_24dp"
-            android:title="Calendar"/>
 
         <item
             android:id="@+id/ankors"

@@ -21,4 +21,10 @@ public interface WeekViewLoader {
      * @return A list with the events of this period
      */
     List<? extends WeekViewEvent> onLoad(int periodIndex);
+
+    /**
+     * Load the events for the stage
+     * @return A list with the events of this stage
+     */
+    List<? extends WeekViewEvent> onLoadStage(int stage);
 }

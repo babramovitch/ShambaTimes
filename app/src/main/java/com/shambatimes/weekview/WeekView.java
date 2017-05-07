@@ -966,7 +966,7 @@ public class WeekView extends View {
 
     }
 
-    String stageNames[]  = new String[]{"Pagoda", "Fractal\nForest", "Grove","Living Room","The Village","Ampthitheatre", "Cedar Lounge"};
+    String stageNames[]  = new String[]{"Pagoda", "Fractal Forest", "Grove","Living Room","Village","Amp", "Cedar Lounge"};
 
     /**
      * Get the time and date where the user clicked on.
@@ -1280,13 +1280,8 @@ public class WeekView extends View {
 
                 List<? extends WeekViewEvent> currentPeriodEvents = null;
 
-                currentPeriodEvents = mCurrentPeriodEvents;
+                currentPeriodEvents = mWeekViewLoader.onLoadStage(stage);
 
-
-                //if (currentPeriodEvents == null) {
-                //    currentPeriodEvents = mWeekViewLoader.onLoad(periodToFetch);
-                currentPeriodEvents = benLoadEvents(stage);
-                //}
 
                 // Clear events.
                 mEventRects.clear();
@@ -1331,35 +1326,6 @@ public class WeekView extends View {
         }
 
         allEvents.addAll(mEventRects);
-    }
-
-    private List<? extends WeekViewEvent> benLoadEvents(int stage) {
-
-        List<WeekViewEvent> currentPeriodEvents = new ArrayList<WeekViewEvent>();
-
-        ArrayList<Artist> artists = MainActivity.shambhala.getArtistsByDayAndStage(MainActivity.currentDay, stage);
-
-        int x = 0;
-
-        for(Artist artist : artists){
-
-            DateTime startTime = DateUtils.getFullDateTimeForArtist(artist);
-            DateTime endTime = DateUtils.getFullDateEndTimeForArtist(artist);
-
-            WeekViewEvent event = new WeekViewEvent(1, artist.getAristName(), startTime.toGregorianCalendar(), endTime.toGregorianCalendar());
-            event.setStage(stage);
-
-            int color = ContextCompat.getColor(getContext(), ColorUtil.getStageColors()[stage]);
-            if (x++ % 2 == 1) {
-                color = ColorUtil.adjustAlpha(color, 0.80f);
-            }
-
-            event.setColor(color);
-            currentPeriodEvents.add(event);
-
-        }
-
-        return currentPeriodEvents;
     }
 
     /**

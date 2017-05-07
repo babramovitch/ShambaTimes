@@ -1,7 +1,6 @@
 package com.shambatimes.weekview;
 
 import android.graphics.RectF;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
@@ -9,10 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.shambatimes.weekview.DateTimeInterpreter;
-import com.shambatimes.weekview.MonthLoader;
-import com.shambatimes.weekview.WeekView;
-import com.shambatimes.weekview.WeekViewEvent;
 import com.shambatimes.schedule.myapplication.R;
 
 import java.text.SimpleDateFormat;
@@ -37,7 +32,7 @@ public abstract class BaseActivity extends AppCompatActivity implements WeekView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base);
+        setContentView(R.layout.week_fragment);
 
         // Get a reference for the week view in the layout.
         mWeekView = (WeekView) findViewById(R.id.weekView);

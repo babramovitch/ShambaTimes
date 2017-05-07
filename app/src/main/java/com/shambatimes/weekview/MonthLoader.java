@@ -22,6 +22,11 @@ public class MonthLoader implements WeekViewLoader {
         return mOnMonthChangeListener.onMonthChange(periodIndex / 12, periodIndex % 12 + 1);
     }
 
+    @Override
+    public List<? extends WeekViewEvent> onLoadStage(int stage){
+        return mOnMonthChangeListener.onLoadStage(stage);
+    }
+
     public MonthChangeListener getOnMonthChangeListener() {
         return mOnMonthChangeListener;
     }
@@ -40,5 +45,6 @@ public class MonthLoader implements WeekViewLoader {
          * @return a list of the events happening <strong>during the specified month</strong>.
          */
         List<? extends WeekViewEvent> onMonthChange(int newYear, int newMonth);
+        List<? extends WeekViewEvent> onLoadStage(int stage);
     }
 }

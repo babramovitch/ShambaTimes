@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -49,7 +50,6 @@ import com.crashlytics.android.Crashlytics;
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
-import com.shambatimes.schedule.Util.Util;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ArtistListLoadDoneEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
@@ -65,7 +65,6 @@ import com.shambatimes.schedule.events.UpdateScheduleByTimeEvent;
 import com.shambatimes.schedule.myapplication.BuildConfig;
 import com.shambatimes.schedule.myapplication.R;
 import com.shambatimes.schedule.views.ClearableAutoCompleteTextView;
-import com.shambatimes.weekview.BasicActivity;
 
 import org.joda.time.format.DateTimeFormatter;
 
@@ -277,9 +276,10 @@ public class MainActivity extends AppCompatActivity {
                 mDrawerHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+
                         selectItem(menuItem.getItemId());
                     }
-                }, 300);
+                }, 500);
 
                 drawerLayout.closeDrawers();
                 return true;
@@ -881,6 +881,9 @@ public class MainActivity extends AppCompatActivity {
 
         genreFilteringActive = false;
 
+        //Reset the screen orientation as the calendar view forces landscape
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+
         //I'm removing the view as toggling between spinner/non spinner was causing some
         //weird behavior where both would sometimes appear, which wasn't making sense.
 
@@ -905,7 +908,6 @@ public class MainActivity extends AppCompatActivity {
                 currentFragment = FRAGMENT_TIME;
                 toolbar.removeView(scheduleSpinner);
                 setupScheduleSpinner();
-
                 break;
 
             case R.id.drawer_stage:
@@ -925,7 +927,6 @@ public class MainActivity extends AppCompatActivity {
                 currentFragment = FRAGMENT_STAGE;
                 toolbar.removeView(scheduleSpinner);
                 setupScheduleSpinner();
-
                 break;
 
             case R.id.drawer_my_schedule:
@@ -944,7 +945,6 @@ public class MainActivity extends AppCompatActivity {
                 currentFragment = FRAGMENT_FAVORITES;
                 toolbar.removeView(scheduleSpinner);
                 setupScheduleSpinner();
-
                 break;
 
             case R.id.drawer_artist_list:
@@ -965,35 +965,27 @@ public class MainActivity extends AppCompatActivity {
                 artistDateSelected = false;
                 setupArtistListSpinner();
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                //toolbar.setTitle("Artist List");
-
-
                 break;
 
             case R.id.drawer_calendar_schedule:
 
-                //fetchArtistDataForQuickLoad();
+                /**
+                 * NOTE I am not altering the spinner here as the forced rotation will re-create it
+                 * Leaving it in would cause an animatinon flicker
+                 **/
 
-//                fragment = fragmentManager.findFragmentByTag("CALENDAR");
-//                if (fragment == null) {
-//                    fragment = new ArtistsFragment();
-//                    replaceFragment(R.id.content_frame, fragment, "CALENDAR", false);
-//                } else {
-//
-//                }
+                fragment = fragmentManager.findFragmentByTag("CALENDAR");
+                if (fragment == null) {
+                    fragment = new WeekSheduleFragment();
+                    replaceFragment(R.id.content_frame, fragment, "CALENDAR", false);
+                } else {
 
-//                scheduleBy = "Calendar";
-//                currentFragment = FRAGMENT_CALENDAR;
-//                toolbar.removeView(scheduleSpinner);
-//                artistDateSelected = false;
-//                setupArtistListSpinner();
-//                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                //toolbar.setTitle("Artist List");
+                }
 
+                scheduleBy = "Schedule by Grid";
+                currentFragment = FRAGMENT_CALENDAR;
 
-                Intent intent2 = new Intent(this, BasicActivity.class);
-                startActivity(intent2);
-
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 break;
 
             case R.id.ankors:
@@ -1004,8 +996,6 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 break;
-
-
         }
 
         adapterBaseScheduleDays.notifyDataSetChanged();
