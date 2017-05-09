@@ -29,7 +29,9 @@ import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
 import com.shambatimes.schedule.events.ChangeTimePagersTimeColorEvent;
 import com.shambatimes.schedule.events.ShowHideAlarmSnackbarEvent;
+import com.shambatimes.schedule.events.ToggleToGridEvent;
 import com.shambatimes.schedule.events.ToggleToStageEvent;
+import com.shambatimes.schedule.events.ToggleToTimeEvent;
 import com.shambatimes.schedule.myapplication.R;
 
 import org.joda.time.DateTime;
@@ -153,7 +155,7 @@ public class TimeCardScheduleFragment extends Fragment {
                 RelativeLayout relativeLayout = (RelativeLayout) cardView.getChildAt(0);
                 TextView artistNameTextView = (TextView) relativeLayout.getChildAt(0);
 
-                EventBus.getDefault().post(new ToggleToStageEvent(position, artistNameTextView.getText().toString()));
+                EventBus.getDefault().post(new ToggleToGridEvent(timePosition));
 
                 return false;
             }

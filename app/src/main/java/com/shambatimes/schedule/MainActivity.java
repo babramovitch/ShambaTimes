@@ -59,6 +59,7 @@ import com.shambatimes.schedule.events.DatabaseLoadFinishedEvent;
 import com.shambatimes.schedule.events.SearchSelectedEvent;
 
 import com.shambatimes.schedule.events.ToggleFilterVisibility;
+import com.shambatimes.schedule.events.ToggleToGridEvent;
 import com.shambatimes.schedule.events.ToggleToStageEvent;
 import com.shambatimes.schedule.events.ToggleToTimeEvent;
 import com.shambatimes.schedule.events.UpdateScheduleByTimeEvent;
@@ -1160,6 +1161,31 @@ public class MainActivity extends AppCompatActivity {
         scheduleBy = "Schedule by Time";
         currentFragment = 0;
 
+
+        adapterBaseScheduleDays.notifyDataSetChanged();
+        invalidateOptionsMenu();
+    }
+
+    public void onEventMainThread(ToggleToGridEvent event) {
+        checkNavigationItem(R.id.drawer_stage);
+        int position = event.getTime();
+
+        collapseGlobalSearchActionView();
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        WeekScheduleFragment weekScheduleFragment = (WeekScheduleFragment) fragmentManager.findFragmentByTag("CALENDAR");
+
+        if (weekScheduleFragment == null) {
+            weekScheduleFragment = new WeekScheduleFragment();
+            Bundle args = new Bundle();
+            args.putInt("TIME", position);
+            weekScheduleFragment.setArguments(args);
+        }
+
+        scheduleBy = "Schedule by Grid";
+        currentFragment = FRAGMENT_CALENDAR;
+
+        replaceFragment(R.id.content_frame, weekScheduleFragment, "CALENDAR", false);
 
         adapterBaseScheduleDays.notifyDataSetChanged();
         invalidateOptionsMenu();

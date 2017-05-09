@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.SearchSelectedEvent;
+import com.shambatimes.schedule.events.ToggleToStageEvent;
+import com.shambatimes.schedule.events.ToggleToTimeEvent;
 import com.shambatimes.schedule.myapplication.R;
 import com.shambatimes.weekview.DateTimeInterpreter;
 import com.shambatimes.weekview.MonthLoader;
@@ -59,11 +62,16 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
                              Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.week_fragment, container, false);
-
         alarmHelper = new AlarmHelper(getActivity(), rootView);
 
         setupWeekView();
         setupDateTimeInterpreter(true);
+
+        Bundle bundle = getArguments();
+        if (bundle.getInt("TIME", -1) != -1) {
+            double hourPosition = (bundle.getInt("TIME", -1) / 2) - 0.5;
+            mWeekView.goToHour(hourPosition < 0 ? 0 : hourPosition);
+        }
 
         return rootView;
     }
@@ -89,8 +97,8 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         // month every time the month changes on the week view.
         mWeekView.setMonthChangeListener(this);
 
-      //  mWeekView.setMinDate(Calendar.getInstance()); These are breaking the stop fling on touch somehow, so for now commenting out, and disabling the left/right gestures in WeekView
-      //  mWeekView.setMaxDate(Calendar.getInstance()); These are breaking the stop fling on touch somehow, so for now commenting out, and disabling the left/right gestures in WeekView
+        //  mWeekView.setMinDate(Calendar.getInstance()); These are breaking the stop fling on touch somehow, so for now commenting out, and disabling the left/right gestures in WeekView
+        //  mWeekView.setMaxDate(Calendar.getInstance()); These are breaking the stop fling on touch somehow, so for now commenting out, and disabling the left/right gestures in WeekView
         mWeekView.setStages(7);
 
         mWeekView.setNumberOfVisibleDays(7);
@@ -143,17 +151,22 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         });
     }
 
+    Artist snackbarArtist;
+
     @Override
-    public void onEventClick(WeekViewEvent event, RectF eventRect) {
+    public void onEventClick(final WeekViewEvent event, RectF eventRect) {
 
         if (genreSnackbar != null && genreSnackbar.isShown()) {
             genreSnackbar.dismiss();
         }
 
+        snackbarArtist = event.getArtist();
+
         final View coordinatorLayoutView = rootView.findViewById(R.id.snackbarPosition);
         coordinatorLayoutView.setVisibility(View.VISIBLE);
 
         genreSnackbar = Snackbar.make(coordinatorLayoutView, event.getArtist().getArtistName() + ": " + event.getArtist().getGenres().replace(",", ", "), Snackbar.LENGTH_LONG)
+                .setAction("Jump", snackBarClickListener)
                 .setDuration(Snackbar.LENGTH_LONG);
 
         View snackbarView = genreSnackbar.getView();
@@ -162,6 +175,14 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
 
         TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
         TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
+
+        snackBarActionTextView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                EventBus.getDefault().post(new ToggleToStageEvent(event.getArtist().getStage(), event.getArtist().getArtistName()));
+                return false;
+            }
+        });
 
         snackBarTextView.setTextColor(Color.WHITE);
 
@@ -175,6 +196,12 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
 
         genreSnackbar.show();
     }
+
+    final View.OnClickListener snackBarClickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            EventBus.getDefault().post(new ToggleToTimeEvent(snackbarArtist.getStartPosition()));
+        }
+    };
 
     @Override
     public void onEventLongPress(WeekViewEvent event, RectF eventRect) {
@@ -245,6 +272,7 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         double hourPosition = (event.getArtist().getStartPosition() / 2) - 0.5;
         mWeekView.goToHour(hourPosition < 0 ? 0 : hourPosition);
     }
+
 
     @Override
     public void onStop() {

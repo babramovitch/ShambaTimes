@@ -26,6 +26,7 @@ import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
 import com.shambatimes.schedule.events.SearchSelectedEvent;
+import com.shambatimes.schedule.events.ToggleToGridEvent;
 import com.shambatimes.schedule.events.ToggleToTimeEvent;
 import com.shambatimes.schedule.myapplication.R;
 
@@ -111,6 +112,32 @@ public class StageListScheduleFragment extends Fragment {
                 if (startPosition < 0) startPosition += 48;
 
                 EventBus.getDefault().post(new ToggleToTimeEvent(startPosition));
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                TextView textView = (TextView) view.findViewById(R.id.artistStartTimePosition);
+                DateTime startTime = convertStringTimeToPosition(textView.getText().toString());
+
+                DateTime baseTime = convertStringTimeToPosition("11:00");
+//                if(date != 3) {
+//                     baseTime = convertStringTimeToPosition("11:00");
+//                }else{
+//                     baseTime = convertStringTimeToPosition("12:00");
+//                }
+
+                Minutes minutesToStart = Minutes.minutesBetween(baseTime, startTime);
+
+                int startPosition = minutesToStart.getMinutes() / 30;
+
+                if (startPosition < 0) startPosition += 48;
+
+                EventBus.getDefault().post(new ToggleToGridEvent(startPosition));
+
+                return false;
             }
         });
 
