@@ -214,11 +214,11 @@ public class WeekView extends View {
                 case NONE: {
                     // Allow scrolling only in one direction.
                     if (Math.abs(distanceX) > Math.abs(distanceY)) {
-                        if (distanceX > 0) {
-                            mCurrentScrollDirection = Direction.LEFT;
-                        } else {
-                            mCurrentScrollDirection = Direction.RIGHT;
-                        }
+//                        if (distanceX > 0) {
+//                            mCurrentScrollDirection = Direction.LEFT;
+//                        } else {
+//                            mCurrentScrollDirection = Direction.RIGHT;
+//                        }
                     } else {
                         mCurrentScrollDirection = Direction.VERTICAL;
                     }
@@ -226,16 +226,16 @@ public class WeekView extends View {
                 }
                 case LEFT: {
                     // Change direction if there was enough change.
-                    if (Math.abs(distanceX) > Math.abs(distanceY) && (distanceX < -mScaledTouchSlop)) {
-                        mCurrentScrollDirection = Direction.RIGHT;
-                    }
+//                    if (Math.abs(distanceX) > Math.abs(distanceY) && (distanceX < -mScaledTouchSlop)) {
+//                        mCurrentScrollDirection = Direction.RIGHT;
+//                    }
                     break;
                 }
                 case RIGHT: {
                     // Change direction if there was enough change.
-                    if (Math.abs(distanceX) > Math.abs(distanceY) && (distanceX > mScaledTouchSlop)) {
-                        mCurrentScrollDirection = Direction.LEFT;
-                    }
+//                    if (Math.abs(distanceX) > Math.abs(distanceY) && (distanceX > mScaledTouchSlop)) {
+//                        mCurrentScrollDirection = Direction.LEFT;
+//                    }
                     break;
                 }
             }
@@ -244,16 +244,16 @@ public class WeekView extends View {
             switch (mCurrentScrollDirection) {
                 case LEFT:
                 case RIGHT:
-                    float minX = getXMinLimit();
-                    float maxX = getXMaxLimit();
-                    if ((mCurrentOrigin.x - (distanceX * mXScrollingSpeed)) > maxX) {
-                        mCurrentOrigin.x = maxX;
-                    } else if ((mCurrentOrigin.x - (distanceX * mXScrollingSpeed)) < minX) {
-                        mCurrentOrigin.x = minX;
-                    } else {
-                        mCurrentOrigin.x -= distanceX * mXScrollingSpeed;
-                    }
-                    ViewCompat.postInvalidateOnAnimation(WeekView.this);
+//                    float minX = getXMinLimit();
+//                    float maxX = getXMaxLimit();
+//                    if ((mCurrentOrigin.x - (distanceX * mXScrollingSpeed)) > maxX) {
+//                        mCurrentOrigin.x = maxX;
+//                    } else if ((mCurrentOrigin.x - (distanceX * mXScrollingSpeed)) < minX) {
+//                        mCurrentOrigin.x = minX;
+//                    } else {
+//                        mCurrentOrigin.x -= distanceX * mXScrollingSpeed;
+//                    }
+//                    ViewCompat.postInvalidateOnAnimation(WeekView.this);
                     break;
                 case VERTICAL:
                     float minY = getYMinLimit();
@@ -289,7 +289,7 @@ public class WeekView extends View {
             switch (mCurrentFlingDirection) {
                 case LEFT:
                 case RIGHT:
-                    mScroller.fling((int) mCurrentOrigin.x, (int) mCurrentOrigin.y, (int) (velocityX * mXScrollingSpeed), 0, (int) getXMinLimit(), (int) getXMaxLimit(), (int) getYMinLimit(), (int) getYMaxLimit());
+                    //mScroller.fling((int) mCurrentOrigin.x, (int) mCurrentOrigin.y, (int) (velocityX * mXScrollingSpeed), 0, (int) getXMinLimit(), (int) getXMaxLimit(), (int) getYMinLimit(), (int) getYMaxLimit());
                     break;
                 case VERTICAL:
                     mScroller.fling((int) mCurrentOrigin.x, (int) mCurrentOrigin.y, 0, (int) velocityY, (int) getXMinLimit(), (int) getXMaxLimit(), (int) getYMinLimit(), (int) getYMaxLimit());

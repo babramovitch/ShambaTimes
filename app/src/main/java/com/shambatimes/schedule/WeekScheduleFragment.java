@@ -89,8 +89,8 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         // month every time the month changes on the week view.
         mWeekView.setMonthChangeListener(this);
 
-        mWeekView.setMinDate(Calendar.getInstance()); //required due to hacking of library even though day does nothing
-        mWeekView.setMaxDate(Calendar.getInstance()); //required due to hacking of library even though day does nothing
+      //  mWeekView.setMinDate(Calendar.getInstance()); These are breaking the stop fling on touch somehow, so for now commenting out, and disabling the left/right gestures in WeekView
+      //  mWeekView.setMaxDate(Calendar.getInstance()); These are breaking the stop fling on touch somehow, so for now commenting out, and disabling the left/right gestures in WeekView
         mWeekView.setStages(7);
 
         mWeekView.setNumberOfVisibleDays(7);
