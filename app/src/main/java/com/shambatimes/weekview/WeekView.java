@@ -64,6 +64,14 @@ import static com.shambatimes.weekview.WeekViewUtil.*;
  */
 public class WeekView extends View {
 
+    private boolean favouritesOnly = false;
+    Paint eventBorderPaint;
+
+    public void toggleFavourites(boolean favouritesOnly) {
+        this.favouritesOnly = favouritesOnly;
+        invalidate();
+    }
+
     private enum Direction {
         NONE, LEFT, RIGHT, VERTICAL
     }
@@ -257,6 +265,7 @@ public class WeekView extends View {
                     } else {
                         mCurrentOrigin.y -= distanceY;
                     }
+
                     ViewCompat.postInvalidateOnAnimation(WeekView.this);
                     break;
             }
@@ -314,8 +323,8 @@ public class WeekView extends View {
                                 }
                             }
                         }
-                    }
                 }
+            }
 
 
             // If the tap was on add new Event space, then trigger the callback
@@ -381,8 +390,10 @@ public class WeekView extends View {
         public void onLongPress(MotionEvent e) {
             super.onLongPress(e);
 
-            if (mEventLongPressListener != null && mEventRects != null) {
-                List<EventRect> reversedEventRects = mEventRects;
+
+
+            if (mEventLongPressListener != null && allEvents != null) {
+                List<EventRect> reversedEventRects = allEvents;
                 Collections.reverse(reversedEventRects);
                 for (EventRect event : reversedEventRects) {
                     if (event.rectF != null && e.getX() > event.rectF.left && e.getX() < event.rectF.right && e.getY() > event.rectF.top && e.getY() < event.rectF.bottom) {
@@ -551,6 +562,14 @@ public class WeekView extends View {
         // Prepare event background color.
         mEventBackgroundPaint = new Paint();
         mEventBackgroundPaint.setColor(Color.rgb(174, 208, 238));
+
+        //Prepare event border color
+        eventBorderPaint = new Paint();
+        eventBorderPaint.setStyle(Paint.Style.STROKE);
+        eventBorderPaint.setStrokeWidth(3);
+        eventBorderPaint.setColor(Color.WHITE);
+
+
         // Prepare empty event background color.
         mNewEventBackgroundPaint = new Paint();
         mNewEventBackgroundPaint.setColor(Color.rgb(60, 147, 217));
@@ -564,7 +583,6 @@ public class WeekView extends View {
         mEventTextPaint.setStyle(Paint.Style.FILL);
         mEventTextPaint.setColor(mEventTextColor);
         mEventTextPaint.setTextSize(mEventTextSize);
-
 
 
         //mStartDate = (Calendar) mFirstVisibleDay.clone();
@@ -733,7 +751,7 @@ public class WeekView extends View {
 
             //Adjust for an 11am to 11am schedule format
             hour = hour + 11;
-            if(hour > 24){
+            if (hour > 24) {
                 hour = hour - 24;
             }
 
@@ -797,7 +815,7 @@ public class WeekView extends View {
             mIsFirstDraw = false;
 
             // If the week view is being drawn for the first time, then consider the first day of the week.
-            if(getRealNumberOfVisibleStages() >= 7 && mHomeDate.get(Calendar.DAY_OF_WEEK) != mFirstDayOfWeek && mShowFirstDayOfWeekFirst) {
+            if (getRealNumberOfVisibleStages() >= 7 && mHomeDate.get(Calendar.DAY_OF_WEEK) != mFirstDayOfWeek && mShowFirstDayOfWeekFirst) {
                 int difference = (mHomeDate.get(Calendar.DAY_OF_WEEK) - mFirstDayOfWeek);
                 mCurrentOrigin.x += (mWidthPerStage + mColumnGap) * difference;
             }
@@ -829,7 +847,7 @@ public class WeekView extends View {
         int leftStagesWithGaps = (int) -(Math.ceil(mCurrentOrigin.x / (mWidthPerStage + mColumnGap)));
         float startFromPixel = mCurrentOrigin.x + (mWidthPerStage + mColumnGap) * leftStagesWithGaps +
                 mHeaderColumnWidth;
-        float startPixel = startFromPixel; 
+        float startPixel = startFromPixel;
 
         // Prepare to iterate for each day.
         //Calendar day = (Calendar) today.clone();
@@ -862,7 +880,7 @@ public class WeekView extends View {
 
         int test = getRealNumberOfVisibleStages();
 
-        for (int stageNumber = leftStagesWithGaps ; stageNumber <= leftStagesWithGaps + getRealNumberOfVisibleStages() + 1; stageNumber++) {
+        for (int stageNumber = leftStagesWithGaps; stageNumber <= leftStagesWithGaps + getRealNumberOfVisibleStages() + 1; stageNumber++) {
 
 //            // Check if the day is today.
 //            day = (Calendar) mHomeDate.clone();
@@ -891,7 +909,6 @@ public class WeekView extends View {
 
 
             // Draw background color for each day.
-
             float start = (startPixel < mHeaderColumnWidth ? mHeaderColumnWidth : startPixel);
             if (mWidthPerStage + startPixel - start > 0) {
                 canvas.drawRect(start, mHeaderHeight + mHeaderRowPadding * 2 + mTimeTextHeight / 2 + mHeaderMarginBottom, startPixel + mWidthPerStage, getHeight(), mDayBackgroundPaint);
@@ -913,9 +930,9 @@ public class WeekView extends View {
             // Draw the lines for hours.
             canvas.drawLines(hourLines, mHourSeparatorPaint);
 
-            // Draw the events.
+            // Draw the events.)
             drawEvents(stageNumber, startPixel, canvas);
-//
+
             // Draw the line at the current time.
             //if (mShowNowLine && isToday) {
             if (mShowNowLine && stageNumber == 0) {
@@ -927,21 +944,21 @@ public class WeekView extends View {
 
             // In the next iteration, start from the next day.
             startPixel += mWidthPerStage + mColumnGap;
-              }
+        }
 //
 //        // Hide everything in the first cell (top left corner).
-            canvas.clipRect(0, 0, mTimeTextWidth + mHeaderColumnPadding * 2, mHeaderHeight + mHeaderRowPadding * 2, Region.Op.REPLACE);
-            canvas.drawRect(0, 0, mTimeTextWidth + mHeaderColumnPadding * 2, mHeaderHeight + mHeaderRowPadding * 2, mHeaderBackgroundPaint);
+        canvas.clipRect(0, 0, mTimeTextWidth + mHeaderColumnPadding * 2, mHeaderHeight + mHeaderRowPadding * 2, Region.Op.REPLACE);
+        canvas.drawRect(0, 0, mTimeTextWidth + mHeaderColumnPadding * 2, mHeaderHeight + mHeaderRowPadding * 2, mHeaderBackgroundPaint);
 //
 //        // Clip to paint header row only.
-            canvas.clipRect(mHeaderColumnWidth, 0, getWidth(), mHeaderHeight + mHeaderRowPadding * 2, Region.Op.REPLACE);
+        canvas.clipRect(mHeaderColumnWidth, 0, getWidth(), mHeaderHeight + mHeaderRowPadding * 2, Region.Op.REPLACE);
 //
 //        // Draw the header background.
-          canvas.drawRect(0, 0, getWidth(), mHeaderHeight + mHeaderRowPadding * 2, mHeaderBackgroundPaint);
+        canvas.drawRect(0, 0, getWidth(), mHeaderHeight + mHeaderRowPadding * 2, mHeaderBackgroundPaint);
 //
 //        // Draw the header row texts.
-         startPixel = startFromPixel;
-        for (int stageNumber =  0  ; stageNumber <= getVisibleStageCount() ; stageNumber++) {
+        startPixel = startFromPixel;
+        for (int stageNumber = 0; stageNumber <= getVisibleStageCount(); stageNumber++) {
             Log.i("TAG", "leftStagesWithGaps: " + leftStagesWithGaps);
             // Check if the day is today.
 //            day = (Calendar) mHomeDate.clone();
@@ -958,7 +975,7 @@ public class WeekView extends View {
 
             //getDateTimeInterpreter().interpretDate(day);
 
-            canvas.drawText(dayLabel, startPixel + mWidthPerStage / 2, (mHeaderTextHeight*2) + mHeaderRowPadding,  mHeaderTextPaint);
+            canvas.drawText(dayLabel, startPixel + mWidthPerStage / 2, (mHeaderTextHeight * 2) + mHeaderRowPadding, mHeaderTextPaint);
 
 
             startPixel += mWidthPerStage + mColumnGap;
@@ -966,7 +983,7 @@ public class WeekView extends View {
 
     }
 
-    String stageNames[]  = new String[]{"Pagoda", "Fractal Forest", "Grove","Living Room","Village","Amp", "Cedar Lounge"};
+    String stageNames[] = new String[]{"Pagoda", "Fractal Forest", "Grove", "Living Room", "Village", "Amp", "Cedar Lounge"};
 
     /**
      * Get the time and date where the user clicked on.
@@ -1011,38 +1028,43 @@ public class WeekView extends View {
             for (int i = 0; i < mEventRects.size(); i++) {
                 if (mEventRects.get(i).originalEvent.getStage() == stage && !mEventRects.get(i).event.isAllDay()) {
 
-                    // Calculate top.
-                    float top = mHourHeight * 24 * mEventRects.get(i).top / 1440 + mCurrentOrigin.y + mHeaderHeight + mHeaderRowPadding * 2 + mHeaderMarginBottom + mTimeTextHeight / 2 + mEventMarginVertical;
+                    if(!favouritesOnly || favouritesOnly && mEventRects.get(i).originalEvent.getArtist().isFavorite()) {
 
-                    // Calculate bottom.
-                    float bottom = mEventRects.get(i).bottom;
-                    bottom = mHourHeight * 24 * bottom / 1440 + mCurrentOrigin.y + mHeaderHeight + mHeaderRowPadding * 2 + mHeaderMarginBottom + mTimeTextHeight / 2 - mEventMarginVertical;
+                        // Calculate top.
+                        float top = mHourHeight * 24 * mEventRects.get(i).top / 1440 + mCurrentOrigin.y + mHeaderHeight + mHeaderRowPadding * 2 + mHeaderMarginBottom + mTimeTextHeight / 2 + mEventMarginVertical;
 
-                    // Calculate left and right.
-                    float left = startFromPixel + mEventRects.get(i).left * mWidthPerStage;
-                    if (left < startFromPixel)
-                        left += mOverlappingEventGap;
-                    float right = left + mEventRects.get(i).width * mWidthPerStage;
-                    if (right < startFromPixel + mWidthPerStage)
-                        right -= mOverlappingEventGap;
+                        // Calculate bottom.
+                        float bottom = mEventRects.get(i).bottom;
+                        bottom = mHourHeight * 24 * bottom / 1440 + mCurrentOrigin.y + mHeaderHeight + mHeaderRowPadding * 2 + mHeaderMarginBottom + mTimeTextHeight / 2 - mEventMarginVertical;
 
-                    // Draw the event and the event name on top of it.
-                    if (left < right &&
-                            left < getWidth() &&
-                            top < getHeight() &&
-                            right > mHeaderColumnWidth &&
-                            bottom > mHeaderHeight + mHeaderRowPadding * 2 + mTimeTextHeight / 2 + mHeaderMarginBottom
-                            ) {
-                        mEventRects.get(i).rectF = new RectF(left, top, right, bottom);
-                        mEventBackgroundPaint.setColor(mEventRects.get(i).event.getColor() == 0 ? mDefaultEventColor : mEventRects.get(i).event.getColor());
-                        mEventBackgroundPaint.setShader(mEventRects.get(i).event.getShader());
-                        canvas.drawRoundRect(mEventRects.get(i).rectF, mEventCornerRadius, mEventCornerRadius, mEventBackgroundPaint);
-                        if (mEventRects.get(i).event.getId() != mNewEventId)
-                            drawEventTitle(mEventRects.get(i).event, mEventRects.get(i).rectF, canvas, top, left);
-                        else
-                            drawEmptyImage(mEventRects.get(i).event, mEventRects.get(i).rectF, canvas, top, left);
-                    } else
-                        mEventRects.get(i).rectF = null;
+                        // Calculate left and right.
+                        float left = startFromPixel + mEventRects.get(i).left * mWidthPerStage;
+                        if (left < startFromPixel)
+                            left += mOverlappingEventGap;
+                        float right = left + mEventRects.get(i).width * mWidthPerStage;
+                        if (right < startFromPixel + mWidthPerStage)
+                            right -= mOverlappingEventGap;
+
+                        // Draw the event and the event name on top of it.
+                        if (left < right &&
+                                left < getWidth() &&
+                                top < getHeight() &&
+                                right > mHeaderColumnWidth &&
+                                bottom > mHeaderHeight + mHeaderRowPadding * 2 + mTimeTextHeight / 2 + mHeaderMarginBottom
+                                ) {
+                            mEventRects.get(i).rectF = new RectF(left, top, right, bottom);
+                            mEventBackgroundPaint.setColor(mEventRects.get(i).event.getColor() == 0 ? mDefaultEventColor : mEventRects.get(i).event.getColor());
+                            mEventBackgroundPaint.setShader(mEventRects.get(i).event.getShader());
+                            canvas.drawRoundRect(mEventRects.get(i).rectF, mEventCornerRadius, mEventCornerRadius, mEventBackgroundPaint);
+                            canvas.drawRoundRect(mEventRects.get(i).rectF, mEventCornerRadius, mEventCornerRadius, eventBorderPaint);
+
+                            if (mEventRects.get(i).event.getId() != mNewEventId)
+                                drawEventTitle(mEventRects.get(i).event, mEventRects.get(i).rectF, canvas, top, left);
+                            else
+                                drawEmptyImage(mEventRects.get(i).event, mEventRects.get(i).rectF, canvas, top, left);
+                        } else
+                            mEventRects.get(i).rectF = null;
+                    }
                 }
             }
         }
@@ -1077,8 +1099,8 @@ public class WeekView extends View {
         int availableHeight = (int) (rect.bottom - originalTop - mEventPadding * 2);
         int availableWidth = (int) (rect.right - originalLeft - mEventPadding * 2);
 
-        // Get text dimensions.
         StaticLayout textLayout = new StaticLayout(bob, mEventTextPaint, availableWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+
         if (textLayout.getLineCount() > 0) {
             int lineHeight = textLayout.getHeight() / textLayout.getLineCount();
 
@@ -1339,7 +1361,7 @@ public class WeekView extends View {
         List<WeekViewEvent> splitedEvents = event.splitWeekViewEvents();
         for (WeekViewEvent splitedEvent : splitedEvents) {
             mEventRects.add(new EventRect(splitedEvent, event, null));
-         }
+        }
     }
 
     /**
@@ -1458,27 +1480,27 @@ public class WeekView extends View {
                     if (!eventRect.event.isAllDay()) {
 
                         int topHour = ((eventRect.event.getStartTime().get(Calendar.HOUR_OF_DAY) - 11) * 60);
-                        int topMinute =  eventRect.event.getStartTime().get(Calendar.MINUTE);
+                        int topMinute = eventRect.event.getStartTime().get(Calendar.MINUTE);
 
                         int bottomHour = (eventRect.event.getEndTime().get(Calendar.HOUR_OF_DAY) - 11) * 60;
-                        int bottomMinute =  eventRect.event.getEndTime().get(Calendar.MINUTE);
+                        int bottomMinute = eventRect.event.getEndTime().get(Calendar.MINUTE);
 
-                        if(topHour < 0){
+                        if (topHour < 0) {
                             topHour = topHour + (24 * 60);
 
-                            if(bottomHour == 0){
+                            if (bottomHour == 0) {
                                 bottomHour = bottomHour + (24 * 60);
 
-                                if(bottomHour > (24 * 60)){
+                                if (bottomHour > (24 * 60)) {
                                     bottomHour = 24 * 60;
                                 }
                             }
                         }
 
-                        if(bottomHour < 0){
+                        if (bottomHour < 0) {
                             bottomHour = bottomHour + (24 * 60);
 
-                            if(bottomHour > (24 * 60)){
+                            if (bottomHour > (24 * 60)) {
                                 bottomHour = 24 * 60;
                             }
                         }
@@ -1777,7 +1799,7 @@ public class WeekView extends View {
     public void setTextSize(int textSize) {
         mTextSize = textSize;
         mTodayHeaderTextPaint.setTextSize(mTextSize);
-        mHeaderTextPaint.setTextSize(mTextSize-3);
+        mHeaderTextPaint.setTextSize(mTextSize - 3);
         mTimeTextPaint.setTextSize(mTextSize);
         invalidate();
     }

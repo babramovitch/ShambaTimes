@@ -774,6 +774,7 @@ public class MainActivity extends AppCompatActivity {
         MenuItem globalSearchItem = menu.findItem(R.id.global_search);
         MenuItem filterListItem = menu.findItem(R.id.filter);
         MenuItem nowPlaying = menu.findItem(R.id.now_playing);
+        MenuItem gridFavourites = menu.findItem(R.id.grid_favourites);
 
         if (globalSearchItem != null) {
             globalSearchItem.setVisible(!isDrawerOpen);
@@ -781,6 +782,10 @@ public class MainActivity extends AppCompatActivity {
 
         if (nowPlaying != null) {
             nowPlaying.setVisible(!isDrawerOpen && currentFragment == FRAGMENT_TIME && !DateUtils.isPrePostFestival(this) && !isSearchExpanded);
+        }
+
+        if (gridFavourites != null) {
+            gridFavourites.setVisible(!isDrawerOpen && currentFragment == FRAGMENT_CALENDAR && !isSearchExpanded);
         }
 
         if (filterListItem != null) {
@@ -811,6 +816,14 @@ public class MainActivity extends AppCompatActivity {
                     scheduleSpinner.setSelection(DateUtils.getCurrentDay(this));
                 }
                 break;
+
+            case R.id.grid_favourites:
+                WeekScheduleFragment weekScheduleFragment = (WeekScheduleFragment) getSupportFragmentManager().findFragmentByTag("CALENDAR");
+                if (weekScheduleFragment != null) {
+                    weekScheduleFragment.toggleFavourites();
+                }
+                break;
+
 
             case R.id.global_search:
                 View actionView = menu.findItem(R.id.global_search).getActionView();
@@ -976,7 +989,7 @@ public class MainActivity extends AppCompatActivity {
 
                 fragment = fragmentManager.findFragmentByTag("CALENDAR");
                 if (fragment == null) {
-                    fragment = new WeekSheduleFragment();
+                    fragment = new WeekScheduleFragment();
                     replaceFragment(R.id.content_frame, fragment, "CALENDAR", false);
                 } else {
 

@@ -3,6 +3,8 @@ package com.shambatimes.weekview;
 import android.graphics.Shader;
 import android.widget.ShareActionProvider;
 
+import com.shambatimes.schedule.Artist;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -18,10 +20,12 @@ public class WeekViewEvent {
     private Calendar mStartTime;
     private Calendar mEndTime;
     private String mName;
+    private boolean mFavourite;
     private String mLocation;
     private int mColor;
     private boolean mAllDay;
     private Shader mShader;
+    private Artist artist;
 
     private int stage;
 
@@ -259,5 +263,21 @@ public class WeekViewEvent {
 
     public void setStage(int stage) {
         this.stage = stage;
+    }
+
+    public boolean isFavourite() {
+        return mFavourite;
+    }
+
+    public void setFavourite(boolean isFavourite) {
+        this.mFavourite = isFavourite;
+    }
+
+    public Artist getArtist() {
+        return artist;
+    }
+
+    public void setArtist(Artist artist) {
+        this.artist = artist;
     }
 }

@@ -1,16 +1,20 @@
 package com.shambatimes.schedule;
 
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.graphics.RectF;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.TextView;
 
+import com.shambatimes.schedule.Util.AlarmHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.events.ChangeDateEvent;
@@ -32,11 +36,15 @@ import java.util.Locale;
 import de.greenrobot.event.EventBus;
 
 
-public class WeekSheduleFragment extends Fragment implements WeekView.EventClickListener, MonthLoader.MonthChangeListener, WeekView.EventLongPressListener {
+public class WeekScheduleFragment extends Fragment implements WeekView.EventClickListener, MonthLoader.MonthChangeListener, WeekView.EventLongPressListener {
     private static final String TAG = "WeekSchedule";
 
     private View rootView;
     private WeekView mWeekView;
+    private boolean favouritesOnly = false; //todo save this in preferences
+    private AlarmHelper alarmHelper;
+    private Snackbar genreSnackbar;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,10 +60,17 @@ public class WeekSheduleFragment extends Fragment implements WeekView.EventClick
 
         rootView = inflater.inflate(R.layout.week_fragment, container, false);
 
+        alarmHelper = new AlarmHelper(getActivity(), rootView);
+
         setupWeekView();
         setupDateTimeInterpreter(true);
 
         return rootView;
+    }
+
+    public void toggleFavourites() {
+        favouritesOnly = !favouritesOnly;
+        mWeekView.toggleFavourites(favouritesOnly);
     }
 
     @Override
@@ -64,7 +79,7 @@ public class WeekSheduleFragment extends Fragment implements WeekView.EventClick
         EventBus.getDefault().registerSticky(this);
     }
 
-    private void setupWeekView(){
+    private void setupWeekView() {
         mWeekView = (WeekView) rootView.findViewById(R.id.weekView);
 
         mWeekView.setOnEventClickListener(this);
@@ -74,9 +89,8 @@ public class WeekSheduleFragment extends Fragment implements WeekView.EventClick
         // month every time the month changes on the week view.
         mWeekView.setMonthChangeListener(this);
 
-
-        mWeekView.setMinDate(Calendar.getInstance());
-        mWeekView.setMaxDate(Calendar.getInstance());
+        mWeekView.setMinDate(Calendar.getInstance()); //required due to hacking of library even though day does nothing
+        mWeekView.setMaxDate(Calendar.getInstance()); //required due to hacking of library even though day does nothing
         mWeekView.setStages(7);
 
         mWeekView.setNumberOfVisibleDays(7);
@@ -85,7 +99,6 @@ public class WeekSheduleFragment extends Fragment implements WeekView.EventClick
         mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
         mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 13, getResources().getDisplayMetrics()));
         mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 13, getResources().getDisplayMetrics()));
-
     }
 
     /**
@@ -130,15 +143,54 @@ public class WeekSheduleFragment extends Fragment implements WeekView.EventClick
         });
     }
 
-
     @Override
     public void onEventClick(WeekViewEvent event, RectF eventRect) {
-        Toast.makeText(getActivity(), "Clicked " + event.getName(), Toast.LENGTH_SHORT).show();
+
+        if (genreSnackbar != null && genreSnackbar.isShown()) {
+            genreSnackbar.dismiss();
+        }
+
+        final View coordinatorLayoutView = rootView.findViewById(R.id.snackbarPosition);
+        coordinatorLayoutView.setVisibility(View.VISIBLE);
+
+        genreSnackbar = Snackbar.make(coordinatorLayoutView, event.getArtist().getArtistName() + ": " + event.getArtist().getGenres().replace(",", ", "), Snackbar.LENGTH_LONG)
+                .setDuration(Snackbar.LENGTH_LONG);
+
+        View snackbarView = genreSnackbar.getView();
+
+        snackbarView.setBackgroundColor(ContextCompat.getColor(getActivity(), (ColorUtil.getStageColors()[event.getArtist().getStage()])));
+
+        TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
+
+        snackBarTextView.setTextColor(Color.WHITE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            snackBarTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        }
+        snackBarActionTextView.setTextColor(Color.WHITE);
+
+        snackBarActionTextView.setTextSize(14);
+
+
+        genreSnackbar.show();
     }
 
     @Override
     public void onEventLongPress(WeekViewEvent event, RectF eventRect) {
-        Toast.makeText(getActivity(), "Long pressed event: " + event.getName(), Toast.LENGTH_SHORT).show();
+        if (event.getArtist().isFavorite()) {
+            event.getArtist().setFavorite(false);
+            alarmHelper.dismissSnackbar();
+            alarmHelper.cancelAlarm(event.getArtist());
+        } else {
+            alarmHelper.showSetAlarmSnackBar(event.getArtist());
+            event.getArtist().setFavorite(true);
+        }
+
+        event.getArtist().save();
+        MainActivity.shambhala.updateArtistById(event.getArtist().getId());
+
+        mWeekView.invalidate();
     }
 
     @Override
@@ -154,22 +206,32 @@ public class WeekSheduleFragment extends Fragment implements WeekView.EventClick
 
         int x = 0;
 
-        for(Artist artist : artists){
+        for (Artist artist : artists) {
+
 
             DateTime startTime = DateUtils.getFullDateTimeForArtist(artist);
             DateTime endTime = DateUtils.getFullDateEndTimeForArtist(artist);
 
+            //Rich-E-Rich goes past the apps festival end time of 11am (24h per day) so exception needs to be made for it.
+            //or any other artist who goes past 11am.
+            if (endTime.isAfter(new DateTime(2016, 8, 8, 11, 59, 59, 99).withZone(Constants.timeZone))) {
+                endTime = new DateTime(2016, 8, 8, 11, 0, 0, 0).withZone(Constants.timeZone);
+            }
+
             WeekViewEvent event = new WeekViewEvent(1, artist.getAristName(), startTime.toGregorianCalendar(), endTime.toGregorianCalendar());
+            event.setArtist(artist);
             event.setStage(stage);
 
+            event.setFavourite(artist.isFavorite());
+
             int color = ContextCompat.getColor(getContext(), ColorUtil.getStageColors()[stage]);
-            if (x++ % 2 == 1) {
-                color = ColorUtil.adjustAlpha(color, 0.80f);
+
+            if (!event.isFavourite()) {
+                color = ColorUtil.adjustAlpha(color, 0.58f);
             }
 
             event.setColor(color);
             currentPeriodEvents.add(event);
-
         }
 
         return currentPeriodEvents;
@@ -180,7 +242,7 @@ public class WeekSheduleFragment extends Fragment implements WeekView.EventClick
     }
 
     public void onEventMainThread(SearchSelectedEvent event) {
-        double hourPosition = (event.getArtist().getStartPosition()/2) - 0.5;
+        double hourPosition = (event.getArtist().getStartPosition() / 2) - 0.5;
         mWeekView.goToHour(hourPosition < 0 ? 0 : hourPosition);
     }
 

@@ -17,6 +17,12 @@
         app:showAsAction="ifRoom|collapseActionView" />
 
     <item
+        android:id="@+id/grid_favourites"
+        android:icon="@drawable/favorite_outline_white"
+        android:title="Show Favourites Only"
+        app:showAsAction="ifRoom|collapseActionView" />
+
+    <item
         android:id="@+id/global_search"
         android:icon="@drawable/ic_search_white_36dp"
         android:title="Search"
