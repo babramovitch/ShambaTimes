@@ -68,7 +68,7 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         setupDateTimeInterpreter(true);
 
         Bundle bundle = getArguments();
-        if (bundle.getInt("TIME", -1) != -1) {
+        if (bundle != null && bundle.getInt("TIME", -1) != -1) {
             double hourPosition = (bundle.getInt("TIME", -1) / 2) - 0.5;
             mWeekView.goToHour(hourPosition < 0 ? 0 : hourPosition);
         }
@@ -179,6 +179,7 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         snackBarActionTextView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                 EventBus.getDefault().post(new ToggleToStageEvent(event.getArtist().getStage(), event.getArtist().getArtistName()));
                 return false;
             }
@@ -199,6 +200,7 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
 
     final View.OnClickListener snackBarClickListener = new View.OnClickListener() {
         public void onClick(View v) {
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
             EventBus.getDefault().post(new ToggleToTimeEvent(snackbarArtist.getStartPosition()));
         }
     };
