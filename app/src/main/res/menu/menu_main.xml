@@ -18,7 +18,7 @@
 
     <item
         android:id="@+id/grid_favourites"
-        android:icon="@drawable/favorite_outline_white"
+        android:icon="@drawable/action_show_favourite"
         android:title="Show Favourites Only"
         app:showAsAction="ifRoom|collapseActionView" />
 

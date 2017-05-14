@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.AlarmHelper;
+import com.shambatimes.schedule.Util.AnimationHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
@@ -41,6 +44,8 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import de.greenrobot.event.EventBus;
+
+import static com.shambatimes.schedule.Constants.ANIMATION_DURATION_HEARTS;
 
 public class TimeCardScheduleFragment extends Fragment {
     private static final String TIME_POSITION = "position";
@@ -97,7 +102,7 @@ public class TimeCardScheduleFragment extends Fragment {
         date = getArguments().getInt(DATE_POSITION, 0);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        dateStringFormat = DateUtils.getTimeFormat(preferences.getString(SettingsActivity.TIME_FORMAT,"24"));
+        dateStringFormat = DateUtils.getTimeFormat(preferences.getString(SettingsActivity.TIME_FORMAT, "24"));
 
         setHeaderTimes();
         setupGridView();
@@ -116,7 +121,7 @@ public class TimeCardScheduleFragment extends Fragment {
         endTime = startTime.plusMinutes(30);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        DateTimeFormatter dateStringFormat = DateUtils.getTimeFormatTwo(preferences.getString(SettingsActivity.TIME_FORMAT,"24"));
+        DateTimeFormatter dateStringFormat = DateUtils.getTimeFormatTwo(preferences.getString(SettingsActivity.TIME_FORMAT, "24"));
 
         editor.setText(dateStringFormat.print(startTime) + " to " + dateStringFormat.print(endTime));
     }
@@ -210,36 +215,33 @@ public class TimeCardScheduleFragment extends Fragment {
             TextView artistTime = (TextView) gridView.findViewById(R.id.time_text);
 
             stageName.setText(stageNames[position]);
-            card.setCardBackgroundColor(ContextCompat.getColor(getActivity(), stageColors[position]));
 
+            card.setCardBackgroundColor(ContextCompat.getColor(getActivity(), stageColors[position]));
+            
             final ImageView image = (ImageView) gridView.findViewById(R.id.card_favorited);
             final Artist artist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(date, timePosition, position);
 
-            if(Shambhala.getFestivalYear(getActivity()).equals("2015") && position == 6) {
+            if (Shambhala.getFestivalYear(getActivity()).equals("2015") && position == 6) {
                 card.setVisibility(View.GONE);
-            }else{
+            } else {
                 card.setVisibility(View.VISIBLE);
             }
 
             if (artist != null) {
                 artistName.setText(artist.getAristName());
 
-                artistTime.setText(DateUtils.formatTime(dateStringFormat,artist.getStartTimeString()) +
+                artistTime.setText(DateUtils.formatTime(dateStringFormat, artist.getStartTimeString()) +
                         " - "
-                        + DateUtils.formatTime(dateStringFormat,artist.getEndTimeString()));
+                        + DateUtils.formatTime(dateStringFormat, artist.getEndTimeString()));
 
-                if (artist.isFavorite()) {
-                    image.setImageResource(R.drawable.favorite_white);
-                } else {
-                    image.setImageResource(R.drawable.favorite_outline_white);
-                }
-
+                image.setImageDrawable(AnimationHelper.getFavoriteTransitionDrawable(getActivity(), artist.isFavorite()));
                 image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (artist != null) {
                             if (artist.isFavorite()) {
-                                image.setImageResource(R.drawable.favorite_outline_white);
+                                TransitionDrawable transitionDrawable = (TransitionDrawable) image.getDrawable();
+                                transitionDrawable.reverseTransition(ANIMATION_DURATION_HEARTS);
                                 artist.setFavorite(false);
                                 artist.setIsAlarmSet(false);
                                 artist.save();
@@ -248,7 +250,8 @@ public class TimeCardScheduleFragment extends Fragment {
                                 EventBus.getDefault().post(new ShowHideAlarmSnackbarEvent(null));
 
                             } else {
-                                image.setImageResource(R.drawable.favorite_white);
+                                TransitionDrawable transitionDrawable = (TransitionDrawable) image.getDrawable();
+                                transitionDrawable.startTransition(ANIMATION_DURATION_HEARTS);
                                 artist.setFavorite(true);
                                 artist.save();
 
@@ -256,11 +259,14 @@ public class TimeCardScheduleFragment extends Fragment {
 
                             }
                         }
-                        EventBus.getDefault().postSticky(new DataChangedEvent(true, artist.getId()));
+                        //TODO is this event needed? It's stopping the animations.  It may cause the artist to NOT be updated elsewhere?
+                        //EventBus.getDefault().postSticky(new DataChangedEvent(true, artist.getId()));
                     }
                 });
             } else {
-                image.setImageResource(R.drawable.favorite_outline_white);
+                //artistName.setText("Stage Closed");
+                //card.setCardBackgroundColor(ContextCompat.getColor(getActivity(), ColorUtil.getLightStageColors()[position]))
+                //   image.setImageResource(R.drawable.new_favourite_border);
             }
             return gridView;
         }

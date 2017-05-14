@@ -22,6 +22,7 @@ public class Constants {
     public static int GENERAL_REFERENCE_TIME = 660;
 
     public static int ANIMATION_DURATION = 400;
+    public static int ANIMATION_DURATION_HEARTS = 300;
 
     public static DateTimeZone timeZone = DateTimeZone.forID("America/Los_Angeles");
 

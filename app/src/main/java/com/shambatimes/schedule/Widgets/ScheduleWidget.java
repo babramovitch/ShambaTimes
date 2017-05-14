@@ -97,7 +97,7 @@ public class ScheduleWidget extends AppWidgetProvider {
             widgetText = "";
             views.setTextViewText(time_array[x], widgetText);
 
-            views.setImageViewResource(like_array[x], R.drawable.favorite_outline_white);
+            views.setImageViewResource(like_array[x], R.drawable.new_favourite_border);
         }
 
         if (!DateUtils.isPrePostFestival(context)) {
@@ -116,9 +116,9 @@ public class ScheduleWidget extends AppWidgetProvider {
 
 
                 if (artist.isFavorite()) {
-                    views.setImageViewResource(like_array[artistStage], R.drawable.favorite_white);
+                    views.setImageViewResource(like_array[artistStage], R.drawable.new_favourite);
                 } else {
-                    views.setImageViewResource(like_array[artistStage], R.drawable.favorite_outline_white);
+                    views.setImageViewResource(like_array[artistStage], R.drawable.new_favourite_border);
                 }
 
                 //  Log.i(TAG, "Position:" + position);

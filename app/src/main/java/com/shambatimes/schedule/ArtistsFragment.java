@@ -3,12 +3,18 @@ package com.shambatimes.schedule;
 import android.content.Context;
 
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +22,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -25,10 +33,12 @@ import android.widget.TextView;
 
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.AlarmHelper;
+import com.shambatimes.schedule.Util.AnimationHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.Util.Util;
+import com.shambatimes.schedule.animations.MyTransitionDrawable;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
@@ -44,10 +54,11 @@ import de.greenrobot.event.EventBus;
 import jp.wasabeef.recyclerview.animators.FlipInBottomXAnimator;
 import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller;
 
+import static com.shambatimes.schedule.Constants.ANIMATION_DURATION_HEARTS;
+
 
 public class ArtistsFragment extends Fragment {
     String TAG = "ListSheduleFragment";
-
 
     private ArtistRecyclerAdapter adapter;
     private VerticalRecyclerViewFastScroller fastScroller;
@@ -73,7 +84,6 @@ public class ArtistsFragment extends Fragment {
 
         layout = inflater.inflate(R.layout.recycler_schedule_artists, container, false);
         alarmHelper = new AlarmHelper(getActivity(), layout);
-
 
         setupRecyclerView();
         setupGenres();
@@ -167,15 +177,12 @@ public class ArtistsFragment extends Fragment {
         //ItemFilter mFilter = new ItemFilter();
 
         int editTextWidth;
-
-        int[] favoriteDrawables = ColorUtil.getStageFavoriteDrawables();
-        int[] favoriteOutlineDrawables = ColorUtil.getStageFavoriteOutlineDrawables();
         int screenWidth;
 
         public ArtistRecyclerAdapter(ArrayList<Artist> artistList) {
             this.artistList = artistList;
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            dateStringFormat = DateUtils.getTimeFormat(preferences.getString(SettingsActivity.TIME_FORMAT,"24"));
+            dateStringFormat = DateUtils.getTimeFormat(preferences.getString(SettingsActivity.TIME_FORMAT, "24"));
         }
 
         public void setArtistList(ArrayList<Artist> artistList) {
@@ -224,7 +231,7 @@ public class ArtistsFragment extends Fragment {
             return -1;
         }
 
-        public ArrayList<Artist> getArtistList(){
+        public ArrayList<Artist> getArtistList() {
             return artistList;
         }
 
@@ -246,9 +253,9 @@ public class ArtistsFragment extends Fragment {
             artistViewHolder.artistDay.setText(dayOfWeek[artist.getDay()]);
             artistViewHolder.genres.setText(formattedGenres);
 
-            artistViewHolder.artistTime.setText(DateUtils.formatTime(dateStringFormat,artist.getStartTimeString()) +
+            artistViewHolder.artistTime.setText(DateUtils.formatTime(dateStringFormat, artist.getStartTimeString()) +
                     " - "
-                    + DateUtils.formatTime(dateStringFormat,artist.getEndTimeString()));
+                    + DateUtils.formatTime(dateStringFormat, artist.getEndTimeString()));
 
             artistViewHolder.artistStartTimePosition.setText("" + artist.getStartPosition());
             artistViewHolder.artistStage.setText(stageNames[artist.getStage()]);
@@ -259,29 +266,87 @@ public class ArtistsFragment extends Fragment {
 
         }
 
-        private void setupFavorites(final ArtistViewHolder artistViewHolder, final Artist artist) {
-            if (artist.isFavorite()) {
-                artistViewHolder.image.setImageResource(favoriteDrawables[artist.getStage()]);
-            } else {
-                artistViewHolder.image.setImageResource(favoriteOutlineDrawables[artist.getStage()]);
-            }
+        public void ImageViewAnimatedChange(Context c, final ImageView v, final int new_image) {
+            final Animation anim_out = AnimationUtils.loadAnimation(c, android.R.anim.fade_out);
+            final Animation anim_in = AnimationUtils.loadAnimation(c, android.R.anim.fade_in);
 
+
+            v.setImageResource(new_image);
+            anim_in.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                }
+            });
+            v.startAnimation(anim_in);
+//
+//            anim_out.setAnimationListener(new Animation.AnimationListener() {
+//                @Override
+//                public void onAnimationStart(Animation animation) {
+//                }
+//
+//                @Override
+//                public void onAnimationRepeat(Animation animation) {
+//                }
+//
+//                @Override
+//                public void onAnimationEnd(Animation animation) {
+//                    v.setImageResource(new_image);
+//                    anim_in.setAnimationListener(new Animation.AnimationListener() {
+//                        @Override
+//                        public void onAnimationStart(Animation animation) {
+//                        }
+//
+//                        @Override
+//                        public void onAnimationRepeat(Animation animation) {
+//                        }
+//
+//                        @Override
+//                        public void onAnimationEnd(Animation animation) {
+//                        }
+//                    });
+//                    v.startAnimation(anim_in);
+//                }
+//            });
+//            v.startAnimation(anim_out);
+        }
+
+        private void transitionBetweenHearts(ImageView imageView, int fromHeart, int toHeart) {
+            TransitionDrawable td = new TransitionDrawable(new Drawable[]{
+                    ContextCompat.getDrawable(getActivity(), fromHeart),
+                    ContextCompat.getDrawable(getActivity(), toHeart)});
+
+            imageView.setImageDrawable(td);
+
+        }
+
+        private void setupFavorites(final ArtistViewHolder artistViewHolder, final Artist artist) {
+
+            artistViewHolder.image.setImageDrawable(AnimationHelper.getFavoriteTransitionDrawable(getActivity(), artist.isFavorite()));
+            artistViewHolder.image.setColorFilter(ContextCompat.getColor(getActivity(), ColorUtil.getStageColors()[artist.getStage()]));
             artistViewHolder.image.setOnClickListener(new View.OnClickListener() {
                                                           @Override
                                                           public void onClick(View v) {
                                                               if (artist.isFavorite()) {
-                                                                  artistViewHolder.image.setImageResource(favoriteOutlineDrawables[artist.getStage()]);
+                                                                  MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) artistViewHolder.image.getDrawable();
+                                                                  transitionDrawable.reverseTransition(ANIMATION_DURATION_HEARTS);
                                                                   artist.setFavorite(false);
                                                                   artist.save();
-
-                                                                  Log.i("TAG", "Year: " + artist.getYear());
-
+                                                                  alarmHelper.cancelAlarm(artist);
                                                                   alarmHelper.dismissSnackbar();
                                                               } else {
-                                                                  artistViewHolder.image.setImageResource(favoriteDrawables[artist.getStage()]);
+                                                                  MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) artistViewHolder.image.getDrawable();
+                                                                  Log.i("TAG", "Is Favorite Initial:" + transitionDrawable.isInitialFavorite());
+                                                                  transitionDrawable.startTransition(ANIMATION_DURATION_HEARTS);
                                                                   artist.setFavorite(true);
                                                                   artist.save();
-
                                                                   alarmHelper.showSetAlarmSnackBar(artist);
                                                               }
                                                               MainActivity.shambhala.updateArtistById(artist.getId());
@@ -737,7 +802,7 @@ public class ArtistsFragment extends Fragment {
     public void onEventMainThread(DataChangedEvent event) {
         EventBus.getDefault().removeStickyEvent(event);
         if (event.isChanged() && adapter != null) {
-            MainActivity.shambhala.updateArtistById(adapter.getArtistList(),event.getArtistId());
+            MainActivity.shambhala.updateArtistById(adapter.getArtistList(), event.getArtistId());
             adapter.notifyDataSetChanged();
         }
     }
@@ -745,7 +810,7 @@ public class ArtistsFragment extends Fragment {
     public void showGenres(boolean animate) {
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            genreCardView.setPreventCornerOverlap (false);
+            genreCardView.setPreventCornerOverlap(false);
             genreCardView.setCardElevation(20);
         }
 

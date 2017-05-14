@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,9 +22,11 @@ import android.widget.TextView;
 
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.AlarmHelper;
+import com.shambatimes.schedule.Util.AnimationHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.Util.EdgeChanger;
+import com.shambatimes.schedule.animations.MyTransitionDrawable;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
@@ -36,10 +39,12 @@ import java.util.ArrayList;
 import de.greenrobot.event.EventBus;
 import jp.wasabeef.recyclerview.animators.FlipInBottomXAnimator;
 
+import static com.shambatimes.schedule.Constants.ANIMATION_DURATION_HEARTS;
+
 
 //see http://stackoverflow.com/questions/26995236/cardview-inside-recyclerview-has-extra-margins
 
-public class FavoriteScheduleFragment extends Fragment  {
+public class FavoriteScheduleFragment extends Fragment {
     private static final String TAG = "FavoriteSheduleFragment";
 
     private int date = 0;
@@ -73,7 +78,7 @@ public class FavoriteScheduleFragment extends Fragment  {
         stageNames = getActivity().getResources().getStringArray(R.array.stages);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        dateStringFormat = DateUtils.getTimeFormat(preferences.getString(SettingsActivity.TIME_FORMAT,"24"));
+        dateStringFormat = DateUtils.getTimeFormat(preferences.getString(SettingsActivity.TIME_FORMAT, "24"));
 
         recyclerView = (RecyclerView) result.findViewById(R.id.listView_schedule);
         recyclerView.setHasFixedSize(true);
@@ -139,9 +144,6 @@ public class FavoriteScheduleFragment extends Fragment  {
 
         private ArrayList<Artist> artistList;
 
-        int[] favoriteDrawables = ColorUtil.getStageFavoriteDrawables();
-        int[] favoriteOutlineDrawables = ColorUtil.getStageFavoriteOutlineDrawables();
-
         public ArtistRecyclerAdapter(ArrayList<Artist> artistList) {
             this.artistList = artistList;
         }
@@ -177,34 +179,31 @@ public class FavoriteScheduleFragment extends Fragment  {
             final Artist artist = artistList.get(artistViewHolder.getAdapterPosition());
 
             String formattedGenres = artist.getGenres().replace(",", ", ").toLowerCase();
-            if(formattedGenres.length() == 0 || Shambhala.getFestivalYear(getActivity()).equals("2015")){
+            if (formattedGenres.length() == 0 || Shambhala.getFestivalYear(getActivity()).equals("2015")) {
                 artistViewHolder.artistGenres.setVisibility(View.GONE);
-            }else{
+            } else {
                 artistViewHolder.artistGenres.setVisibility(View.VISIBLE);
             }
 
             artistViewHolder.artistName.setText(artist.getAristName());
             artistViewHolder.artistGenres.setText(formattedGenres);
 
-            artistViewHolder.artistTime.setText(DateUtils.formatTime(dateStringFormat,artist.getStartTimeString()) +
+            artistViewHolder.artistTime.setText(DateUtils.formatTime(dateStringFormat, artist.getStartTimeString()) +
                     " - "
-                    + DateUtils.formatTime(dateStringFormat,artist.getEndTimeString()));
+                    + DateUtils.formatTime(dateStringFormat, artist.getEndTimeString()));
 
             artistViewHolder.artistStartTimePosition.setText("" + artist.getStartPosition());
             artistViewHolder.artistStage.setText(stageNames[artist.getStage()]);
             artistViewHolder.divider.setBackground(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
 
-            if(artist.isAlarmSet()){
+            if (artist.isAlarmSet()) {
                 artistViewHolder.alarm.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 artistViewHolder.alarm.setVisibility(View.GONE);
             }
 
-            if (artist.isFavorite()) {
-                artistViewHolder.image.setImageResource(favoriteDrawables[artist.getStage()]);
-            } else {
-                artistViewHolder.image.setImageResource(favoriteOutlineDrawables[artist.getStage()]);
-            }
+            artistViewHolder.image.setImageDrawable(AnimationHelper.getFavoriteTransitionDrawable(getActivity(), artist.isFavorite()));
+            artistViewHolder.image.setColorFilter(ContextCompat.getColor(getActivity(), ColorUtil.getStageColors()[artist.getStage()]));
 
             artistViewHolder.image.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -217,7 +216,9 @@ public class FavoriteScheduleFragment extends Fragment  {
                         snackArtist = artist;
                         snackPosition = artistViewHolder.getAdapterPosition();
 
-                        artistViewHolder.image.setImageResource(favoriteOutlineDrawables[artist.getStage()]);
+                        MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) artistViewHolder.image.getDrawable();
+                        transitionDrawable.reverseTransition(200);
+
                         artist.setFavorite(false);
                         artist.setIsAlarmSet(false);
                         artist.save();
@@ -247,16 +248,16 @@ public class FavoriteScheduleFragment extends Fragment  {
                 @Override
                 public void onClick(View v) {
                     alarmHelper.dismissSnackbar();
-                    if(artist.isAlarmSet()){
+                    if (artist.isAlarmSet()) {
                         alarmHelper.showCancelAlarmSnackbar(artist);
-                    }else{
+                    } else {
                         alarmHelper.showSetAlarmSnackBar(artist);
                     }
 
                     alarmHelper.setOnAlarmStateChangedListener(new AlarmHelper.OnAlarmStateChangedListener() {
                         @Override
                         public void alarmStateChanged() {
-                            if(adapter != null){
+                            if (adapter != null) {
                                 adapter.notifyDataSetChanged();
                             }
                         }

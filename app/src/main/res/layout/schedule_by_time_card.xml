@@ -38,17 +38,16 @@
                 style="@style/card_content" />
 
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@id/stage_text"
-            android:layout_alignBottom="@id/time_text"
-            android:padding="7dp"
-            android:src="@drawable/favorite_white"
-            android:id="@+id/card_favorited"
-             />
+            <ImageView
+                android:id="@+id/card_favorited"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/time_text"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@id/stage_text"
+                android:adjustViewBounds="false"
+                android:padding="2dp"
+                android:visibility="visible" />
 
         </RelativeLayout>
 

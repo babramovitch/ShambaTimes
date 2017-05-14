@@ -53,7 +53,7 @@
             android:paddingRight="15dp"
             android:layout_alignTop="@id/pagoda_artist"
             android:layout_alignBottom="@id/pagoda_time"
-            android:src="@drawable/favorite_outline_white"/>
+            android:src="@drawable/new_favourite_border"/>
 
     </RelativeLayout>
 
@@ -91,7 +91,7 @@
             android:paddingRight="15dp"
             android:layout_alignTop="@id/forest_artist"
             android:layout_alignBottom="@id/forest_time"
-            android:src="@drawable/favorite_outline_white"/>
+            android:src="@drawable/new_favourite_border"/>
 
     </RelativeLayout>
 
@@ -130,7 +130,7 @@
             android:paddingRight="15dp"
             android:layout_alignTop="@id/grove_artist"
             android:layout_alignBottom="@id/grove_time"
-            android:src="@drawable/favorite_outline_white"/>
+            android:src="@drawable/new_favourite_border"/>
 
     </RelativeLayout>
 
@@ -167,7 +167,7 @@
             android:paddingRight="15dp"
             android:layout_alignTop="@id/living_room_artist"
             android:layout_alignBottom="@id/living_room_time"
-            android:src="@drawable/favorite_outline_white"/>
+            android:src="@drawable/new_favourite_border"/>
 
     </RelativeLayout>
 
@@ -205,7 +205,7 @@
             android:paddingRight="15dp"
             android:layout_alignTop="@id/village_artist"
             android:layout_alignBottom="@id/village_time"
-            android:src="@drawable/favorite_outline_white"/>
+            android:src="@drawable/new_favourite_border"/>
 
     </RelativeLayout>
 
@@ -242,7 +242,7 @@
             android:layout_alignTop="@id/amphitheatre_artist"
             android:layout_alignBottom="@id/amphitheatre_time"
             android:paddingRight="15dp"
-            android:src="@drawable/favorite_outline_white"/>
+            android:src="@drawable/new_favourite_border"/>
 
     </RelativeLayout>
 
@@ -279,7 +279,7 @@
             android:layout_alignTop="@id/cedar_lounge_artist"
             android:layout_alignBottom="@id/cedar_lounge_time"
             android:paddingRight="15dp"
-            android:src="@drawable/favorite_outline_white"/>
+            android:src="@drawable/new_favourite_border"/>
 
     </RelativeLayout>
 

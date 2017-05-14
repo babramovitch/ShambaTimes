@@ -59,6 +59,6 @@
         android:layout_height="fill_parent"
         android:paddingLeft="30dp"
         android:paddingRight="20dp"
-        android:src="@drawable/favorite_outline" />
+        android:src="@drawable/new_favourite_border" />
 
 </LinearLayout>

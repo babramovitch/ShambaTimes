@@ -3,10 +3,13 @@ package com.shambatimes.schedule;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +22,11 @@ import android.widget.TextView;
 
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.AlarmHelper;
+import com.shambatimes.schedule.Util.AnimationHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.Util.EdgeChanger;
+import com.shambatimes.schedule.animations.MyTransitionDrawable;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
@@ -38,6 +43,8 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import de.greenrobot.event.EventBus;
+
+import static com.shambatimes.schedule.Constants.ANIMATION_DURATION_HEARTS;
 
 
 public class StageListScheduleFragment extends Fragment {
@@ -88,7 +95,7 @@ public class StageListScheduleFragment extends Fragment {
         alarmHelper = new AlarmHelper(getActivity(), rootView);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        dateStringFormat = DateUtils.getTimeFormat(preferences.getString(SettingsActivity.TIME_FORMAT,"24"));
+        dateStringFormat = DateUtils.getTimeFormat(preferences.getString(SettingsActivity.TIME_FORMAT, "24"));
 
         listView = (ListView) rootView.findViewById(R.id.listView_schedule);
 
@@ -207,11 +214,6 @@ public class StageListScheduleFragment extends Fragment {
         LayoutInflater inflater;
         Context context;
 
-
-        int[] favoriteDrawables = ColorUtil.getStageFavoriteDrawables();
-        int[] favoriteOutlineDrawables = ColorUtil.getStageFavoriteOutlineDrawables();
-
-
         public ArtistAdapter(Context context, ArrayList<Artist> artistList) {
             this.artistList = artistList;
             this.context = context;
@@ -256,58 +258,54 @@ public class StageListScheduleFragment extends Fragment {
                     DateUtils.getCurrentTimePosition(getActivity()),
                     stage);
 
+            final Artist artist = getItem(position);
 
-            mViewHolder.artistName.setText(getItem(position).getAristName());
+            mViewHolder.artistName.setText(artist.getAristName());
 
-            String formattedGenres = getItem(position).getGenres().replace(",", ", ").toLowerCase();
-            if(formattedGenres.length() == 0 || Shambhala.getFestivalYear(getActivity()).equals("2015")){
+            String formattedGenres = artist.getGenres().replace(",", ", ").toLowerCase();
+            if (formattedGenres.length() == 0 || Shambhala.getFestivalYear(getActivity()).equals("2015")) {
                 mViewHolder.artistGenres.setVisibility(View.GONE);
-            }else{
+            } else {
                 mViewHolder.artistGenres.setVisibility(View.VISIBLE);
             }
             mViewHolder.artistGenres.setText(formattedGenres);
 
-            if (currentlyPlayingArtist != null && getItem(position).getAristName().equals(currentlyPlayingArtist.getAristName())
+            if (currentlyPlayingArtist != null && artist.getAristName().equals(currentlyPlayingArtist.getAristName())
                     && Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR) && !DateUtils.isPrePostFestival(getActivity())) {
                 mViewHolder.artistTime.setText(
-                        DateUtils.formatTime(dateStringFormat,getItem(position).getStartTimeString())
+                        DateUtils.formatTime(dateStringFormat, artist.getStartTimeString())
                                 + " to "
-                                + DateUtils.formatTime(dateStringFormat,getItem(position).getEndTimeString())
+                                + DateUtils.formatTime(dateStringFormat, artist.getEndTimeString())
                                 + " - Now Playing");
             } else {
                 mViewHolder.artistTime.setText(
-                        DateUtils.formatTime(dateStringFormat,getItem(position).getStartTimeString())
+                        DateUtils.formatTime(dateStringFormat, artist.getStartTimeString())
                                 + " to "
-                                + DateUtils.formatTime(dateStringFormat,getItem(position).getEndTimeString()));
+                                + DateUtils.formatTime(dateStringFormat, artist.getEndTimeString()));
             }
-            mViewHolder.artistStartTimePosition.setText(getItem(position).getStartTimeString());
+            mViewHolder.artistStartTimePosition.setText(artist.getStartTimeString());
 
             final ImageView image = (ImageView) convertView.findViewById(R.id.list_favorited);
 
-            if (getItem(position).isFavorite()) {
-                image.setImageResource(favoriteDrawables[getItem(position).getStage()]);
-            } else {
-                image.setImageResource(favoriteOutlineDrawables[getItem(position).getStage()]);
-            }
-
+            image.setImageDrawable(AnimationHelper.getFavoriteTransitionDrawable(getActivity(), artist.isFavorite()));
+            image.setColorFilter(ContextCompat.getColor(getActivity(), ColorUtil.getStageColors()[artist.getStage()]));
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (getItem(position).isFavorite()) {
-                        image.setImageResource(favoriteOutlineDrawables[getItem(position).getStage()]);
-                        getItem(position).setFavorite(false);
-                        getItem(position).setIsAlarmSet(false);
-                        getItem(position).save();
-
-                        alarmHelper.cancelAlarm(getItem(position));
+                    if (artist.isFavorite()) {
+                        TransitionDrawable transitionDrawable = (TransitionDrawable) image.getDrawable();
+                        transitionDrawable.reverseTransition(ANIMATION_DURATION_HEARTS);
+                        artist.setFavorite(false);
+                        artist.setIsAlarmSet(false);
+                        artist.save();
+                        alarmHelper.cancelAlarm(artist);
                         alarmHelper.dismissSnackbar();
-
                     } else {
-                        image.setImageResource(favoriteDrawables[getItem(position).getStage()]);
-                        getItem(position).setFavorite(true);
-                        getItem(position).save();
-
-                        alarmHelper.showSetAlarmSnackBar(getItem(position));
+                        TransitionDrawable transitionDrawable = (TransitionDrawable) image.getDrawable();
+                        transitionDrawable.startTransition(ANIMATION_DURATION_HEARTS);
+                        artist.setFavorite(true);
+                        artist.save();
+                        alarmHelper.showSetAlarmSnackBar(artist);
                     }
                 }
             });

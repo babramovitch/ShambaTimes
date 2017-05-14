@@ -8,12 +8,14 @@ import android.content.pm.ActivityInfo;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -48,6 +50,8 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.shambatimes.schedule.Settings.SettingsActivity;
+import com.shambatimes.schedule.Util.AlarmHelper;
+import com.shambatimes.schedule.Util.AnimationHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
@@ -74,6 +78,8 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import io.fabric.sdk.android.Fabric;
+
+import static com.shambatimes.schedule.Constants.ANIMATION_DURATION_HEARTS;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -475,10 +481,6 @@ public class MainActivity extends AppCompatActivity {
             private String[] dayOfWeek = {"Thursday", "Friday", "Saturday", "Sunday"};
             private String[] stageNames = getResources().getStringArray(R.array.stages);
 
-
-            int[] favoriteDrawables = ColorUtil.getStageFavoriteDrawables();
-            int[] favoriteOutlineDrawables = ColorUtil.getStageFavoriteOutlineDrawables();
-
             @Override
             public View getView(final int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
@@ -514,11 +516,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-                if (artist.isFavorite()) {
-                    artistFavorite.setImageResource(favoriteDrawables[artist.getStage()]);
-                } else {
-                    artistFavorite.setImageResource(favoriteOutlineDrawables[artist.getStage()]);
-                }
+                artistFavorite.setImageDrawable(AnimationHelper.getFavoriteTransitionDrawable(MainActivity.this, artist.isFavorite()));
+                artistFavorite.setColorFilter(ContextCompat.getColor(MainActivity.this, ColorUtil.getStageColors()[artist.getStage()]));
 
                 String formattedGenres = artist.getGenres().replace(",", ", ").toLowerCase();
                 if (formattedGenres.length() == 0 || Shambhala.getFestivalYear(MainActivity.this).equals("2015")) {
@@ -534,18 +533,20 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View v) {
 
                         if (artist.isFavorite()) {
-                            artistFavorite.setImageResource(favoriteOutlineDrawables[artist.getStage()]);
+                            TransitionDrawable transitionDrawable = (TransitionDrawable) artistFavorite.getDrawable();
+                            transitionDrawable.reverseTransition(ANIMATION_DURATION_HEARTS);
+                            AlarmHelper alarmHelper = new AlarmHelper(MainActivity.this, null);
+                            alarmHelper.cancelAlarm(artist);
                             artist.setFavorite(false);
                             artist.save();
-
                         } else {
-                            artistFavorite.setImageResource(favoriteDrawables[artist.getStage()]);
+                            TransitionDrawable transitionDrawable = (TransitionDrawable) artistFavorite.getDrawable();
+                            transitionDrawable.startTransition(ANIMATION_DURATION_HEARTS);
                             artist.setFavorite(true);
                             artist.save();
                         }
 
                         EventBus.getDefault().post(new DataChangedEvent(true, artist.getId()));
-
                     }
                 });
 
