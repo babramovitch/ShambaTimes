@@ -54,6 +54,7 @@ import com.shambatimes.schedule.Util.AlarmHelper;
 import com.shambatimes.schedule.Util.AnimationHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
+import com.shambatimes.schedule.animations.MyTransitionDrawable;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ArtistListLoadDoneEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
@@ -533,15 +534,16 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View v) {
 
                         if (artist.isFavorite()) {
-                            TransitionDrawable transitionDrawable = (TransitionDrawable) artistFavorite.getDrawable();
-                            transitionDrawable.reverseTransition(ANIMATION_DURATION_HEARTS);
+                            MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) artistFavorite.getDrawable();
+                            // adding 200 as something is causing the animation to appear faster in this scenario, and otherwise be unnoticed.
+                            transitionDrawable.favoriteReverse(ANIMATION_DURATION_HEARTS+200);
                             AlarmHelper alarmHelper = new AlarmHelper(MainActivity.this, null);
                             alarmHelper.cancelAlarm(artist);
                             artist.setFavorite(false);
                             artist.save();
                         } else {
-                            TransitionDrawable transitionDrawable = (TransitionDrawable) artistFavorite.getDrawable();
-                            transitionDrawable.startTransition(ANIMATION_DURATION_HEARTS);
+                            MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) artistFavorite.getDrawable();
+                            transitionDrawable.favoriteStart(ANIMATION_DURATION_HEARTS+200);
                             artist.setFavorite(true);
                             artist.save();
                         }

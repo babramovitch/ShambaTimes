@@ -39,8 +39,6 @@ import java.util.ArrayList;
 import de.greenrobot.event.EventBus;
 import jp.wasabeef.recyclerview.animators.FlipInBottomXAnimator;
 
-import static com.shambatimes.schedule.Constants.ANIMATION_DURATION_HEARTS;
-
 
 //see http://stackoverflow.com/questions/26995236/cardview-inside-recyclerview-has-extra-margins
 
@@ -217,7 +215,7 @@ public class FavoriteScheduleFragment extends Fragment {
                         snackPosition = artistViewHolder.getAdapterPosition();
 
                         MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) artistViewHolder.image.getDrawable();
-                        transitionDrawable.reverseTransition(200);
+                        transitionDrawable.favoriteReverse(Constants.ANIMATION_DURATION_HEARTS);
 
                         artist.setFavorite(false);
                         artist.setIsAlarmSet(false);

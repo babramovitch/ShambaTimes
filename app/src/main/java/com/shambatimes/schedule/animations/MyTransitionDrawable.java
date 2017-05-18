@@ -24,8 +24,7 @@ public class MyTransitionDrawable extends TransitionDrawable{
         return initialFavorite;
     }
 
-    @Override
-    public void startTransition(int durationMillis) {
+    public void favoriteStart(int durationMillis) {
        if(!initialFavorite){
            super.startTransition(durationMillis);
        }else{
@@ -33,8 +32,7 @@ public class MyTransitionDrawable extends TransitionDrawable{
        }
     }
 
-    @Override
-    public void reverseTransition(int durationMillis) {
+    public void favoriteReverse(int durationMillis) {
         if(!initialFavorite){
             super.reverseTransition(durationMillis);
         }else{

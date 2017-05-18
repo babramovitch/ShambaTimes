@@ -293,16 +293,16 @@ public class StageListScheduleFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     if (artist.isFavorite()) {
-                        TransitionDrawable transitionDrawable = (TransitionDrawable) image.getDrawable();
-                        transitionDrawable.reverseTransition(ANIMATION_DURATION_HEARTS);
+                        MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) image.getDrawable();
+                        transitionDrawable.favoriteReverse(ANIMATION_DURATION_HEARTS);
                         artist.setFavorite(false);
                         artist.setIsAlarmSet(false);
                         artist.save();
                         alarmHelper.cancelAlarm(artist);
                         alarmHelper.dismissSnackbar();
                     } else {
-                        TransitionDrawable transitionDrawable = (TransitionDrawable) image.getDrawable();
-                        transitionDrawable.startTransition(ANIMATION_DURATION_HEARTS);
+                        MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) image.getDrawable();
+                        transitionDrawable.favoriteStart(ANIMATION_DURATION_HEARTS);
                         artist.setFavorite(true);
                         artist.save();
                         alarmHelper.showSetAlarmSnackBar(artist);

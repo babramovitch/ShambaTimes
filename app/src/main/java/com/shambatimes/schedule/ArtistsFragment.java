@@ -3,9 +3,6 @@ package com.shambatimes.schedule;
 import android.content.Context;
 
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -336,7 +333,7 @@ public class ArtistsFragment extends Fragment {
                                                           public void onClick(View v) {
                                                               if (artist.isFavorite()) {
                                                                   MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) artistViewHolder.image.getDrawable();
-                                                                  transitionDrawable.reverseTransition(ANIMATION_DURATION_HEARTS);
+                                                                  transitionDrawable.favoriteReverse(ANIMATION_DURATION_HEARTS);
                                                                   artist.setFavorite(false);
                                                                   artist.save();
                                                                   alarmHelper.cancelAlarm(artist);
@@ -344,7 +341,7 @@ public class ArtistsFragment extends Fragment {
                                                               } else {
                                                                   MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) artistViewHolder.image.getDrawable();
                                                                   Log.i("TAG", "Is Favorite Initial:" + transitionDrawable.isInitialFavorite());
-                                                                  transitionDrawable.startTransition(ANIMATION_DURATION_HEARTS);
+                                                                  transitionDrawable.favoriteStart(ANIMATION_DURATION_HEARTS);
                                                                   artist.setFavorite(true);
                                                                   artist.save();
                                                                   alarmHelper.showSetAlarmSnackBar(artist);

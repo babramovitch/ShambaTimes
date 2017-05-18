@@ -27,6 +27,7 @@ import com.shambatimes.schedule.Util.AlarmHelper;
 import com.shambatimes.schedule.Util.AnimationHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
+import com.shambatimes.schedule.animations.MyTransitionDrawable;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
@@ -240,8 +241,8 @@ public class TimeCardScheduleFragment extends Fragment {
                     public void onClick(View v) {
                         if (artist != null) {
                             if (artist.isFavorite()) {
-                                TransitionDrawable transitionDrawable = (TransitionDrawable) image.getDrawable();
-                                transitionDrawable.reverseTransition(ANIMATION_DURATION_HEARTS);
+                                MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) image.getDrawable();
+                                transitionDrawable.favoriteReverse(ANIMATION_DURATION_HEARTS);
                                 artist.setFavorite(false);
                                 artist.setIsAlarmSet(false);
                                 artist.save();
@@ -250,8 +251,8 @@ public class TimeCardScheduleFragment extends Fragment {
                                 EventBus.getDefault().post(new ShowHideAlarmSnackbarEvent(null));
 
                             } else {
-                                TransitionDrawable transitionDrawable = (TransitionDrawable) image.getDrawable();
-                                transitionDrawable.startTransition(ANIMATION_DURATION_HEARTS);
+                                MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) image.getDrawable();
+                                transitionDrawable.favoriteStart(ANIMATION_DURATION_HEARTS);
                                 artist.setFavorite(true);
                                 artist.save();
 
