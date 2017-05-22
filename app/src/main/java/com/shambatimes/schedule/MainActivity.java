@@ -8,7 +8,6 @@ import android.content.pm.ActivityInfo;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
@@ -23,6 +22,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.os.Handler;
 import android.os.Bundle;
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
     AdapterBaseScheduleDays adapterBaseScheduleDays;
 
     //Items that require a saved state
-    private int actionBarColor = 0xFF666666;
+    private int currentTheme;
     private int actionBarStage = 0;
     private int currentFragment = FRAGMENT_TIME;
     static public int currentDay = -1; //TODO THIS IS ONLY TEMPORARY FOR TESTING WEEKVIEW EASIER
@@ -132,6 +132,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO) {
+            ColorUtil.nightMode = false;
+        } else if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            ColorUtil.nightMode = true;
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -159,10 +168,12 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             currentTimePosition = DateUtils.getCurrentTimePosition(this);
-            actionBarColor = getResources().getColor(R.color.pagoda_color);
+            ColorUtil.setCurrentThemeColor(getResources().getColor(R.color.pagoda_color));
             replaceFragment(R.id.content_frame, new TimeScheduleFragment(), "TIME", false);
         } else {
-            actionBarColor = savedInstanceState.getInt("COLOR");
+
+            ColorUtil.setCurrentThemeColor(savedInstanceState.getInt("COLOR"));
+
             actionBarStage = savedInstanceState.getInt("STAGE");
             currentFragment = savedInstanceState.getInt("POSITION");
             currentDay = savedInstanceState.getInt("DAY");
@@ -343,7 +354,7 @@ public class MainActivity extends AppCompatActivity {
                 setupArtistListSpinner();
             }
 
-            EventBus.getDefault().postSticky(new ActionBarColorEvent(actionBarColor, actionBarStage));
+            EventBus.getDefault().postSticky(new ActionBarColorEvent(ColorUtil.themedGray(this), actionBarStage));
         }
     }
 
@@ -536,14 +547,14 @@ public class MainActivity extends AppCompatActivity {
                         if (artist.isFavorite()) {
                             MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) artistFavorite.getDrawable();
                             // adding 200 as something is causing the animation to appear faster in this scenario, and otherwise be unnoticed.
-                            transitionDrawable.favoriteReverse(ANIMATION_DURATION_HEARTS+200);
+                            transitionDrawable.favoriteReverse(ANIMATION_DURATION_HEARTS + 200);
                             AlarmHelper alarmHelper = new AlarmHelper(MainActivity.this, null);
                             alarmHelper.cancelAlarm(artist);
                             artist.setFavorite(false);
                             artist.save();
                         } else {
                             MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) artistFavorite.getDrawable();
-                            transitionDrawable.favoriteStart(ANIMATION_DURATION_HEARTS+200);
+                            transitionDrawable.favoriteStart(ANIMATION_DURATION_HEARTS + 200);
                             artist.setFavorite(true);
                             artist.save();
                         }
@@ -581,8 +592,14 @@ public class MainActivity extends AppCompatActivity {
                 artistTime.setText(DateUtils.formatTime(dateStringFormat, artist.getStartTimeString()) +
                         " - "
                         + DateUtils.formatTime(dateStringFormat, artist.getEndTimeString()));
+                
                 artistDivider.setBackground(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, gradientColors));
-                artistLayout.setBackgroundResource(getBackgroundSelector());
+
+                if (ColorUtil.nightMode) {
+                    artistLayout.setBackgroundResource(R.drawable.list_night_selector);
+                } else {
+                    artistLayout.setBackgroundResource(getBackgroundSelector());
+                }
 
                 return convertView;
 
@@ -1108,11 +1125,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onEventMainThread(ActionBarColorEvent event) {
-        actionBarColor = event.getColor();
-        actionBarStage = event.getStage();
-        gradientColors[1] = event.getColor();
+        ColorUtil.setCurrentThemeColor(event.getColor());
 
-        Drawable colorDrawable = new ColorDrawable(actionBarColor);
+        actionBarStage = event.getStage();
+
+        int color = ColorUtil.dividerColor(MainActivity.this);
+        gradientColors = ColorUtil.getDividerGradientColor(color);
+
+        Drawable colorDrawable = new ColorDrawable(ColorUtil.themedGray(this));
         getSupportActionBar().setBackgroundDrawable(colorDrawable);
     }
 
@@ -1342,7 +1362,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putInt("COLOR", actionBarColor);
+        savedInstanceState.putInt("COLOR", ColorUtil.getCurrentThemeColor());
         savedInstanceState.putInt("STAGE", actionBarStage);
         savedInstanceState.putInt("POSITION", currentFragment);
         savedInstanceState.putInt("DAY", currentDay);

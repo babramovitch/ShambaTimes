@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <color name="primaryTextColor">#999999</color>
+    <color name="secondaryTextColor">#7A7A7A</color>
+    <color name="genreTextColor">#708080</color>
+
+    <color name="darkPrimaryBackgroundGray">#0F0F10</color>
+    <color name="lighterPrimaryUIGray">#1C1C1C</color>
+
+    <color name="primaryTextColorWhite">@color/primaryTextColor</color>
+    <color name="secondaryTextColorWhite">@color/secondaryTextColor</color>
+    <color name="dividerColor">@color/lighterPrimaryUIGray</color>
+    <color name="pagerBackgroundColor">@color/darkPrimaryBackgroundGray</color>
+    <color name="listItemBackgroundColor">@color/lighterPrimaryUIGray</color>
+    <color name="tabsBackgroundColor">@color/lighterSecondaryUISelectionGray</color>
+
+    <color name="cardBackgroundColor">@color/darkTimeCollectionBackgroundColor</color>
+
+</resources>

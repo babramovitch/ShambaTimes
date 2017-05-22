@@ -66,6 +66,11 @@ public class WeekView extends View {
 
     private boolean favouritesOnly = false;
     Paint eventBorderPaint;
+    int eventBorderColor;
+
+    public void toggleFavourites(int color) {
+        eventBorderColor = color;
+    }
 
     public void toggleFavourites(boolean favouritesOnly) {
         this.favouritesOnly = favouritesOnly;
@@ -567,7 +572,7 @@ public class WeekView extends View {
         eventBorderPaint = new Paint();
         eventBorderPaint.setStyle(Paint.Style.STROKE);
         eventBorderPaint.setStrokeWidth(3);
-        eventBorderPaint.setColor(Color.WHITE);
+        eventBorderPaint.setColor(mHourSeparatorColor);
 
 
         // Prepare empty event background color.

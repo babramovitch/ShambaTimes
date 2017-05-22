@@ -3,9 +3,8 @@ package com.shambatimes.schedule;
 import android.content.Context;
 
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -283,46 +282,9 @@ public class ArtistsFragment extends Fragment {
                 }
             });
             v.startAnimation(anim_in);
-//
-//            anim_out.setAnimationListener(new Animation.AnimationListener() {
-//                @Override
-//                public void onAnimationStart(Animation animation) {
-//                }
-//
-//                @Override
-//                public void onAnimationRepeat(Animation animation) {
-//                }
-//
-//                @Override
-//                public void onAnimationEnd(Animation animation) {
-//                    v.setImageResource(new_image);
-//                    anim_in.setAnimationListener(new Animation.AnimationListener() {
-//                        @Override
-//                        public void onAnimationStart(Animation animation) {
-//                        }
-//
-//                        @Override
-//                        public void onAnimationRepeat(Animation animation) {
-//                        }
-//
-//                        @Override
-//                        public void onAnimationEnd(Animation animation) {
-//                        }
-//                    });
-//                    v.startAnimation(anim_in);
-//                }
-//            });
-//            v.startAnimation(anim_out);
-        }
-
-        private void transitionBetweenHearts(ImageView imageView, int fromHeart, int toHeart) {
-            TransitionDrawable td = new TransitionDrawable(new Drawable[]{
-                    ContextCompat.getDrawable(getActivity(), fromHeart),
-                    ContextCompat.getDrawable(getActivity(), toHeart)});
-
-            imageView.setImageDrawable(td);
 
         }
+
 
         private void setupFavorites(final ArtistViewHolder artistViewHolder, final Artist artist) {
 
@@ -468,15 +430,19 @@ public class ArtistsFragment extends Fragment {
     int stage;
 
     public void onEventMainThread(ActionBarColorEvent event) {
+        ColorUtil.setCurrentThemeColor(event.getColor());
+
         stage = event.getStage();
-        colors[1] = event.getColor();
-        scrollColor = event.getColor();
+        int color = ColorUtil.dividerColor(getActivity());
+        colors = ColorUtil.getDividerGradientColor(color);
+        scrollColor = color;
+
         if (fastScroller != null) {
-            fastScroller.setHandleColor(event.getColor());
-            fastScroller.setBarColor(event.getColor());
+            fastScroller.setHandleColor(ColorUtil.themedGray(getActivity()));
+            fastScroller.setBarColor(ColorUtil.themedGray(getActivity()));
         }
         if (listView != null) {
-            EdgeChanger.setEdgeGlowColor(listView, event.getColor());
+            EdgeChanger.setEdgeGlowColor(listView, color);
         }
     }
 
@@ -518,6 +484,7 @@ public class ArtistsFragment extends Fragment {
             genreAdapter = new GenreAdapter(getActivity(), genres);
             listView = (ListView) layout.findViewById(R.id.genrelist);
             listView.setAdapter(genreAdapter);
+            listView.setDivider(new ColorDrawable(ContextCompat.getColor(getActivity(), R.color.black)));
         }
     }
 
@@ -597,7 +564,7 @@ public class ArtistsFragment extends Fragment {
                 mViewHolder = new MyViewHolder();
                 convertView.setTag(mViewHolder);
                 //Styling material themed checkboxes dynamically is hard (impossible?) SO LETS HAVE ALL THE BOXES!
-                //If anyone sees this... and uh knows a way to do this that's theme based and can be done programatically
+                //If anyone sees this... and uh knows a way to do this that's theme based and can be done programmatically
                 //please let me know. Pretty please.
                 mViewHolder.genreboxPagoda = (CheckBox) convertView.findViewById(R.id.genreboxPagoda);
                 mViewHolder.genreboxForest = (CheckBox) convertView.findViewById(R.id.genreboxForest);
@@ -606,6 +573,7 @@ public class ArtistsFragment extends Fragment {
                 mViewHolder.genreboxVillage = (CheckBox) convertView.findViewById(R.id.genreboxVillage);
                 mViewHolder.genreboxAmphitheatre = (CheckBox) convertView.findViewById(R.id.genreboxAmph);
                 mViewHolder.genreboxCedarLounge = (CheckBox) convertView.findViewById(R.id.genreboxCedarLounge);
+                mViewHolder.genreboxNight = (CheckBox) convertView.findViewById(R.id.genreBoxNight);
                 mViewHolder.textView = (TextView) convertView.findViewById(R.id.textView);
             } else {
                 mViewHolder = (MyViewHolder) convertView.getTag();
@@ -624,6 +592,7 @@ public class ArtistsFragment extends Fragment {
             setupItemChecked(mViewHolder.genreboxVillage, position);
             setupItemChecked(mViewHolder.genreboxAmphitheatre, position);
             setupItemChecked(mViewHolder.genreboxCedarLounge, position);
+            setupItemChecked(mViewHolder.genreboxNight, position);
 
             mViewHolder.textView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -645,7 +614,9 @@ public class ArtistsFragment extends Fragment {
 
         private void showThemedCheckBox(MyViewHolder viewHolder) {
 
-            switch (stage) {
+            int position = ColorUtil.nightMode ? 7 : stage;
+
+            switch (position) {
                 case 0:
                     viewHolder.genreboxPagoda.setVisibility(View.VISIBLE);
                     break;
@@ -666,6 +637,8 @@ public class ArtistsFragment extends Fragment {
                     break;
                 case 6:
                     viewHolder.genreboxCedarLounge.setVisibility(View.VISIBLE);
+                case 7:
+                    viewHolder.genreboxNight.setVisibility(View.VISIBLE);
                     break;
             }
         }
@@ -678,6 +651,7 @@ public class ArtistsFragment extends Fragment {
             mViewHolder.genreboxVillage.setAlpha(alpha);
             mViewHolder.genreboxAmphitheatre.setAlpha(alpha);
             mViewHolder.genreboxCedarLounge.setAlpha(alpha);
+            mViewHolder.genreboxNight.setAlpha(alpha);
         }
 
         private void setupItemChecked(CheckBox view, final int position) {
@@ -717,7 +691,9 @@ public class ArtistsFragment extends Fragment {
 
         private void simpleCheckboxClicker(MyViewHolder viewHolder) {
 
-            switch (stage) {
+            int position = ColorUtil.nightMode ? 7 : stage;
+
+            switch (position) {
                 case 0:
                     checkBoxClick(viewHolder.genreboxPagoda);
                     break;
@@ -738,6 +714,8 @@ public class ArtistsFragment extends Fragment {
                     break;
                 case 6:
                     checkBoxClick(viewHolder.genreboxCedarLounge);
+                case 7:
+                    checkBoxClick(viewHolder.genreboxNight);
                     break;
             }
         }
@@ -760,6 +738,7 @@ public class ArtistsFragment extends Fragment {
             CheckBox genreboxVillage;
             CheckBox genreboxAmphitheatre;
             CheckBox genreboxCedarLounge;
+            CheckBox genreboxNight;
 
             TextView textView;
             boolean isChecked;

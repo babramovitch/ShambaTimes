@@ -70,4 +70,31 @@
     <color name="toolbar_text">#8f000000</color>
     <color name="accent">#2789e4</color>
 
+    <color name="dividerColor">#F0F0F0</color>
+
+    <color name="lighterPrimaryUIGray">#1C1C1C</color>
+    <color name="lighterSecondaryUISelectionGray">#333333</color>
+    <color name="darkPrimaryBackgroundGray">#0F0F10</color>
+
+
+    <color name="darkTimeCollectionBackgroundColor">#191919</color>
+    <color name="darkDividerColor">#222222</color>
+
+    <color name="lighterPrimaryTextGray">#999999</color>
+
+    <color name="lightTertiaryTextGray">#7A7A7A</color>
+    <color name="lightQuadTextGray">#6C6C6C</color>
+    <color name="whiteSelectedColor">#CCCCCC</color>
+
+
+    <color name="primaryTextColorWhite">@color/white</color>
+    <color name="primaryTextColor">@color/black</color>
+    <color name="genreTextColor">@color/black</color>
+    <color name="secondaryTextColorWhite">@color/white</color>
+    <color name="secondaryTextColor">@color/black</color>
+    <color name="pagerBackgroundColor">@color/background_material_light</color>
+    <color name="listItemBackgroundColor">@color/white</color>
+    <color name="tabsBackgroundColor">@color/white</color>
+    <color name="cardBackgroundColor">@color/white</color>
+
 </resources>

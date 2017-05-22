@@ -125,6 +125,8 @@ public class TimeCardScheduleFragment extends Fragment {
         DateTimeFormatter dateStringFormat = DateUtils.getTimeFormatTwo(preferences.getString(SettingsActivity.TIME_FORMAT, "24"));
 
         editor.setText(dateStringFormat.print(startTime) + " to " + dateStringFormat.print(endTime));
+
+        editor.setVisibility(View.GONE);
     }
 
     public void onEventMainThread(ChangeTimePagersTimeColorEvent event) {
@@ -217,8 +219,12 @@ public class TimeCardScheduleFragment extends Fragment {
 
             stageName.setText(stageNames[position]);
 
-            card.setCardBackgroundColor(ContextCompat.getColor(getActivity(), stageColors[position]));
-            
+            if (!ColorUtil.nightMode) {
+                card.setCardBackgroundColor(ContextCompat.getColor(getActivity(), stageColors[position]));
+            } else {
+                card.setCardBackgroundColor(ContextCompat.getColor(getActivity(), R.color.cardBackgroundColor));
+            }
+
             final ImageView image = (ImageView) gridView.findViewById(R.id.card_favorited);
             final Artist artist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(date, timePosition, position);
 
@@ -236,6 +242,9 @@ public class TimeCardScheduleFragment extends Fragment {
                         + DateUtils.formatTime(dateStringFormat, artist.getEndTimeString()));
 
                 image.setImageDrawable(AnimationHelper.getFavoriteTransitionDrawable(getActivity(), artist.isFavorite()));
+                if (ColorUtil.nightMode) {
+                    image.setColorFilter(ContextCompat.getColor(getActivity(), ColorUtil.getStageColors()[artist.getStage()]));
+                }
                 image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

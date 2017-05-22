@@ -115,7 +115,6 @@ public class FavoriteScheduleFragment extends Fragment {
         protected ImageView alarm;
         protected ImageView image;
 
-
         public ArtistViewHolder(View v) {
 
             super(v);
@@ -283,13 +282,14 @@ public class FavoriteScheduleFragment extends Fragment {
                 .setDuration(Snackbar.LENGTH_LONG);
 
         View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(stageColors[artist.getStage()]);
+        snackbarView.setBackgroundColor(alarmHelper.getSnackBarColor(stageColors[artist.getStage()]));
 
         TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-        snackBarTextView.setTextColor(Color.WHITE);
+
+        snackBarTextView.setTextColor(ColorUtil.snackbarTextColor(getActivity()));
 
         TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
-        snackBarActionTextView.setTextColor(Color.WHITE);
+        snackBarActionTextView.setTextColor(ColorUtil.snackbarTextColor(getActivity()));
         snackBarActionTextView.setTextSize(14);
 
         snackbar.show();
@@ -351,8 +351,9 @@ public class FavoriteScheduleFragment extends Fragment {
     }
 
     public void onEventMainThread(ActionBarColorEvent event) {
-        colors[1] = event.getColor();
-        scrollColor = event.getColor();
+        int color = ColorUtil.dividerColor(getActivity());
+        colors = ColorUtil.getDividerGradientColor(color);
+        scrollColor = color;
     }
 
     @Override

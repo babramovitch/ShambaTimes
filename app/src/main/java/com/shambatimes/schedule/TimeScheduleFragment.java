@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.AlarmHelper;
+import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.Util.DateUtils;
 
@@ -196,6 +197,10 @@ public class TimeScheduleFragment extends Fragment {
         }
 
         private int getSelectorBackground(int stageId) {
+
+            if(ColorUtil.nightMode) {
+                return R.color.time_selector_night;
+            }
 
             switch (stageId) {
                 case 0:

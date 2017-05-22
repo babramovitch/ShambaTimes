@@ -2,6 +2,7 @@ package com.shambatimes.schedule;
 
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import com.astuetz.PagerSlidingTabStrip;
 
 import de.greenrobot.event.EventBus;
 
+import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
@@ -95,10 +97,11 @@ public class StageScheduleFragment extends Fragment {
     }
 
     private void changeColor(int newColor, int stage) {
+        ColorUtil.setCurrentThemeColor(newColor);
         tabs.setIndicatorColor(newColor);
-        tabs.setUnderlineColor(newColor);
+        tabs.setUnderlineColor(ColorUtil.cellBackgroundColor(getActivity()));
         currentColor = newColor;
-        EdgeChanger.setEdgeGlowColor(pager, newColor);
+        EdgeChanger.setEdgeGlowColor(pager, ColorUtil.dividerColor(getActivity()));
         EventBus.getDefault().postSticky(new ActionBarColorEvent(currentColor, stage));
     }
 

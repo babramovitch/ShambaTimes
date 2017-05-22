@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_material_light"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/pagerBackgroundColor"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -10,7 +11,10 @@
     <com.astuetz.PagerSlidingTabStrip
         android:id="@+id/tabs"
         android:layout_width="match_parent"
-        android:layout_height="48dip" />
+        android:layout_height="48dip"
+        android:background="@color/tabsBackgroundColor"
+        android:textColor="@color/primaryTextColor"
+        />
 
 
     <android.support.v4.view.ViewPager

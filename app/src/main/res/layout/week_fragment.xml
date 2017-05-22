@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff">
+    android:background="@color/pagerBackgroundColor">
 
     <com.shambatimes.weekview.WeekView
         android:id="@+id/weekView"
@@ -13,15 +13,14 @@
         app:textSize="12sp"
         app:hourHeight="60dp"
         app:headerColumnPadding="8dp"
-        app:headerColumnTextColor="@color/toolbar_text"
+        app:headerColumnTextColor="@color/primaryTextColor"
         app:headerRowPadding="12dp"
         app:columnGap="8dp"
-        app:noOfVisibleDays="3"
-        app:headerRowBackgroundColor="@color/toolbar"
-        app:dayBackgroundColor="#05000000"
+        app:headerRowBackgroundColor="@color/tabsBackgroundColor"
+        app:dayBackgroundColor="@color/pagerBackgroundColor"
         app:todayBackgroundColor="#1848adff"
         app:headerColumnBackground="#ffffffff"
-        app:todayHeaderTextColor="@color/accent"
+        app:hourSeparatorColor="@color/pagerBackgroundColor"
         app:newEventTimeResolutionInMinutes="15"
         app:showHalfHours="false" />
 

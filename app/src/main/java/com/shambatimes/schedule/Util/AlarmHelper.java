@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -49,6 +50,14 @@ public class AlarmHelper {
         this.layout = layout;
     }
 
+    public int getSnackBarColor(int stage){
+        if(ColorUtil.nightMode) {
+            return ContextCompat.getColor(context,R.color.lighterSecondaryUISelectionGray);
+        }else{
+            return ContextCompat.getColor(context, stageColors[stage]);
+        }
+    }
+
     public void setOnAlarmStateChangedListener(OnAlarmStateChangedListener listener) {
         onAlarmStateChangedListener = listener;
     }
@@ -58,7 +67,7 @@ public class AlarmHelper {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String alarmMinutes = preferences.getString(SettingsActivity.ALARM_TIMES, "30");
 
-        if (DateUtils.getFullDateTimeForArtist(artist).minus(60000 * Integer.valueOf(alarmMinutes)).isAfter(System.currentTimeMillis())) {
+       // if (DateUtils.getFullDateTimeForArtist(artist).minus(60000 * Integer.valueOf(alarmMinutes)).isAfter(System.currentTimeMillis())) {
             if (Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR)) {
 
                 this.artist = artist;
@@ -66,25 +75,24 @@ public class AlarmHelper {
                 final View coordinatorLayoutView = layout.findViewById(R.id.snackbarPosition);
                 coordinatorLayoutView.setVisibility(View.VISIBLE);
 
-                snackbar = Snackbar.make(coordinatorLayoutView, "Add alarm " + alarmMinutes + " minutes before " + artist.getAristName(), Snackbar.LENGTH_LONG)
+                snackbar = Snackbar.make(coordinatorLayoutView, "Add alarm " + alarmMinutes + " minutes before " + artist.getAristName() + "?", Snackbar.LENGTH_LONG)
                         .setAction("OK", snackBarClickListener)
                         .setDuration(Snackbar.LENGTH_LONG);
 
                 View snackbarView = snackbar.getView();
-
-                snackbarView.setBackgroundColor(context.getResources().getColor((stageColors[artist.getStage()])));
+                snackbarView.setBackgroundColor(getSnackBarColor(artist.getStage()));
 
                 TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
                 TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
 
-                snackBarTextView.setTextColor(Color.WHITE);
-                snackBarActionTextView.setTextColor(Color.WHITE);
+                snackBarTextView.setTextColor(ColorUtil.snackbarTextColor(context));
+                snackBarActionTextView.setTextColor(ColorUtil.snackbarTextColor(context));
 
                 snackBarActionTextView.setTextSize(14);
 
                 snackbar.show();
             }
-        }
+       // }
     }
 
     final View.OnClickListener snackBarClickListener = new View.OnClickListener() {
@@ -96,11 +104,11 @@ public class AlarmHelper {
                     .setDuration(Snackbar.LENGTH_LONG);
 
             View snackbarView = snackbar.getView();
-            snackbarView.setBackgroundColor(context.getResources().getColor((stageColors[artist.getStage()])));
+            snackbarView.setBackgroundColor(getSnackBarColor(artist.getStage()));
 
             TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
 
-            snackBarTextView.setTextColor(Color.WHITE);
+            snackBarTextView.setTextColor(ColorUtil.snackbarTextColor(context));
             snackBarTextView.setGravity(Gravity.CENTER_HORIZONTAL);
 
             snackbar.show();
@@ -158,14 +166,13 @@ public class AlarmHelper {
                     .setDuration(Snackbar.LENGTH_LONG);
 
             View snackbarView = snackbar.getView();
-
-            snackbarView.setBackgroundColor(context.getResources().getColor((stageColors[artist.getStage()])));
+            snackbarView.setBackgroundColor(getSnackBarColor(artist.getStage()));
 
             TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
             TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
 
-            snackBarTextView.setTextColor(Color.WHITE);
-            snackBarActionTextView.setTextColor(Color.WHITE);
+            snackBarTextView.setTextColor(ColorUtil.snackbarTextColor(context));
+            snackBarActionTextView.setTextColor(ColorUtil.snackbarTextColor(context));
 
             snackBarActionTextView.setTextSize(14);
 

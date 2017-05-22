@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -256,7 +257,7 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
             int color = ContextCompat.getColor(getContext(), ColorUtil.getStageColors()[stage]);
 
             if (!event.isFavourite()) {
-                color = ColorUtil.adjustAlpha(color, 0.58f);
+                color = fadeNonFavouriteColor(color);
             }
 
             event.setColor(color);
@@ -264,6 +265,15 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         }
 
         return currentPeriodEvents;
+    }
+
+    private int fadeNonFavouriteColor(int color) {
+        float[] hsvColor = new float[3];
+        Color.colorToHSV(color, hsvColor);
+        hsvColor[1] = 0.35f;
+        hsvColor[2] = hsvColor[2] + 0.05f;
+        color = Color.HSVToColor(hsvColor);
+        return color;
     }
 
     public void onEventMainThread(ChangeDateEvent event) {

@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:dividerHeight="1dp"
         android:layout_alignParentTop="true"
-        android:id="@+id/listView_schedule" />
+        android:id="@+id/listView_schedule"
+        android:background="@color/pagerBackgroundColor"/>
 
 
     <android.support.design.widget.CoordinatorLayout
