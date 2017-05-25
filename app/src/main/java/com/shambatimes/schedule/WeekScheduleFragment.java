@@ -81,6 +81,9 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         favouritesOnly = !favouritesOnly;
         mWeekView.toggleFavourites(favouritesOnly);
     }
+    public boolean isFavoritesOnly() {
+        return favouritesOnly;
+    }
 
     @Override
     public void onStart() {
@@ -172,10 +175,14 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
 
         View snackbarView = genreSnackbar.getView();
 
-        snackbarView.setBackgroundColor(ContextCompat.getColor(getActivity(), (ColorUtil.getStageColors()[event.getArtist().getStage()])));
+        AlarmHelper alarmHelper = new AlarmHelper(getContext(), null); //TODO fix this from color util / helper
+        snackbarView.setBackgroundColor(alarmHelper.getSnackBarColor(event.getArtist().getStage()));
 
         TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        snackBarTextView.setTextColor(ColorUtil.snackbarTextColor(getActivity()));
+
         TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
+        snackBarActionTextView.setTextColor(ColorUtil.snackbarTextColor(getActivity()));
 
         snackBarActionTextView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -186,15 +193,11 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
             }
         });
 
-        snackBarTextView.setTextColor(Color.WHITE);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             snackBarTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         }
-        snackBarActionTextView.setTextColor(Color.WHITE);
 
         snackBarActionTextView.setTextSize(14);
-
 
         genreSnackbar.show();
     }

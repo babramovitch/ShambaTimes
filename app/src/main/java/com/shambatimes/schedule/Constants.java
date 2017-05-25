@@ -24,6 +24,12 @@ public class Constants {
     public static int ANIMATION_DURATION = 400;
     public static int ANIMATION_DURATION_HEARTS = 300;
 
+    public static final String FRAGMENT_TIME = "TIME";
+    public static final String FRAGMENT_STAGE = "STAGE";
+    public static final String FRAGMENT_FAVOURITE = "FAVORITE";
+    public static final String FRAGMENT_ARTISTS = "ARTISTS";
+    public static final String FRAGMENT_CALENDAR = "CALENDAR";
+
     public static DateTimeZone timeZone = DateTimeZone.forID("America/Los_Angeles");
 
 }

@@ -295,8 +295,9 @@ public class TimeScheduleFragment extends Fragment {
     }
 
     public void onEventMainThread(ActionBarColorEvent event) {
-        EdgeChanger.setEdgeGlowColor(pager, event.getColor());
-        EdgeChanger.setEdgeGlowColor(listView, event.getColor());
+        ColorUtil.setCurrentThemeColor(event.getColor());
+        EdgeChanger.setEdgeGlowColor(pager, ColorUtil.dividerColor(getActivity()));
+        EdgeChanger.setEdgeGlowColor(listView, ColorUtil.dividerColor(getActivity()));
 
         if (adapter != null) {
             adapter.setStageId(event.getStage());

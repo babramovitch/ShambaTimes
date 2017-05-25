@@ -1,18 +1,25 @@
 package com.shambatimes.schedule.Settings;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.MenuItem;
 
 import com.shambatimes.schedule.Util.AlarmHelper;
+import com.shambatimes.schedule.Util.ColorUtil;
+import com.shambatimes.schedule.Widgets.ShambaTimesApplication;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.myapplication.R;
 
@@ -29,6 +36,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     public final static String ALARM_VIBRATE = "ALARM_VIBRATE";
     public final static String ALARM_LENGTH = "ALARM_LENGTH";
     public final static String TIME_FORMAT = "TIME_FORMAT";
+
+    public final static String NIGHT_MODE = "NIGHT_MODE";
+    public final static String NIGHT_MODE_AUTOMATIC = "NIGHT_MODE_AUTOMATIC";
     int actionBarColor;
 
 
@@ -40,6 +50,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment()).commit();
+
     }
 
     @Override
@@ -55,14 +66,14 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     private void setupActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setBackgroundDrawable(new ColorDrawable(Color.GREEN));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
 
     public void onEventMainThread(ActionBarColorEvent event) {
-        actionBarColor = event.getColor();
+        ColorUtil.setCurrentThemeColor(event.getColor());
+        actionBarColor = ColorUtil.themedGray(SettingsActivity.this);
         Drawable colorDrawable = new ColorDrawable(actionBarColor);
         getSupportActionBar().setBackgroundDrawable(colorDrawable);
 
@@ -99,6 +110,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
+
             if (savedInstanceState != null) {
                 firstLoadAlarmTimes = savedInstanceState.getBoolean("firstLoadAlarmTimes", true);
             }
@@ -108,6 +120,37 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference(ALARM_TIMES));
             bindPreferenceSummaryToValue(findPreference(ALARM_LENGTH));
             bindPreferenceSummaryToValue(findPreference(TIME_FORMAT));
+
+            final CheckBoxPreference nightMode = (CheckBoxPreference) findPreference(NIGHT_MODE);
+            final CheckBoxPreference automaticNightMode = (CheckBoxPreference) findPreference(NIGHT_MODE_AUTOMATIC);
+
+            nightMode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+
+                    automaticNightMode.setChecked(false);
+                    ((ShambaTimesApplication) (getActivity().getApplication())).setNightModeAutomatic(false);
+
+                    CheckBoxPreference checkBoxPreference = (CheckBoxPreference) preference;
+                    ((ShambaTimesApplication) (getActivity().getApplication())).setNightMode(checkBoxPreference.isChecked());
+
+                    return false;
+                }
+            });
+
+            automaticNightMode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    ((ShambaTimesApplication) (getActivity().getApplication())).setNightMode(false);
+                    nightMode.setChecked(false);
+
+                    CheckBoxPreference checkBoxPreference = (CheckBoxPreference) preference;
+                    ((ShambaTimesApplication) (getActivity().getApplication())).setNightModeAutomatic(checkBoxPreference.isChecked());
+
+                    return false;
+                }
+            });
+
         }
 
         /**
@@ -168,6 +211,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             }
         };
 
+
         @Override
         public void onSaveInstanceState(Bundle savedInstanceState) {
             savedInstanceState.putBoolean("firstLoadAlarmTimes", firstLoadAlarmTimes);
@@ -176,4 +220,5 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     }
 }
+
 

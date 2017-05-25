@@ -370,7 +370,7 @@ public class StageListScheduleFragment extends Fragment {
 
         listView.setDividerHeight(1);
 
-        EdgeChanger.setEdgeGlowColor(listView, ColorUtil.pagerBackgroundColor(getActivity()));
+        EdgeChanger.setEdgeGlowColor(listView, ColorUtil.themedGray(getActivity()));
     }
 
     public void onEventMainThread(ChangeDateEvent event) {

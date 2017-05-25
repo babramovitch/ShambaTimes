@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -22,7 +23,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.os.Handler;
 import android.os.Bundle;
@@ -54,6 +54,7 @@ import com.shambatimes.schedule.Util.AlarmHelper;
 import com.shambatimes.schedule.Util.AnimationHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
+import com.shambatimes.schedule.Widgets.ShambaTimesApplication;
 import com.shambatimes.schedule.animations.MyTransitionDrawable;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ArtistListLoadDoneEvent;
@@ -133,16 +134,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO) {
-            ColorUtil.nightMode = false;
-        } else if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            ColorUtil.nightMode = true;
-        }
+        ((ShambaTimesApplication) getApplication()).updateNightModeFlagIfAutomatic();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         // Initialize the preferences with default settings if
         // this is the first time the application is ever opened
@@ -169,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             currentTimePosition = DateUtils.getCurrentTimePosition(this);
             ColorUtil.setCurrentThemeColor(getResources().getColor(R.color.pagoda_color));
-            replaceFragment(R.id.content_frame, new TimeScheduleFragment(), "TIME", false);
+            replaceFragment(R.id.content_frame, new TimeScheduleFragment(), Constants.FRAGMENT_TIME, false);
         } else {
 
             ColorUtil.setCurrentThemeColor(savedInstanceState.getInt("COLOR"));
@@ -193,6 +189,12 @@ public class MainActivity extends AppCompatActivity {
         setupToolbar();
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        getDelegate().applyDayNight();
+    }
+
 
     private void prepareAndLoadDatabase() {
 
@@ -354,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
                 setupArtistListSpinner();
             }
 
-            EventBus.getDefault().postSticky(new ActionBarColorEvent(ColorUtil.themedGray(this), actionBarStage));
+            EventBus.getDefault().postSticky(new ActionBarColorEvent(ColorUtil.getCurrentThemeColor(), actionBarStage));
         }
     }
 
@@ -368,13 +370,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (scheduleSpinner != null) {
 
-
-            if (currentFragment == FRAGMENT_ARTISTS) {
+            if (currentFragment == FRAGMENT_ARTISTS) { //TODO DEAD IF STATEMENT?
                 adapterBaseScheduleDays = new AdapterBaseScheduleDays(this, R.layout.schedule_spinner, getResources().getStringArray(R.array.all_and_days));
             } else {
                 adapterBaseScheduleDays = new AdapterBaseScheduleDays(this, R.layout.schedule_spinner, getResources().getStringArray(R.array.days));
             }
-
 
             scheduleSpinner.setAdapter(adapterBaseScheduleDays);
             scheduleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -592,7 +592,7 @@ public class MainActivity extends AppCompatActivity {
                 artistTime.setText(DateUtils.formatTime(dateStringFormat, artist.getStartTimeString()) +
                         " - "
                         + DateUtils.formatTime(dateStringFormat, artist.getEndTimeString()));
-                
+
                 artistDivider.setBackground(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, gradientColors));
 
                 if (ColorUtil.nightMode) {
@@ -665,6 +665,7 @@ public class MainActivity extends AppCompatActivity {
         setupFilterItemAnimation(menu);
 
         MenuItem globalSearchMenuItem = menu.findItem(R.id.global_search);
+
         MenuItemCompat.setOnActionExpandListener(globalSearchMenuItem,
                 new MenuItemCompat.OnActionExpandListener() {
                     @Override
@@ -690,6 +691,12 @@ public class MainActivity extends AppCompatActivity {
                         if (nowPlaying != null) {
                             nowPlaying.setVisible(false);
                         }
+
+                        MenuItem gridFavourites = menu.findItem(R.id.grid_favourites);
+                        if (gridFavourites != null) {
+                            gridFavourites.setVisible(false);
+                        }
+
                         return true; // Return true to expand action view
                     }
                 });
@@ -761,7 +768,7 @@ public class MainActivity extends AppCompatActivity {
 
                     view.startAnimation(rotation);
 
-                    ArtistsFragment artistsFragment = (ArtistsFragment) getSupportFragmentManager().findFragmentByTag("ARTISTS");
+                    ArtistsFragment artistsFragment = (ArtistsFragment) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_ARTISTS);
                     if (artistsFragment != null) {
                         artistsFragment.showGenres(true);
                     }
@@ -798,18 +805,34 @@ public class MainActivity extends AppCompatActivity {
         MenuItem gridFavourites = menu.findItem(R.id.grid_favourites);
 
         if (globalSearchItem != null) {
+            DrawableCompat.setTint(globalSearchItem.getIcon(), ContextCompat.getColor(this, R.color.primaryTextColorWhite));
             globalSearchItem.setVisible(!isDrawerOpen);
         }
 
         if (nowPlaying != null) {
+            DrawableCompat.setTint(nowPlaying.getIcon(), ContextCompat.getColor(this, R.color.primaryTextColorWhite));
             nowPlaying.setVisible(!isDrawerOpen && currentFragment == FRAGMENT_TIME && !DateUtils.isPrePostFestival(this) && !isSearchExpanded);
         }
 
         if (gridFavourites != null) {
+
+            WeekScheduleFragment weekScheduleFragment = (WeekScheduleFragment) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_CALENDAR);
+
+            boolean initialFavourite = false;
+            if(weekScheduleFragment != null){
+                initialFavourite = weekScheduleFragment.isFavoritesOnly();
+            }
+
+            Drawable drawable = AnimationHelper.getFavoriteTransitionDrawable(this, initialFavourite);
+            gridFavourites.setIcon(drawable);
+
+            DrawableCompat.setTint(gridFavourites.getIcon(), ContextCompat.getColor(this, R.color.primaryTextColorWhite));
             gridFavourites.setVisible(!isDrawerOpen && currentFragment == FRAGMENT_CALENDAR && !isSearchExpanded);
+
         }
 
         if (filterListItem != null) {
+            DrawableCompat.setTint(filterListItem.getIcon(), ContextCompat.getColor(this, R.color.primaryTextColorWhite));
             if (!Shambhala.getFestivalYear(this).equals("2015") && !isSearchExpanded) {
                 filterListItem.setVisible(!isDrawerOpen && currentFragment == FRAGMENT_ARTISTS);
             } else {
@@ -831,7 +854,7 @@ public class MainActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.now_playing:
-                TimeScheduleFragment timeScheduleFragment = (TimeScheduleFragment) getSupportFragmentManager().findFragmentByTag("TIME");
+                TimeScheduleFragment timeScheduleFragment = (TimeScheduleFragment) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_TIME);
                 if (timeScheduleFragment != null) {
                     timeScheduleFragment.setPagerToNow();
                     scheduleSpinner.setSelection(DateUtils.getCurrentDay(this));
@@ -839,12 +862,18 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.grid_favourites:
-                WeekScheduleFragment weekScheduleFragment = (WeekScheduleFragment) getSupportFragmentManager().findFragmentByTag("CALENDAR");
+                WeekScheduleFragment weekScheduleFragment = (WeekScheduleFragment) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_CALENDAR);
                 if (weekScheduleFragment != null) {
                     weekScheduleFragment.toggleFavourites();
+
+                    MyTransitionDrawable drawable = (MyTransitionDrawable) item.getIcon();
+                    if (weekScheduleFragment.isFavoritesOnly()) {
+                        drawable.favoriteStart(300);
+                    } else {
+                        drawable.favoriteReverse(300);
+                    }
                 }
                 break;
-
 
             case R.id.global_search:
                 View actionView = menu.findItem(R.id.global_search).getActionView();
@@ -861,7 +890,13 @@ public class MainActivity extends AppCompatActivity {
                             imm.showSoftInput(searchTextView, InputMethodManager.SHOW_IMPLICIT);
                         }
                     }, 200);
+
+                    WeekScheduleFragment weekScheduleFragmentTwo = (WeekScheduleFragment) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_CALENDAR);
+                    if (weekScheduleFragmentTwo != null && weekScheduleFragmentTwo.isFavoritesOnly()) {
+                        weekScheduleFragmentTwo.toggleFavourites();
+                    }
                 }
+
                 break;
         }
 
@@ -925,13 +960,13 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.drawer_time:
 
-                fragment = fragmentManager.findFragmentByTag("TIME");
+                fragment = fragmentManager.findFragmentByTag(Constants.FRAGMENT_TIME);
                 if (fragment == null) {
                     fragment = new TimeScheduleFragment();
                     Bundle args = new Bundle();
-                    args.putInt("TIME", currentTimePosition);
+                    args.putInt(Constants.FRAGMENT_TIME, currentTimePosition);
                     fragment.setArguments(args);
-                    replaceFragment(R.id.content_frame, fragment, "TIME", false);
+                    replaceFragment(R.id.content_frame, fragment, Constants.FRAGMENT_TIME, false);
                 } else {
 
                 }
@@ -946,10 +981,10 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.drawer_stage:
 
-                fragment = fragmentManager.findFragmentByTag("STAGE");
+                fragment = fragmentManager.findFragmentByTag(Constants.FRAGMENT_STAGE);
                 if (fragment == null) {
                     fragment = new StageScheduleFragment();
-                    replaceFragment(R.id.content_frame, fragment, "STAGE", false);
+                    replaceFragment(R.id.content_frame, fragment, Constants.FRAGMENT_STAGE, false);
                 } else {
 
                 }
@@ -965,10 +1000,10 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.drawer_my_schedule:
 
-                fragment = fragmentManager.findFragmentByTag("FAVORITE");
+                fragment = fragmentManager.findFragmentByTag(Constants.FRAGMENT_FAVOURITE);
                 if (fragment == null) {
                     fragment = new FavoriteScheduleFragment();
-                    replaceFragment(R.id.content_frame, fragment, "FAVORITE", false);
+                    replaceFragment(R.id.content_frame, fragment, Constants.FRAGMENT_FAVOURITE, false);
                 } else {
 
                 }
@@ -985,10 +1020,10 @@ public class MainActivity extends AppCompatActivity {
 
                 //fetchArtistDataForQuickLoad();
 
-                fragment = fragmentManager.findFragmentByTag("ARTISTS");
+                fragment = fragmentManager.findFragmentByTag(Constants.FRAGMENT_ARTISTS);
                 if (fragment == null) {
                     fragment = new ArtistsFragment();
-                    replaceFragment(R.id.content_frame, fragment, "ARTISTS", false);
+                    replaceFragment(R.id.content_frame, fragment, Constants.FRAGMENT_ARTISTS, false);
                 } else {
 
                 }
@@ -1008,16 +1043,24 @@ public class MainActivity extends AppCompatActivity {
                  * Leaving it in would cause an animatinon flicker
                  **/
 
-                fragment = fragmentManager.findFragmentByTag("CALENDAR");
+                fragment = fragmentManager.findFragmentByTag(Constants.FRAGMENT_CALENDAR);
                 if (fragment == null) {
                     fragment = new WeekScheduleFragment();
-                    replaceFragment(R.id.content_frame, fragment, "CALENDAR", false);
+                    replaceFragment(R.id.content_frame, fragment, Constants.FRAGMENT_CALENDAR, false);
                 } else {
 
                 }
 
                 scheduleBy = "Schedule by Grid";
-                currentFragment = FRAGMENT_CALENDAR;
+
+                if (currentFragment == FRAGMENT_ARTISTS) {
+                    currentFragment = FRAGMENT_CALENDAR;
+                    toolbar.removeView(scheduleSpinner);
+                    setupScheduleSpinner();
+                } else {
+                    currentFragment = FRAGMENT_CALENDAR;
+                }
+
 
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 break;
@@ -1028,7 +1071,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 1000); //TODO proper request code
                 break;
         }
 
@@ -1047,6 +1090,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        ((ShambaTimesApplication) getApplication()).updateNightModeFlagIfAutomatic();
         EventBus.getDefault().registerSticky(this);
     }
 
@@ -1106,7 +1150,7 @@ public class MainActivity extends AppCompatActivity {
 
             //I don't want to show the cedar lounge if it's 2015, but even though I'm restarting the activity
             //if I don't notify it of change in size, it crashes the app, so I'm notifying it.
-            StageScheduleFragment stageScheduleFragment = (StageScheduleFragment) getSupportFragmentManager().findFragmentByTag("STAGE");
+            StageScheduleFragment stageScheduleFragment = (StageScheduleFragment) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_STAGE);
             if (stageScheduleFragment != null) {
                 stageScheduleFragment.notifyStageAdapter();
             }
@@ -1144,12 +1188,12 @@ public class MainActivity extends AppCompatActivity {
         collapseGlobalSearchActionView();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        StageScheduleFragment stageSchedule = (StageScheduleFragment) fragmentManager.findFragmentByTag("STAGE");
+        StageScheduleFragment stageSchedule = (StageScheduleFragment) fragmentManager.findFragmentByTag(Constants.FRAGMENT_STAGE);
 
         if (stageSchedule == null) {
             stageSchedule = new StageScheduleFragment();
             Bundle args = new Bundle();
-            args.putInt("STAGE", position);
+            args.putInt(Constants.FRAGMENT_STAGE, position);
             args.putString("NAME", name);
             stageSchedule.setArguments(args);
         }
@@ -1157,7 +1201,7 @@ public class MainActivity extends AppCompatActivity {
         scheduleBy = "Schedule by Stage";
         currentFragment = 1;
 
-        replaceFragment(R.id.content_frame, stageSchedule, "STAGE", false);
+        replaceFragment(R.id.content_frame, stageSchedule, Constants.FRAGMENT_STAGE, false);
 
         adapterBaseScheduleDays.notifyDataSetChanged();
         invalidateOptionsMenu();
@@ -1170,15 +1214,15 @@ public class MainActivity extends AppCompatActivity {
         collapseGlobalSearchActionView();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        TimeScheduleFragment timeSchedule = (TimeScheduleFragment) fragmentManager.findFragmentByTag("TIME");
+        TimeScheduleFragment timeSchedule = (TimeScheduleFragment) fragmentManager.findFragmentByTag(Constants.FRAGMENT_TIME);
 
         if (timeSchedule == null) {
             timeSchedule = new TimeScheduleFragment();
             Bundle args = new Bundle();
-            args.putInt("TIME", position);
+            args.putInt(Constants.FRAGMENT_TIME, position);
             currentTimePosition = position;
             timeSchedule.setArguments(args);
-            replaceFragment(R.id.content_frame, timeSchedule, "TIME", false);
+            replaceFragment(R.id.content_frame, timeSchedule, Constants.FRAGMENT_TIME, false);
         }
 
         scheduleBy = "Schedule by Time";
@@ -1196,19 +1240,19 @@ public class MainActivity extends AppCompatActivity {
         collapseGlobalSearchActionView();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        WeekScheduleFragment weekScheduleFragment = (WeekScheduleFragment) fragmentManager.findFragmentByTag("CALENDAR");
+        WeekScheduleFragment weekScheduleFragment = (WeekScheduleFragment) fragmentManager.findFragmentByTag(Constants.FRAGMENT_CALENDAR);
 
         if (weekScheduleFragment == null) {
             weekScheduleFragment = new WeekScheduleFragment();
             Bundle args = new Bundle();
-            args.putInt("TIME", position);
+            args.putInt(Constants.FRAGMENT_TIME, position);
             weekScheduleFragment.setArguments(args);
         }
 
         scheduleBy = "Schedule by Grid";
         currentFragment = FRAGMENT_CALENDAR;
 
-        replaceFragment(R.id.content_frame, weekScheduleFragment, "CALENDAR", false);
+        replaceFragment(R.id.content_frame, weekScheduleFragment, Constants.FRAGMENT_CALENDAR, false);
 
         adapterBaseScheduleDays.notifyDataSetChanged();
         invalidateOptionsMenu();
@@ -1292,7 +1336,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // TODO Auto-generated method stub
             return data.length;
         }
 

@@ -35,6 +35,7 @@
             android:layout_width="260dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
+            app:itemBackground="@color/listItemBackgroundColor"
             android:background="@color/listItemBackgroundColor"
             app:headerLayout="@layout/drawer_header"
             app:itemIconTint="@color/gray"

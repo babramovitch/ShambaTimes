@@ -282,7 +282,7 @@ public class FavoriteScheduleFragment extends Fragment {
                 .setDuration(Snackbar.LENGTH_LONG);
 
         View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(alarmHelper.getSnackBarColor(stageColors[artist.getStage()]));
+        snackbarView.setBackgroundColor(alarmHelper.getSnackBarColor(artist.getStage()));
 
         TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
 
