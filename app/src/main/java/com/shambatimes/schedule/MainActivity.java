@@ -129,8 +129,6 @@ public class MainActivity extends AppCompatActivity {
 
     boolean genreFilteringActive = false;
 
-    AlertDialog ankorsDialog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -180,9 +178,6 @@ public class MainActivity extends AppCompatActivity {
             artistDateSelected = savedInstanceState.getBoolean("artistDateSelected", false);
             genreFilteringActive = savedInstanceState.getBoolean("genreFilteringActive", false);
 
-            if (savedInstanceState.getBoolean("ankorsDialogShowing", false)) {
-                showAnkorsDialog();
-            }
         }
 
         setupNavigationDrawer();
@@ -281,11 +276,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationMenu = navigationView.getMenu();
-
-        MenuItem ankorsMenuItem = navigationMenu.findItem(R.id.ankors);
-        if (ankorsMenuItem != null && DateUtils.isPrePostFestival(this)) {
-            ankorsMenuItem.setVisible(false);
-        }
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -1065,10 +1055,6 @@ public class MainActivity extends AppCompatActivity {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 break;
 
-            case R.id.ankors:
-                showAnkorsDialog();
-                break;
-
             case R.id.settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivityForResult(intent, 1000); //TODO proper request code
@@ -1099,37 +1085,6 @@ public class MainActivity extends AppCompatActivity {
         didFestivalYearChange();
         didTimeFormatChange();
         super.onResume();
-    }
-
-    private void showAnkorsDialog() {
-        ankorsDialog = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle).create();
-
-        ankorsDialog.setTitle("Ankors Bulletin");
-        ankorsDialog.setMessage("DISCLAIMER: You are about to leave ShambaTimes. Clicking OK will take you to an external website.\n\nThe content on that site is provided by Ankors for information purposes only and we (ShambaTimes) and the website host do not make any claim to their validity.\n\nWe may not be held accountable for any harm that is a result of any information posted there.\n");
-
-        ankorsDialog.setCanceledOnTouchOutside(false);
-
-        ankorsDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK - I understand", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                try {
-                    String url = "http://shambs.epg.ninja";
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(url));
-                    startActivity(i);
-                } catch (Exception e) {
-                    Log.e("MainActivity", "Error launching intent", e);
-                }
-                ankorsDialog.dismiss();
-            }
-        });
-
-        ankorsDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                ankorsDialog.dismiss();
-            }
-        });
-
-        ankorsDialog.show();
     }
 
     private void didTimeFormatChange() {
@@ -1416,9 +1371,6 @@ public class MainActivity extends AppCompatActivity {
         savedInstanceState.putBoolean("artistDateSelected", artistDateSelected);
         savedInstanceState.putBoolean("genreFilteringActive", genreFilteringActive);
 
-        if (ankorsDialog != null) {
-            savedInstanceState.putBoolean("ankorsDialogShowing", ankorsDialog.isShowing());
-        }
 
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -1476,9 +1428,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        if (ankorsDialog != null && ankorsDialog.isShowing()) {
-            ankorsDialog.dismiss();
-        }
         super.onDestroy();
     }
 }
