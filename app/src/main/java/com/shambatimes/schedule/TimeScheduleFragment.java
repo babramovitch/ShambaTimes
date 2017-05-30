@@ -12,11 +12,12 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
+import com.shambatimes.schedule.Adapters.ListTimeAdapter;
+import com.shambatimes.schedule.Adapters.TimeAdapter;
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.AlarmHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
@@ -28,14 +29,12 @@ import de.greenrobot.event.EventBus;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DatabaseLoadFinishedEvent;
-import com.shambatimes.schedule.events.ChangeTimePagersTimeColorEvent;
 import com.shambatimes.schedule.events.SearchSelectedEvent;
 import com.shambatimes.schedule.events.ShowHideAlarmSnackbarEvent;
 import com.shambatimes.schedule.events.UpdateScheduleByTimeEvent;
 import com.shambatimes.schedule.myapplication.R;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 public class TimeScheduleFragment extends Fragment {
@@ -46,10 +45,15 @@ public class TimeScheduleFragment extends Fragment {
 
     ListTimeAdapter adapter;
     TimeAdapter timeAdapter;
-    View result;
+    View rootView;
     AlarmHelper alarmHelper;
 
     private int date = 0;
+    private int listItemHeight = 0;
+    private int listViewHeight = 0;
+    private int selectedPosition = 0;
+
+    private boolean listItemClicked = false;
 
     @Override
     public void onAttach(Activity activity) {
@@ -65,16 +69,20 @@ public class TimeScheduleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        result = inflater.inflate(R.layout.schedule_by_time_main_fragment, container, false);
-        alarmHelper = new AlarmHelper(getActivity(), result);
+        rootView = inflater.inflate(R.layout.schedule_by_time_main_fragment, container, false);
+        alarmHelper = new AlarmHelper(getActivity(), rootView);
+
+        if (savedInstanceState != null) {
+            selectedPosition = savedInstanceState.getInt("CURRENT_POSITION");
+        }
 
         Bundle args = getArguments();
         int time;
 
         if (args != null) {
             time = args.getInt("TIME", 0);
+            selectedPosition = time;
         } else {
-
             if (DateUtils.isPrePostFestival(getActivity())) {
                 time = 0;
                 date = 0;
@@ -84,36 +92,10 @@ public class TimeScheduleFragment extends Fragment {
             }
         }
 
-        pager = (MyViewPager) result.findViewById(R.id.pager);
-        pager.setAdapter(buildAdapter());
-        pager.setCurrentItem(time, false);
+        setupPager(time);
+        setupListView();
 
-        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i2) {
-
-            }
-
-            @Override
-            public void onPageSelected(int i) {
-                EventBus.getDefault().postSticky(new UpdateScheduleByTimeEvent(i));
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
-        });
-
-        listView = (ListView) result.findViewById(R.id.listViewTimes);
-
-        adapter = new ListTimeAdapter(getActivity(), generateListTimes());
-
-        listView.setAdapter(adapter);
-
-        listView.getLayoutParams().width = (int) (getWidestView(getActivity(), adapter) * 1.05);
-
-        return (result);
+        return rootView;
     }
 
     @Override
@@ -122,116 +104,84 @@ public class TimeScheduleFragment extends Fragment {
         EventBus.getDefault().registerSticky(this);
     }
 
+    public void setupPager(int time) {
+        pager = (MyViewPager) rootView.findViewById(R.id.pager);
+        pager.setAdapter(buildAdapter());
+        pager.setCurrentItem(time, false);
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                //Event updates the main activities position, so if you leave this fragment and return, you're still at this spot.
+                EventBus.getDefault().postSticky(new UpdateScheduleByTimeEvent(i));
+                updateListSelectionIndicator(i);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+            }
+
+            private void updateListSelectionIndicator(int i) {
+                selectedPosition = i;
+                adapter.setSelectedPosition(selectedPosition);
+
+                if (listViewHeight != 0) {
+                    if (!listItemClicked) {
+                        listView.smoothScrollToPositionFromTop(selectedPosition, listViewHeight / 2 - listItemHeight / 2);
+                    } else {
+                        listItemClicked = false;
+                    }
+                }
+            }
+        });
+    }
+
+    public void setupListView() {
+        listView = (ListView) rootView.findViewById(R.id.listViewTimes);
+
+        adapter = new ListTimeAdapter(getActivity(), generateListTimes());
+        adapter.setSelectedPosition(selectedPosition);
+
+        listView.setAdapter(adapter);
+        listView.getLayoutParams().width = (int) (getWidestView(getActivity(), adapter) * 1.05);
+
+        listView.setVerticalScrollBarEnabled(false);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Not the most efficient option to select/deselect, but list is tiny so resource use isn't relevant
+                selectedPosition = position;
+                adapter.setSelectedPosition(selectedPosition);
+                listItemClicked = true;
+                EventBus.getDefault().post(new UpdateScheduleByTimeEvent(position));
+            }
+        });
+
+        //Post a runnable so the height will be available after it's drawn.  Use that to determine
+        //where the selection indicator should positioned in the list view
+        listView.post(new Runnable() {
+            @Override
+            public void run() {
+                listViewHeight = listView.getHeight();
+                if (listView.getCount() > 0 && listItemHeight == 0) {
+                    View view = listView.getChildAt(0);
+                    if (view != null) {
+                        listItemHeight = view.getHeight();
+                    }
+                }
+                listView.setSelectionFromTop(selectedPosition, listViewHeight / 2 - listItemHeight / 2);
+            }
+        });
+    }
+
     public void setPagerToNow() {
         if (pager != null) {
             int time = DateUtils.getCurrentTimePosition(getActivity());
             pager.setCurrentItem(time, false);
-            EventBus.getDefault().post(new ChangeTimePagersTimeColorEvent());
-        }
-    }
-
-    public class ListTimeAdapter extends BaseAdapter {
-
-        String[] scheduleTimes;
-        LayoutInflater inflater;
-        Context context;
-        int stageId;
-
-        int[] textSelectors = {R.color.time_selector_pagoda,
-                R.color.time_selector_forest,
-                R.color.time_selector_grove,
-                R.color.time_selector_living_room,
-                R.color.time_selector_village,
-                R.color.time_selector_amphitheatre,
-                R.color.time_selector_cedar_lounge};
-
-        public ListTimeAdapter(Context context, String[] scheduleTimes) {
-            this.scheduleTimes = scheduleTimes;
-            this.context = context;
-            inflater = LayoutInflater.from(this.context);
-        }
-
-        @Override
-        public int getCount() {
-            return scheduleTimes.length;
-        }
-
-        @Override
-        public String getItem(int position) {
-            return scheduleTimes[position];
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            ViewHolder viewHolder;
-
-            if (convertView == null) {
-                viewHolder = new ViewHolder();
-                convertView = inflater.inflate(R.layout.list_item_times, null);
-                convertView.setTag(viewHolder);
-                viewHolder.time = (TextView) convertView.findViewById(R.id.times);
-            } else {
-                viewHolder = (ViewHolder) convertView.getTag();
-            }
-
-            if(scheduleTimes[position].substring(2,3).equals(":")) {
-                viewHolder.time.setText(scheduleTimes[position]);
-            }else{
-                viewHolder.time.setText("  " +scheduleTimes[position]);
-            }
-
-            viewHolder.time.setTextColor(getResources().getColorStateList(getSelectorBackground(stageId)));
-            viewHolder.time.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EventBus.getDefault().post(new UpdateScheduleByTimeEvent(position));
-                }
-            });
-
-            return convertView;
-        }
-
-        private int getSelectorBackground(int stageId) {
-
-            if(ColorUtil.nightMode) {
-                return R.color.time_selector_night;
-            }
-
-            switch (stageId) {
-                case 0:
-                    return textSelectors[0];
-                case 1:
-                    return textSelectors[1];
-                case 2:
-                    return textSelectors[2];
-                case 3:
-                    return textSelectors[3];
-                case 4:
-                    return textSelectors[4];
-                case 5:
-                    return textSelectors[5];
-                case 6:
-                    return textSelectors[6];
-                default:
-                    return textSelectors[0];
-            }
-        }
-
-        private class ViewHolder {
-            TextView time;
-        }
-
-        public void setStageId(int stageId) {
-            this.stageId = stageId;
-        }
-
-        public void updateListTimes(String[] times) {
-            this.scheduleTimes = times;
         }
     }
 
@@ -240,14 +190,20 @@ public class TimeScheduleFragment extends Fragment {
         String[] times = new String[48];
 
 
-
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        DateTimeFormatter dateStringFormat = DateUtils.getTimeFormatTwo(preferences.getString(SettingsActivity.TIME_FORMAT,"24"));
+        String format = preferences.getString(SettingsActivity.TIME_FORMAT, "24");
+        DateTimeFormatter dateStringFormat = DateUtils.getTimeFormatTwo(format);
 
         for (int x = 0; x < 48; x++) {
             DateTime dateTime = DateTime.now().withZone(Constants.timeZone).withTimeAtStartOfDay().plusMinutes(Constants.REFERENCE_TIME);
             dateTime = dateTime.plusMinutes(30 * x);
-            times[x] = dateStringFormat.print(dateTime);
+
+            if (format.equals("24")) {
+                times[x] = " " + dateStringFormat.print(dateTime) + " ";
+            } else {
+                times[x] = dateStringFormat.print(dateTime);
+            }
+
         }
 
         return times;
@@ -364,6 +320,13 @@ public class TimeScheduleFragment extends Fragment {
         if (timeAdapter != null) {
             timeAdapter.setDate(date);
         }
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putInt("CURRENT_POSITION", selectedPosition);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override

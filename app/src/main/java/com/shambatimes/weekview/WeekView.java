@@ -66,11 +66,6 @@ public class WeekView extends View {
 
     private boolean favouritesOnly = false;
     Paint eventBorderPaint;
-    int eventBorderColor;
-
-    public void toggleFavourites(int color) {
-        eventBorderColor = color;
-    }
 
     public void toggleFavourites(boolean favouritesOnly) {
         this.favouritesOnly = favouritesOnly;
@@ -309,7 +304,7 @@ public class WeekView extends View {
         public boolean onSingleTapConfirmed(MotionEvent e) {
 
 
-            Log.i("TAG", "Press Event:   X: " + e.getX() + " Y: " + e.getY());
+            //Log.i("TAG", "Press Event:   X: " + e.getX() + " Y: " + e.getY());
 
             // If the tap was on an event then trigger the callback.
             if (allEvents != null && mEventClickListener != null) {
@@ -964,7 +959,7 @@ public class WeekView extends View {
 //        // Draw the header row texts.
         startPixel = startFromPixel;
         for (int stageNumber = 0; stageNumber <= getVisibleStageCount(); stageNumber++) {
-            Log.i("TAG", "leftStagesWithGaps: " + leftStagesWithGaps);
+            //Log.i("TAG", "leftStagesWithGaps: " + leftStagesWithGaps);
             // Check if the day is today.
 //            day = (Calendar) mHomeDate.clone();
 //            day.add(Calendar.DATE, stageNumber - 1);
@@ -976,7 +971,7 @@ public class WeekView extends View {
 
             // Draw the day labels.
             String dayLabel = stageNames[stageNumber];
-            Log.i("TAG", "Stage: " + dayLabel);
+            //Log.i("TAG", "Stage: " + dayLabel);
 
             //getDateTimeInterpreter().interpretDate(day);
 
@@ -1284,7 +1279,7 @@ public class WeekView extends View {
      */
     private void getMoreEventsByStage(int stage) {
 
-        Log.i("TAG", "All Event Size: " + allEvents.size());
+        //Log.i("TAG", "All Event Size: " + allEvents.size());
 
         // Get more events if the month is changed.
         if (mEventRects == null)
@@ -1317,7 +1312,7 @@ public class WeekView extends View {
 
                 calculateHeaderHeight();
 
-                Log.i("TAG", "Header Height: " + mHeaderHeight);
+                //Log.i("TAG", "Header Height: " + mHeaderHeight);
 
 
                 mCurrentPeriodEvents = currentPeriodEvents;

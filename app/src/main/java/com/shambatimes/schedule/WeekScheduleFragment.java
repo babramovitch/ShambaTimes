@@ -45,10 +45,12 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
 
     private View rootView;
     private WeekView mWeekView;
-    private boolean favouritesOnly = false; //todo save this in preferences
     private AlarmHelper alarmHelper;
     private Snackbar genreSnackbar;
+    private Artist snackbarArtist;
 
+    private boolean favouritesOnly = false;
+    private int currentDate = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,17 +72,21 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
 
         Bundle bundle = getArguments();
         if (bundle != null && bundle.getInt("TIME", -1) != -1) {
-            double hourPosition = (bundle.getInt("TIME", -1) / 2) - 0.5;
-            mWeekView.goToHour(hourPosition < 0 ? 0 : hourPosition);
+            gotoHour((bundle.getInt("TIME", -1) / 2) - 0.5);
         }
 
         return rootView;
+    }
+
+    public void gotoHour(double hourPosition) {
+        mWeekView.goToHour(hourPosition < 0 ? 0 : hourPosition);
     }
 
     public void toggleFavourites() {
         favouritesOnly = !favouritesOnly;
         mWeekView.toggleFavourites(favouritesOnly);
     }
+
     public boolean isFavoritesOnly() {
         return favouritesOnly;
     }
@@ -104,9 +110,7 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         //  mWeekView.setMinDate(Calendar.getInstance()); These are breaking the stop fling on touch somehow, so for now commenting out, and disabling the left/right gestures in WeekView
         //  mWeekView.setMaxDate(Calendar.getInstance()); These are breaking the stop fling on touch somehow, so for now commenting out, and disabling the left/right gestures in WeekView
         mWeekView.setStages(7);
-
         mWeekView.setNumberOfVisibleDays(7);
-
 
         mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
         mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 13, getResources().getDisplayMetrics()));
@@ -154,8 +158,6 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
             }
         });
     }
-
-    Artist snackbarArtist;
 
     @Override
     public void onEventClick(final WeekViewEvent event, RectF eventRect) {
@@ -235,12 +237,9 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
     public List<? extends WeekViewEvent> onLoadStage(int stage) {
         List<WeekViewEvent> currentPeriodEvents = new ArrayList<WeekViewEvent>();
 
-        ArrayList<Artist> artists = MainActivity.shambhala.getArtistsByDayAndStage(MainActivity.currentDay, stage);
-
-        int x = 0;
+        ArrayList<Artist> artists = MainActivity.shambhala.getArtistsByDayAndStage(currentDate, stage);
 
         for (Artist artist : artists) {
-
 
             DateTime startTime = DateUtils.getFullDateTimeForArtist(artist);
             DateTime endTime = DateUtils.getFullDateEndTimeForArtist(artist);
@@ -280,6 +279,7 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
     }
 
     public void onEventMainThread(ChangeDateEvent event) {
+        currentDate = event.getPosition();
         mWeekView.invalidate();
     }
 
@@ -287,7 +287,6 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         double hourPosition = (event.getArtist().getStartPosition() / 2) - 0.5;
         mWeekView.goToHour(hourPosition < 0 ? 0 : hourPosition);
     }
-
 
     @Override
     public void onStop() {

@@ -9,7 +9,7 @@
         android:id="@+id/times"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:minHeight="?android:attr/listPreferredItemHeight"
         android:paddingLeft="6dip"
         android:paddingRight="10dip"

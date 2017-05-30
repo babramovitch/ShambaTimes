@@ -17,5 +17,8 @@
     <color name="tabsBackgroundColor">@color/lighterSecondaryUISelectionGray</color>
 
     <color name="cardBackgroundColor">@color/darkTimeCollectionBackgroundColor</color>
+    <color name="tertiaryTextColor">@color/lightTertiaryTextGray</color>
 
+
+    <color name="noArtistTextColor">#333333</color>
 </resources>

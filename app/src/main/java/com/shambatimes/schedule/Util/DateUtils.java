@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.shambatimes.schedule.Artist;
 import com.shambatimes.schedule.Constants;
+import com.shambatimes.schedule.MainActivity;
 import com.shambatimes.schedule.Shambhala;
 
 import org.joda.time.DateTime;
@@ -19,6 +20,14 @@ import org.joda.time.format.DateTimeFormatter;
  * Created by Ben on 21/02/2015.
  */
 public final class DateUtils {
+
+    public static void setReferenceTime(Context context) {
+        if (DateUtils.getCurrentDay(context) == 3 && Shambhala.getFestivalYear(context).equals("2015")) {
+            Constants.REFERENCE_TIME = Constants.SUNDAY_REFERENCE_TIME;
+        } else {
+            Constants.REFERENCE_TIME = Constants.GENERAL_REFERENCE_TIME;
+        }
+    }
 
     public static DateTimeFormatter getTimeFormat(String format){
 
@@ -38,7 +47,7 @@ public final class DateUtils {
         DateTimeFormatter dateStringFormat;
 
         if(format.equals("24")){
-            dateStringFormat = DateTimeFormat.forPattern("HH:mm aa");
+            dateStringFormat = DateTimeFormat.forPattern("HH:mm");
         }else{
             dateStringFormat = DateTimeFormat.forPattern("h:mm aa");
         }

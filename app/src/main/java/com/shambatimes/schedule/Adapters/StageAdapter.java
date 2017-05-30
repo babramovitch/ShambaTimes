@@ -1,4 +1,4 @@
-package com.shambatimes.schedule;
+package com.shambatimes.schedule.Adapters;
 
 /**
  * Created by Ben on 09/02/2015.
@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.shambatimes.schedule.Shambhala;
+import com.shambatimes.schedule.StageListScheduleFragment;
 import com.shambatimes.schedule.myapplication.R;
 
 public class StageAdapter extends FragmentStatePagerAdapter {

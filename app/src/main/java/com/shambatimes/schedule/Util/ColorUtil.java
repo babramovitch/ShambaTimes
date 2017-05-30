@@ -28,6 +28,7 @@ public class ColorUtil {
     }
 
     public static int[] getLightStageColors() {
+
         return new int[]{R.color.pagoda_color_light,
                 R.color.fractal_forest_color_light,
                 R.color.grove_color_light,
@@ -78,11 +79,19 @@ public class ColorUtil {
         }
     }
 
+    public static int themedText(Context context) {
+        if (nightMode) {
+            return Color.WHITE;
+        } else {
+            return currentThemeColor;
+        }
+    }
+
     public static int cellBackgroundColor(Context context) {
         if (nightMode) {
             return getColor(context, R.color.lighterPrimaryUIGray);
         } else {
-            return getColor(context, R.color.white);
+            return getColor(context, R.color.offWhiteBackground);
         }
     }
 

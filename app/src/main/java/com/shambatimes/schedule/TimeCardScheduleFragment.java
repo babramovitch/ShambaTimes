@@ -3,9 +3,6 @@ package com.shambatimes.schedule;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -31,17 +28,12 @@ import com.shambatimes.schedule.animations.MyTransitionDrawable;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
-import com.shambatimes.schedule.events.ChangeTimePagersTimeColorEvent;
 import com.shambatimes.schedule.events.ShowHideAlarmSnackbarEvent;
 import com.shambatimes.schedule.events.ToggleToGridEvent;
 import com.shambatimes.schedule.events.ToggleToStageEvent;
-import com.shambatimes.schedule.events.ToggleToTimeEvent;
 import com.shambatimes.schedule.myapplication.R;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import de.greenrobot.event.EventBus;
@@ -65,7 +57,7 @@ public class TimeCardScheduleFragment extends Fragment {
     TextView editor;
     DateTimeFormatter dateStringFormat;
 
-    static TimeCardScheduleFragment newInstance(int position, int currentDate) {
+    public static TimeCardScheduleFragment newInstance(int position, int currentDate) {
         TimeCardScheduleFragment frag = new TimeCardScheduleFragment();
         Bundle args = new Bundle();
 
@@ -77,7 +69,7 @@ public class TimeCardScheduleFragment extends Fragment {
         return (frag);
     }
 
-    static String getTitle(Context ctxt, int position) {
+    public static String getTitle(Context ctxt, int position) {
         return ("");
     }
 
@@ -127,20 +119,6 @@ public class TimeCardScheduleFragment extends Fragment {
         editor.setText(dateStringFormat.print(startTime) + " to " + dateStringFormat.print(endTime));
 
         editor.setVisibility(View.GONE);
-    }
-
-    public void onEventMainThread(ChangeTimePagersTimeColorEvent event) {
-        final TextView editor = (TextView) rootView.findViewById(R.id.headline_time);
-        int[] stageColors = ColorUtil.getStageColors();
-        if (editor != null && timePosition == DateUtils.getCurrentTimePosition(getActivity())) {
-            editor.setTextColor(ContextCompat.getColor(getActivity(), stageColors[stage]));
-            editor.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    editor.setTextColor(Color.BLACK);
-                }
-            }, 300);
-        }
     }
 
     private void setupGridView() {
@@ -219,10 +197,10 @@ public class TimeCardScheduleFragment extends Fragment {
 
             stageName.setText(stageNames[position]);
 
-            if (!ColorUtil.nightMode) {
-                card.setCardBackgroundColor(ContextCompat.getColor(getActivity(), stageColors[position]));
-            } else {
+            if (ColorUtil.nightMode) {
                 card.setCardBackgroundColor(ContextCompat.getColor(getActivity(), R.color.cardBackgroundColor));
+            } else {
+                card.setCardBackgroundColor(ContextCompat.getColor(getActivity(), stageColors[position]));
             }
 
             final ImageView image = (ImageView) gridView.findViewById(R.id.card_favorited);
@@ -274,9 +252,15 @@ public class TimeCardScheduleFragment extends Fragment {
                     }
                 });
             } else {
-                //artistName.setText("Stage Closed");
-                //card.setCardBackgroundColor(ContextCompat.getColor(getActivity(), ColorUtil.getLightStageColors()[position]))
-                //   image.setImageResource(R.drawable.new_favourite_border);
+                artistName.setText("Stage Closed");
+                artistName.setTextColor(ContextCompat.getColor(getActivity(), R.color.noArtistTextColor));
+                stageName.setTextColor(ContextCompat.getColor(getActivity(), R.color.noArtistTextColor));
+
+                if (ColorUtil.nightMode) {
+                    card.setCardBackgroundColor(ContextCompat.getColor(getActivity(), R.color.noArtistBackgroundNight));
+                } else {
+                    card.setCardBackgroundColor(ContextCompat.getColor(getActivity(), ColorUtil.getLightStageColors()[position]));
+                }
             }
             return gridView;
         }

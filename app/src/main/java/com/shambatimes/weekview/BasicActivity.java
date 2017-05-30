@@ -31,15 +31,6 @@ public class BasicActivity extends BaseActivity {
         mWeekView.setMinDate(Calendar.getInstance());
         mWeekView.setMaxDate(Calendar.getInstance());
         mWeekView.setStages(7);
-
-        // Lets change some dimensions to best fit the view.
-
-        if(MainActivity.currentDay == 3) {
-            mWeekView.setNumberOfVisibleDays(4);
-        }else{
-            mWeekView.setNumberOfVisibleDays(7);
-        }
-
         mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
         mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 13, getResources().getDisplayMetrics()));
         mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 13, getResources().getDisplayMetrics()));

@@ -2,8 +2,6 @@ package com.shambatimes.schedule;
 
 
 import android.app.Activity;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -16,6 +14,7 @@ import com.astuetz.PagerSlidingTabStrip;
 
 import de.greenrobot.event.EventBus;
 
+import com.shambatimes.schedule.Adapters.StageAdapter;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.events.ActionBarColorEvent;

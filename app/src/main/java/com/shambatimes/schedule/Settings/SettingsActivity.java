@@ -70,7 +70,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
     }
 
-
     public void onEventMainThread(ActionBarColorEvent event) {
         ColorUtil.setCurrentThemeColor(event.getColor());
         actionBarColor = ColorUtil.themedGray(SettingsActivity.this);
@@ -110,7 +109,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-
             if (savedInstanceState != null) {
                 firstLoadAlarmTimes = savedInstanceState.getBoolean("firstLoadAlarmTimes", true);
             }
@@ -127,13 +125,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             nightMode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-
                     automaticNightMode.setChecked(false);
                     ((ShambaTimesApplication) (getActivity().getApplication())).setNightModeAutomatic(false);
 
                     CheckBoxPreference checkBoxPreference = (CheckBoxPreference) preference;
                     ((ShambaTimesApplication) (getActivity().getApplication())).setNightMode(checkBoxPreference.isChecked());
-
                     return false;
                 }
             });
@@ -146,7 +142,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
                     CheckBoxPreference checkBoxPreference = (CheckBoxPreference) preference;
                     ((ShambaTimesApplication) (getActivity().getApplication())).setNightModeAutomatic(checkBoxPreference.isChecked());
-
                     return false;
                 }
             });
@@ -217,7 +212,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             savedInstanceState.putBoolean("firstLoadAlarmTimes", firstLoadAlarmTimes);
             super.onSaveInstanceState(savedInstanceState);
         }
-
     }
 }
 
