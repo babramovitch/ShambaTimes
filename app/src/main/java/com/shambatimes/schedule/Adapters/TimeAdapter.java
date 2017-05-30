@@ -1,4 +1,4 @@
-package com.shambatimes.schedule;
+package com.shambatimes.schedule.Adapters;
 
 /**
  * Created by Ben on 09/02/2015.
@@ -7,6 +7,8 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import com.shambatimes.schedule.TimeCardScheduleFragment;
 
 public class TimeAdapter extends FragmentStatePagerAdapter {
     Context context;

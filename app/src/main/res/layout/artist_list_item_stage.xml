@@ -21,7 +21,8 @@
         android:textSize="19sp"
         tools:text="Artist Name"
         android:paddingTop="5dp"
-        android:id="@+id/artistName" />
+        android:id="@+id/artistName"
+        android:textColor="@color/primaryTextColor"/>
 
         <TextView
             android:id="@+id/artistGenres"
@@ -31,6 +32,7 @@
             android:layout_width="fill_parent"
             android:layout_below="@id/artistName"
             android:text="Hip hop, Electro, Funk"
+            android:textColor="@color/genreTextColor"
             />
 
     <TextView
@@ -38,7 +40,8 @@
         android:id="@+id/artistTime"
         tools:text="Schedule Times"
         style="@style/ListViewSmall"
-        android:paddingTop="8dp"/>
+        android:paddingTop="8dp"
+        android:textColor="@color/secondaryTextColor"/>
 
 
 

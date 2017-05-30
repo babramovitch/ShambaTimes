@@ -3,7 +3,7 @@
     android:id="@+id/linearLayout1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/background_material_light"
+    android:background="@color/listItemBackgroundColor"
     android:orientation="horizontal"
     android:paddingBottom="5dp"
     android:paddingLeft="10dp"
@@ -18,7 +18,7 @@
             android:id="@+id/genreboxPagoda"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="@color/secondaryTextColor"
             app:buttonTint="@color/pagoda_color"
             android:visibility="gone"
             />
@@ -27,7 +27,7 @@
             android:id="@+id/genreboxForest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="@color/secondaryTextColor"
             app:buttonTint="@color/fractal_forest_color"
             android:visibility="gone"
             />
@@ -36,7 +36,7 @@
             android:id="@+id/genreboxGrove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="@color/secondaryTextColor"
             app:buttonTint="@color/grove_color"
             android:visibility="gone"
             />
@@ -45,7 +45,7 @@
             android:id="@+id/genreboxLivingRoomm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="@color/secondaryTextColor"
             app:buttonTint="@color/living_room_color"
             android:visibility="gone"
             />
@@ -54,7 +54,7 @@
             android:id="@+id/genreboxVillage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="@color/secondaryTextColor"
             app:buttonTint="@color/village_color"
             android:visibility="gone"
             />
@@ -63,7 +63,7 @@
             android:id="@+id/genreboxAmph"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="@color/secondaryTextColor"
             app:buttonTint="@color/amphitheatre_color"
             android:visibility="gone"
             />
@@ -72,8 +72,17 @@
             android:id="@+id/genreboxCedarLounge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="@color/secondaryTextColor"
             app:buttonTint="@color/cedar_lounge_color"
+            android:visibility="gone"
+            />
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/genreBoxNight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/secondaryTextColor"
+            app:buttonTint="@color/lighterPrimaryTextGray"
             android:visibility="gone"
             />
 
@@ -85,6 +94,7 @@
             android:fontFamily="sans-serif-light"
             android:textStyle="italic"
             android:textSize="12sp"
+            android:textColor="@color/secondaryTextColor"
             android:text="New Text" />
 
     </LinearLayout>

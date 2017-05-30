@@ -140,6 +140,10 @@
     <string name="title_activity_asynchronous">Asynchronous Events</string>
     <string name="async_error">Could not download events from the internet</string>
 
+    <string name="tap_target_now_title">Now Playing</string>
+    <string name="tap_target_now_description">Press the Now button to see who\'s currently playing</string>
+    <string name="stage_closed">Stage Closed</string>
+
 </resources>
 
 

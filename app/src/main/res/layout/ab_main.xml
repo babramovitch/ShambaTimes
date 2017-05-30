@@ -8,8 +8,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
-        android:textSize="20sp"
-        android:textColor="@color/white" />
+        android:textSize="18sp"
+        android:textColor="@color/primaryTextColorWhite" />
 
     <TextView
         android:id="@+id/ab_basemaps_subtitle"
@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/ab_basemaps_title"
         android:text="TextView"
-        android:textColor="@color/white"
+        android:textColor="@color/primaryTextColorWhite"
         android:textSize="13sp" />
 
 </RelativeLayout>

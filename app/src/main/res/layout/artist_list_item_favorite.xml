@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/artistLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="5dp"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/listItemBackgroundColor">
 
     <View
         android:id="@+id/separator"
@@ -28,6 +27,7 @@
         android:layout_toLeftOf="@id/list_favorited"
         android:paddingTop="5dp"
         android:text="Artist Name"
+        android:textColor="@color/primaryTextColor"
 
         />
 
@@ -42,6 +42,7 @@
         android:layout_toLeftOf="@id/list_favorited"
         android:layout_toStartOf="@id/list_favorited"
         android:text="Hip hop, Electro, Funk"
+        android:textColor="@color/genreTextColor"
         />
 
 
@@ -54,6 +55,7 @@
         android:fontFamily="sans-serif-condensed"
         style="@style/ListViewSmall"
         android:paddingTop="8dp"
+        android:textColor="@color/secondaryTextColor"
          />
 
     <TextView
@@ -62,6 +64,7 @@
         android:layout_below="@id/artistStage"
         android:text="Artist Schedule"
         style="@style/ListViewSmall"
+        android:textColor="@color/secondaryTextColor"
          />
 
     <ImageView

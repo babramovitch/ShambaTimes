@@ -9,7 +9,19 @@
         android:layout_height="wrap_content"
         android:dividerHeight="1dp"
         android:layout_alignParentTop="true"
-        android:id="@+id/listView_schedule" />
+        android:id="@+id/listView_schedule"
+        android:background="@color/pagerBackgroundColor"/>
+
+    <TextView
+        android:id="@+id/no_artists_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_centerInParent="true"
+        android:text="Stage closed Thursday"
+        android:textColor="@color/primaryTextColor"
+        android:visibility="gone"
+        android:textSize="20sp" />
 
 
     <android.support.design.widget.CoordinatorLayout

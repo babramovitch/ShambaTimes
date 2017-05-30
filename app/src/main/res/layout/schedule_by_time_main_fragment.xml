@@ -2,15 +2,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_material_light"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:orientation="vertical">
 
     <ListView
         android:id="@+id/listViewTimes"
         android:layout_width="105dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:background="@color/listItemBackgroundColor"
+        android:scrollIndicators="none"
+        android:divider="@color/pagerBackgroundColor"
+        android:choiceMode="singleChoice"
         android:minHeight="30dp"
         android:textColor="#FFF" />
 

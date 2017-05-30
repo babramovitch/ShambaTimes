@@ -28,13 +28,13 @@
     <color name="grove_color_pressed">#ECEEF8</color>
     <color name="cedar_lounge_pressed">#e6f4ff</color>
 
-    <color name="pagoda_color_light">#F5A766</color>
-    <color name="fractal_forest_color_light">#7EBD4D</color>
-    <color name="grove_color_light">#7985CB</color>
-    <color name="living_room_color_light">#BA68C8</color>
-    <color name="village_color_light">#FF6670</color>
-    <color name="amphitheatre_color_light">#4DCAAE</color>
-    <color name="cedar_lounge_color_light">#66baff</color>
+    <color name="pagoda_color_light">#ffe3cc</color>
+    <color name="fractal_forest_color_light">#e2ffcc</color>
+    <color name="grove_color_light">#ECEEF8</color>
+    <color name="living_room_color_light">#F5E9F7</color>
+    <color name="village_color_light">#FFE9EA</color>
+    <color name="amphitheatre_color_light">#E6F7F4</color>
+    <color name="cedar_lounge_color_light">#e6f4ff</color>
 
 
 
@@ -69,5 +69,38 @@
     <color name="toolbar">#efefef</color>
     <color name="toolbar_text">#8f000000</color>
     <color name="accent">#2789e4</color>
+
+    <color name="dividerColor">#F0F0F0</color>
+
+    <color name="lighterPrimaryUIGray">#1C1C1C</color>
+    <color name="lighterSecondaryUISelectionGray">#333333</color>
+    <color name="darkPrimaryBackgroundGray">#0F0F10</color>
+
+
+    <color name="darkTimeCollectionBackgroundColor">#191919</color>
+    <color name="darkDividerColor">#222222</color>
+
+    <color name="lighterPrimaryTextGray">#999999</color>
+
+    <color name="lightTertiaryTextGray">#7A7A7A</color>
+    <color name="lightQuadTextGray">#6C6C6C</color>
+    <color name="whiteSelectedColor">#CCCCCC</color>
+
+    <color name="noArtistTextColor">#d9d9d9</color>
+
+    <color name="primaryTextColorWhite">@color/white</color>
+    <color name="primaryTextColor">@color/black</color>
+    <color name="genreTextColor">@color/black</color>
+    <color name="secondaryTextColorWhite">@color/white</color>
+    <color name="secondaryTextColor">@color/black</color>
+    <color name="tertiaryTextColor">@color/black</color>
+    <color name="pagerBackgroundColor">@color/offWhiteBackground</color>
+    <color name="listItemBackgroundColor">@color/white</color>
+    <color name="tabsBackgroundColor">@color/offWhiteBackground</color>
+    <color name="cardBackgroundColor">@color/white</color>
+
+    <color name="noArtistBackgroundNight">#1b1b1b</color>
+
+    <color name="offWhiteBackground">#fffafafa</color>
 
 </resources>

@@ -7,7 +7,8 @@
     android:paddingBottom="5dp"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/listItemBackgroundColor">
 
     <View
         android:id="@+id/separator"
@@ -27,6 +28,7 @@
         android:layout_toLeftOf="@+id/list_favorited"
         android:paddingTop="5dp"
         android:text="Artist Name"
+        android:textColor="@color/primaryTextColor"
         />
 
     <TextView
@@ -39,7 +41,8 @@
         android:text="Hip hop, Electro, Funk"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@id/list_favorited"
-        android:layout_toStartOf="@id/list_favorited" />
+        android:layout_toStartOf="@id/list_favorited"
+        android:textColor="@color/genreTextColor"/>
 
     <TextView
         android:id="@+id/artistStage"
@@ -49,7 +52,8 @@
         android:layout_below="@id/artistGenres"
         android:layout_toLeftOf="@id/list_favorited"
         android:text="Stage"
-        android:paddingTop="8dp"/>
+        android:paddingTop="8dp"
+        android:textColor="@color/secondaryTextColor"/>
 
     <TextView
         android:fontFamily="sans-serif-condensed"
@@ -58,7 +62,7 @@
         android:layout_width="65dp"
         android:layout_below="@id/artistStage"
         android:text="Saturday"
-
+        android:textColor="@color/secondaryTextColor"
         />
 
     <TextView
@@ -71,13 +75,15 @@
         android:layout_toRightOf="@+id/artistDay"
         tools:text="Artist Schedule"
         android:layout_alignRight="@id/list_favorited"
-        android:layout_alignEnd="@id/list_favorited" />
+        android:layout_alignEnd="@id/list_favorited"
+        android:textColor="@color/secondaryTextColor"/>
 
     <TextView
         android:id="@+id/artistStartTimePosition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:textColor="@color/secondaryTextColor"/>
 
 
     <ImageView

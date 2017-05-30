@@ -1,7 +1,6 @@
 package com.shambatimes.schedule;
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -55,7 +54,7 @@ public class FavoriteScheduleFragment extends Fragment {
 
     ArtistRecyclerAdapter adapter;
     RecyclerView recyclerView;
-    View result;
+    View rootView;
     DateTimeFormatter dateStringFormat;
 
     boolean ignoreSelfEvent = false;
@@ -66,7 +65,7 @@ public class FavoriteScheduleFragment extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
 
-        result = inflater.inflate(R.layout.recycler_schedule_favorites, container, false);
+        rootView = inflater.inflate(R.layout.recycler_schedule_favorites, container, false);
 
         stageColors = this.getResources().getIntArray(R.array.stage_colors);
 
@@ -78,7 +77,7 @@ public class FavoriteScheduleFragment extends Fragment {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         dateStringFormat = DateUtils.getTimeFormat(preferences.getString(SettingsActivity.TIME_FORMAT, "24"));
 
-        recyclerView = (RecyclerView) result.findViewById(R.id.listView_schedule);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.listView_schedule);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -98,9 +97,16 @@ public class FavoriteScheduleFragment extends Fragment {
             }
         });
 
-        alarmHelper = new AlarmHelper(getActivity(), result);
+        alarmHelper = new AlarmHelper(getActivity(), rootView);
 
-        return (result);
+        showNoFavouritesIfEmpty();
+
+        return (rootView);
+    }
+
+    private void showNoFavouritesIfEmpty() {
+        TextView noArtistPlaying = (TextView) rootView.findViewById(R.id.no_artists_text);
+        noArtistPlaying.setVisibility(artists.size() == 0 ? View.VISIBLE : View.GONE);
     }
 
     public static class ArtistViewHolder extends RecyclerView.ViewHolder {
@@ -114,7 +120,6 @@ public class FavoriteScheduleFragment extends Fragment {
         protected View divider;
         protected ImageView alarm;
         protected ImageView image;
-
 
         public ArtistViewHolder(View v) {
 
@@ -156,6 +161,7 @@ public class FavoriteScheduleFragment extends Fragment {
                 if (position >= 0 && position < getItemCount()) {
                     artistList.remove(position);
                     notifyItemRemoved(position);
+                    showNoFavouritesIfEmpty();
                     Log.i(TAG, "Removing item " + position);
                 }
             } catch (Exception e) {
@@ -276,20 +282,21 @@ public class FavoriteScheduleFragment extends Fragment {
 
     private void showUndoSnackBar(Artist artist) {
 
-        final View coordinatorLayoutView = result.findViewById(R.id.snackbarPosition);
+        final View coordinatorLayoutView = rootView.findViewById(R.id.snackbarPosition);
 
         Snackbar snackbar = Snackbar.make(coordinatorLayoutView, "Removing " + artist.getAristName() + " from schedule", Snackbar.LENGTH_LONG)
                 .setAction("UNDO", undoClickListener)
                 .setDuration(Snackbar.LENGTH_LONG);
 
         View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(stageColors[artist.getStage()]);
+        snackbarView.setBackgroundColor(alarmHelper.getSnackBarColor(artist.getStage()));
 
         TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-        snackBarTextView.setTextColor(Color.WHITE);
+
+        snackBarTextView.setTextColor(ColorUtil.snackbarTextColor(getActivity()));
 
         TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
-        snackBarActionTextView.setTextColor(Color.WHITE);
+        snackBarActionTextView.setTextColor(ColorUtil.snackbarTextColor(getActivity()));
         snackBarActionTextView.setTextSize(14);
 
         snackbar.show();
@@ -299,7 +306,6 @@ public class FavoriteScheduleFragment extends Fragment {
         public void onClick(View v) {
 
             if (snackArtist != null) {
-
                 long id = snackArtist.getId();
                 int position = snackPosition;
 
@@ -313,6 +319,7 @@ public class FavoriteScheduleFragment extends Fragment {
                 }
 
                 adapter.addItem(position, artist);
+                showNoFavouritesIfEmpty();
 
                 MainActivity.shambhala.updateArtistById(artist.getId());
 
@@ -348,11 +355,13 @@ public class FavoriteScheduleFragment extends Fragment {
         artists = (ArrayList<Artist>) Artist.find(Artist.class, "favorite = ? and day = ? and year = ?", args, null, "day ASC, start_Position ASC", null);
         adapter = new ArtistRecyclerAdapter(artists);
         recyclerView.setAdapter(adapter);
+        showNoFavouritesIfEmpty();
     }
 
     public void onEventMainThread(ActionBarColorEvent event) {
-        colors[1] = event.getColor();
-        scrollColor = event.getColor();
+        int color = ColorUtil.dividerColor(getActivity());
+        colors = ColorUtil.getDividerGradientColor(color);
+        scrollColor = color;
     }
 
     @Override

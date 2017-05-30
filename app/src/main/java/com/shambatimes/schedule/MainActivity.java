@@ -1,28 +1,28 @@
 package com.shambatimes.schedule;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.TransitionDrawable;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.os.Handler;
 import android.os.Bundle;
@@ -48,12 +48,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.AlarmHelper;
 import com.shambatimes.schedule.Util.AnimationHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
+import com.shambatimes.schedule.Widgets.ShambaTimesApplication;
 import com.shambatimes.schedule.animations.MyTransitionDrawable;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ArtistListLoadDoneEvent;
@@ -68,7 +70,6 @@ import com.shambatimes.schedule.events.ToggleToGridEvent;
 import com.shambatimes.schedule.events.ToggleToStageEvent;
 import com.shambatimes.schedule.events.ToggleToTimeEvent;
 import com.shambatimes.schedule.events.UpdateScheduleByTimeEvent;
-import com.shambatimes.schedule.myapplication.BuildConfig;
 import com.shambatimes.schedule.myapplication.R;
 import com.shambatimes.schedule.views.ClearableAutoCompleteTextView;
 
@@ -78,7 +79,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
-import io.fabric.sdk.android.Fabric;
 
 import static com.shambatimes.schedule.Constants.ANIMATION_DURATION_HEARTS;
 
@@ -94,22 +94,23 @@ public class MainActivity extends AppCompatActivity {
     private boolean isDrawerOpen = false;
     private boolean isSearchExpanded = false;
 
-
     private final int FRAGMENT_TIME = 0;
     private final int FRAGMENT_STAGE = 1;
     private final int FRAGMENT_FAVORITES = 2;
     private final int FRAGMENT_ARTISTS = 3;
     private final int FRAGMENT_CALENDAR = 4;
 
+    private final int RESULT_SETTINGS = 1010;
+
     //nav bar
     Spinner scheduleSpinner;
     AdapterBaseScheduleDays adapterBaseScheduleDays;
 
     //Items that require a saved state
-    private int actionBarColor = 0xFF666666;
+    private int currentTheme;
     private int actionBarStage = 0;
     private int currentFragment = FRAGMENT_TIME;
-    static public int currentDay = -1; //TODO THIS IS ONLY TEMPORARY FOR TESTING WEEKVIEW EASIER
+    public int currentDay = -1;
     private int currentTimePosition;
 
     private String scheduleBy = "Schedule by Time";
@@ -128,41 +129,27 @@ public class MainActivity extends AppCompatActivity {
 
     boolean genreFilteringActive = false;
 
-    AlertDialog ankorsDialog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize the preferences with default settings if
-        // this is the first time the application is ever opened
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-
-        if (!BuildConfig.DEBUG) {
-            Fabric.with(this, new Crashlytics());
-        }
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
         timeFormatPreference = prefs.getString(SettingsActivity.TIME_FORMAT, "24");
-
         festivalYear = Shambhala.getFestivalYear(this);
 
-        if (DateUtils.getCurrentDay(this) == 3 && Shambhala.getFestivalYear(MainActivity.this).equals("2015")) {
-            Constants.REFERENCE_TIME = Constants.SUNDAY_REFERENCE_TIME;
-        } else {
-            Constants.REFERENCE_TIME = Constants.GENERAL_REFERENCE_TIME;
-        }
+        DateUtils.setReferenceTime(this);
 
         prepareAndLoadDatabase();
 
         if (savedInstanceState == null) {
             currentTimePosition = DateUtils.getCurrentTimePosition(this);
-            actionBarColor = getResources().getColor(R.color.pagoda_color);
-            replaceFragment(R.id.content_frame, new TimeScheduleFragment(), "TIME", false);
+            ColorUtil.setCurrentThemeColor(getResources().getColor(R.color.pagoda_color));
+            replaceFragment(R.id.content_frame, new TimeScheduleFragment(), Constants.FRAGMENT_TIME, false);
         } else {
-            actionBarColor = savedInstanceState.getInt("COLOR");
+            ColorUtil.setCurrentThemeColor(savedInstanceState.getInt("COLOR"));
+
             actionBarStage = savedInstanceState.getInt("STAGE");
             currentFragment = savedInstanceState.getInt("POSITION");
             currentDay = savedInstanceState.getInt("DAY");
@@ -172,15 +159,18 @@ public class MainActivity extends AppCompatActivity {
             searchText = savedInstanceState.getString("SEARCH_TEXT", "");
             artistDateSelected = savedInstanceState.getBoolean("artistDateSelected", false);
             genreFilteringActive = savedInstanceState.getBoolean("genreFilteringActive", false);
-
-            if (savedInstanceState.getBoolean("ankorsDialogShowing", false)) {
-                showAnkorsDialog();
-            }
         }
 
         setupNavigationDrawer();
         setupToolbar();
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RESULT_SETTINGS) {
+            getDelegate().applyDayNight();
+        }
     }
 
     private void prepareAndLoadDatabase() {
@@ -269,11 +259,6 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationMenu = navigationView.getMenu();
 
-        MenuItem ankorsMenuItem = navigationMenu.findItem(R.id.ankors);
-        if (ankorsMenuItem != null && DateUtils.isPrePostFestival(this)) {
-            ankorsMenuItem.setVisible(false);
-        }
-
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(final MenuItem menuItem) {
@@ -325,6 +310,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         if (toolbar != null) {
+            setupToolBarTapTarget();
 
             try {
                 setSupportActionBar(toolbar);
@@ -343,7 +329,43 @@ public class MainActivity extends AppCompatActivity {
                 setupArtistListSpinner();
             }
 
-            EventBus.getDefault().postSticky(new ActionBarColorEvent(actionBarColor, actionBarStage));
+            EventBus.getDefault().postSticky(new ActionBarColorEvent(ColorUtil.getCurrentThemeColor(), actionBarStage));
+        }
+    }
+
+    private void setupToolBarTapTarget() {
+
+        if (!prefs.getBoolean("tapTargetNowSeen", false) && !DateUtils.isPrePostFestival(this)) {
+            prefs.edit().putBoolean("tapTargetNowSeen", true).apply();
+
+            //TapTarget.forToolbarMenuItem requires the toolbar to be inflated to reference the view
+            //Normally this isn't needed as I use setSupportActionBar, so I'm only doing it in the one instance to show the target.
+            toolbar.inflateMenu(R.menu.menu_main);
+
+            TapTargetView.showFor(MainActivity.this,
+                    TapTarget.forToolbarMenuItem(toolbar, R.id.now_playing, getString(R.string.tap_target_now_title), getString(R.string.tap_target_now_description))
+                            .outerCircleColorInt(ColorUtil.themedGray(this))
+                            .outerCircleAlpha(0.96f)            // Specify the alpha amount for the outer circle
+                            .targetCircleColor(R.color.white)   // Specify a color for the target circle
+                            .titleTextSize(20)                  // Specify the size (in sp) of the title text
+                            .titleTextColor(R.color.white)      // Specify the color of the title text
+                            .descriptionTextSize(16)            // Specify the size (in sp) of the description text
+                            .descriptionTextColor(R.color.primaryTextColorWhite)  // Specify the color of the description text
+                            .textColor(R.color.primaryTextColorWhite)            // Specify a color for both the title and description text
+                            .textTypeface(Typeface.SANS_SERIF)  // Specify a typeface for the text
+                            .dimColor(R.color.black)            // If set, will dim behind the view with 30% opacity of the given color
+                            .drawShadow(true)                   // Whether to draw a drop shadow or not
+                            .cancelable(true)                   // Whether tapping outside the outer circle dismisses the view
+                            .tintTarget(true)                   // Whether to tint the target view's color
+                            .transparentTarget(false)           // Specify whether the target is transparent (displays the content underneath)
+                            .targetRadius(60),                  // Specify the target radius (in dp)
+                    new TapTargetView.Listener() {              // The listener can listen for regular clicks, long clicks or cancels
+                        @Override
+                        public void onTargetClick(TapTargetView view) {
+                            gotoNow();
+                            super.onTargetClick(view);          // This call is optional
+                        }
+                    });
         }
     }
 
@@ -357,13 +379,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (scheduleSpinner != null) {
 
-
-            if (currentFragment == FRAGMENT_ARTISTS) {
+            if (currentFragment == FRAGMENT_ARTISTS) { //TODO DEAD IF STATEMENT?
                 adapterBaseScheduleDays = new AdapterBaseScheduleDays(this, R.layout.schedule_spinner, getResources().getStringArray(R.array.all_and_days));
             } else {
                 adapterBaseScheduleDays = new AdapterBaseScheduleDays(this, R.layout.schedule_spinner, getResources().getStringArray(R.array.days));
             }
-
 
             scheduleSpinner.setAdapter(adapterBaseScheduleDays);
             scheduleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -536,14 +556,14 @@ public class MainActivity extends AppCompatActivity {
                         if (artist.isFavorite()) {
                             MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) artistFavorite.getDrawable();
                             // adding 200 as something is causing the animation to appear faster in this scenario, and otherwise be unnoticed.
-                            transitionDrawable.favoriteReverse(ANIMATION_DURATION_HEARTS+200);
+                            transitionDrawable.favoriteReverse(ANIMATION_DURATION_HEARTS + 200);
                             AlarmHelper alarmHelper = new AlarmHelper(MainActivity.this, null);
                             alarmHelper.cancelAlarm(artist);
                             artist.setFavorite(false);
                             artist.save();
                         } else {
                             MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) artistFavorite.getDrawable();
-                            transitionDrawable.favoriteStart(ANIMATION_DURATION_HEARTS+200);
+                            transitionDrawable.favoriteStart(ANIMATION_DURATION_HEARTS + 200);
                             artist.setFavorite(true);
                             artist.save();
                         }
@@ -581,8 +601,14 @@ public class MainActivity extends AppCompatActivity {
                 artistTime.setText(DateUtils.formatTime(dateStringFormat, artist.getStartTimeString()) +
                         " - "
                         + DateUtils.formatTime(dateStringFormat, artist.getEndTimeString()));
+
                 artistDivider.setBackground(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, gradientColors));
-                artistLayout.setBackgroundResource(getBackgroundSelector());
+
+                if (ColorUtil.nightMode) {
+                    artistLayout.setBackgroundResource(R.drawable.list_night_selector);
+                } else {
+                    artistLayout.setBackgroundResource(getBackgroundSelector());
+                }
 
                 return convertView;
 
@@ -648,6 +674,7 @@ public class MainActivity extends AppCompatActivity {
         setupFilterItemAnimation(menu);
 
         MenuItem globalSearchMenuItem = menu.findItem(R.id.global_search);
+
         MenuItemCompat.setOnActionExpandListener(globalSearchMenuItem,
                 new MenuItemCompat.OnActionExpandListener() {
                     @Override
@@ -673,6 +700,12 @@ public class MainActivity extends AppCompatActivity {
                         if (nowPlaying != null) {
                             nowPlaying.setVisible(false);
                         }
+
+                        MenuItem gridFavourites = menu.findItem(R.id.grid_favourites);
+                        if (gridFavourites != null) {
+                            gridFavourites.setVisible(false);
+                        }
+
                         return true; // Return true to expand action view
                     }
                 });
@@ -709,6 +742,7 @@ public class MainActivity extends AppCompatActivity {
         if (filterImage != null) {
             //http://www.andronotes.org/uncategorized/animation-of-menuitem-in-actionbar/
             filterImage.setImageResource(R.drawable.ic_filter_list_white_36dp);
+            filterImage.setColorFilter(ContextCompat.getColor(this, R.color.primaryTextColorWhite));
 
             if (genreFilteringActive) {
                 setFilterToDownPosition();
@@ -744,7 +778,7 @@ public class MainActivity extends AppCompatActivity {
 
                     view.startAnimation(rotation);
 
-                    ArtistsFragment artistsFragment = (ArtistsFragment) getSupportFragmentManager().findFragmentByTag("ARTISTS");
+                    ArtistsFragment artistsFragment = (ArtistsFragment) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_ARTISTS);
                     if (artistsFragment != null) {
                         artistsFragment.showGenres(true);
                     }
@@ -780,19 +814,39 @@ public class MainActivity extends AppCompatActivity {
         MenuItem nowPlaying = menu.findItem(R.id.now_playing);
         MenuItem gridFavourites = menu.findItem(R.id.grid_favourites);
 
+
         if (globalSearchItem != null) {
+            DrawableCompat.setTint(globalSearchItem.getIcon(), ContextCompat.getColor(this, R.color.primaryTextColorWhite));
             globalSearchItem.setVisible(!isDrawerOpen);
         }
 
         if (nowPlaying != null) {
-            nowPlaying.setVisible(!isDrawerOpen && currentFragment == FRAGMENT_TIME && !DateUtils.isPrePostFestival(this) && !isSearchExpanded);
+            DrawableCompat.setTint(nowPlaying.getIcon(), ContextCompat.getColor(this, R.color.primaryTextColorWhite));
+            nowPlaying.setVisible(!isDrawerOpen
+                    && (currentFragment == FRAGMENT_TIME || currentFragment == FRAGMENT_CALENDAR)
+                    && !DateUtils.isPrePostFestival(this)
+                    && !isSearchExpanded);
         }
 
         if (gridFavourites != null) {
+
+            WeekScheduleFragment weekScheduleFragment = (WeekScheduleFragment) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_CALENDAR);
+
+            boolean initialFavourite = false;
+            if (weekScheduleFragment != null) {
+                initialFavourite = weekScheduleFragment.isFavoritesOnly();
+            }
+
+            Drawable drawable = AnimationHelper.getFavoriteTransitionDrawable(this, initialFavourite);
+            gridFavourites.setIcon(drawable);
+
+            DrawableCompat.setTint(gridFavourites.getIcon(), ContextCompat.getColor(this, R.color.primaryTextColorWhite));
             gridFavourites.setVisible(!isDrawerOpen && currentFragment == FRAGMENT_CALENDAR && !isSearchExpanded);
+
         }
 
         if (filterListItem != null) {
+            DrawableCompat.setTint(filterListItem.getIcon(), ContextCompat.getColor(this, R.color.primaryTextColorWhite));
             if (!Shambhala.getFestivalYear(this).equals("2015") && !isSearchExpanded) {
                 filterListItem.setVisible(!isDrawerOpen && currentFragment == FRAGMENT_ARTISTS);
             } else {
@@ -814,77 +868,77 @@ public class MainActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.now_playing:
-                TimeScheduleFragment timeScheduleFragment = (TimeScheduleFragment) getSupportFragmentManager().findFragmentByTag("TIME");
-                if (timeScheduleFragment != null) {
-                    timeScheduleFragment.setPagerToNow();
-                    scheduleSpinner.setSelection(DateUtils.getCurrentDay(this));
-                }
+                gotoNow();
                 break;
 
             case R.id.grid_favourites:
-                WeekScheduleFragment weekScheduleFragment = (WeekScheduleFragment) getSupportFragmentManager().findFragmentByTag("CALENDAR");
-                if (weekScheduleFragment != null) {
-                    weekScheduleFragment.toggleFavourites();
-                }
+                toggleGridFavourites(item);
+
                 break;
 
-
             case R.id.global_search:
-                View actionView = menu.findItem(R.id.global_search).getActionView();
-                if (actionView != null) {
-                    final ClearableAutoCompleteTextView searchTextView = (ClearableAutoCompleteTextView) actionView.findViewById(R.id.search_box);
-                    searchTextView.setText("");
-                    searchTextView.requestFocus();
-
-                    //Keyboard isn't raising unless I delay the command, even with the requestFocus above.
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                            imm.showSoftInput(searchTextView, InputMethodManager.SHOW_IMPLICIT);
-                        }
-                    }, 200);
-                }
+                startSearch();
                 break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private int measureContentWidth(ListAdapter listAdapter) {
-        ViewGroup mMeasureParent = null;
-        int maxWidth = 0;
-        View itemView = null;
-        int itemType = 0;
-
-        final ListAdapter adapter = listAdapter;
-        final int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        final int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        final int count = adapter.getCount();
-        for (int i = 0; i < count; i++) {
-            final int positionType = adapter.getItemViewType(i);
-            if (positionType != itemType) {
-                itemType = positionType;
-                itemView = null;
+    private void gotoNow() {
+        if (currentFragment == FRAGMENT_TIME) {
+            TimeScheduleFragment timeScheduleFragment = (TimeScheduleFragment) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_TIME);
+            if (timeScheduleFragment != null) {
+                timeScheduleFragment.setPagerToNow();
+                scheduleSpinner.setSelection(DateUtils.getCurrentDay(this));
             }
-
-            if (mMeasureParent == null) {
-                mMeasureParent = new FrameLayout(this);
-            }
-
-            itemView = adapter.getView(i, itemView, mMeasureParent);
-            itemView.measure(widthMeasureSpec, heightMeasureSpec);
-
-            final int itemWidth = itemView.getMeasuredWidth();
-
-            if (itemWidth > maxWidth) {
-                maxWidth = itemWidth;
+        } else if (currentFragment == FRAGMENT_CALENDAR) {
+            WeekScheduleFragment weekScheduleFragment = (WeekScheduleFragment) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_CALENDAR);
+            if (weekScheduleFragment != null) {
+                double position = ( (double) DateUtils.getCurrentTimePosition(this)) / 2;
+                weekScheduleFragment.gotoHour(position);
+                scheduleSpinner.setSelection(DateUtils.getCurrentDay(this));
             }
         }
-
-        return maxWidth;
     }
 
+    private void toggleGridFavourites(MenuItem item) {
+        WeekScheduleFragment weekScheduleFragment = (WeekScheduleFragment) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_CALENDAR);
+        if (weekScheduleFragment != null) {
+            weekScheduleFragment.toggleFavourites();
+
+            MyTransitionDrawable drawable = (MyTransitionDrawable) item.getIcon();
+            if (weekScheduleFragment.isFavoritesOnly()) {
+                drawable.favoriteStart(300);
+            } else {
+                drawable.favoriteReverse(300);
+            }
+        }
+    }
+
+    private void startSearch() {
+        if (menu != null) {
+            View actionView = menu.findItem(R.id.global_search).getActionView();
+            if (actionView != null) {
+                final ClearableAutoCompleteTextView searchTextView = (ClearableAutoCompleteTextView) actionView.findViewById(R.id.search_box);
+                searchTextView.setText("");
+                searchTextView.requestFocus();
+
+                //Keyboard isn't raising unless I delay the command, even with the requestFocus above.
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(searchTextView, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                }, 200);
+
+                WeekScheduleFragment weekScheduleFragmentTwo = (WeekScheduleFragment) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_CALENDAR);
+                if (weekScheduleFragmentTwo != null && weekScheduleFragmentTwo.isFavoritesOnly()) {
+                    weekScheduleFragmentTwo.toggleFavourites();
+                }
+            }
+        }
+    }
 
     /**
      * Swaps fragments in the main content view
@@ -908,13 +962,13 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.drawer_time:
 
-                fragment = fragmentManager.findFragmentByTag("TIME");
+                fragment = fragmentManager.findFragmentByTag(Constants.FRAGMENT_TIME);
                 if (fragment == null) {
                     fragment = new TimeScheduleFragment();
                     Bundle args = new Bundle();
-                    args.putInt("TIME", currentTimePosition);
+                    args.putInt(Constants.FRAGMENT_TIME, currentTimePosition);
                     fragment.setArguments(args);
-                    replaceFragment(R.id.content_frame, fragment, "TIME", false);
+                    replaceFragment(R.id.content_frame, fragment, Constants.FRAGMENT_TIME, false);
                 } else {
 
                 }
@@ -929,10 +983,10 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.drawer_stage:
 
-                fragment = fragmentManager.findFragmentByTag("STAGE");
+                fragment = fragmentManager.findFragmentByTag(Constants.FRAGMENT_STAGE);
                 if (fragment == null) {
                     fragment = new StageScheduleFragment();
-                    replaceFragment(R.id.content_frame, fragment, "STAGE", false);
+                    replaceFragment(R.id.content_frame, fragment, Constants.FRAGMENT_STAGE, false);
                 } else {
 
                 }
@@ -948,10 +1002,10 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.drawer_my_schedule:
 
-                fragment = fragmentManager.findFragmentByTag("FAVORITE");
+                fragment = fragmentManager.findFragmentByTag(Constants.FRAGMENT_FAVOURITE);
                 if (fragment == null) {
                     fragment = new FavoriteScheduleFragment();
-                    replaceFragment(R.id.content_frame, fragment, "FAVORITE", false);
+                    replaceFragment(R.id.content_frame, fragment, Constants.FRAGMENT_FAVOURITE, false);
                 } else {
 
                 }
@@ -968,10 +1022,10 @@ public class MainActivity extends AppCompatActivity {
 
                 //fetchArtistDataForQuickLoad();
 
-                fragment = fragmentManager.findFragmentByTag("ARTISTS");
+                fragment = fragmentManager.findFragmentByTag(Constants.FRAGMENT_ARTISTS);
                 if (fragment == null) {
                     fragment = new ArtistsFragment();
-                    replaceFragment(R.id.content_frame, fragment, "ARTISTS", false);
+                    replaceFragment(R.id.content_frame, fragment, Constants.FRAGMENT_ARTISTS, false);
                 } else {
 
                 }
@@ -991,27 +1045,31 @@ public class MainActivity extends AppCompatActivity {
                  * Leaving it in would cause an animatinon flicker
                  **/
 
-                fragment = fragmentManager.findFragmentByTag("CALENDAR");
+                fragment = fragmentManager.findFragmentByTag(Constants.FRAGMENT_CALENDAR);
                 if (fragment == null) {
                     fragment = new WeekScheduleFragment();
-                    replaceFragment(R.id.content_frame, fragment, "CALENDAR", false);
+                    replaceFragment(R.id.content_frame, fragment, Constants.FRAGMENT_CALENDAR, false);
                 } else {
 
                 }
 
                 scheduleBy = "Schedule by Grid";
-                currentFragment = FRAGMENT_CALENDAR;
+
+                if (currentFragment == FRAGMENT_ARTISTS) {
+                    currentFragment = FRAGMENT_CALENDAR;
+                    toolbar.removeView(scheduleSpinner);
+                    setupScheduleSpinner();
+                } else {
+                    currentFragment = FRAGMENT_CALENDAR;
+                }
+
 
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 break;
 
-            case R.id.ankors:
-                showAnkorsDialog();
-                break;
-
             case R.id.settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, RESULT_SETTINGS);
                 break;
         }
 
@@ -1037,38 +1095,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         didFestivalYearChange();
         didTimeFormatChange();
-        super.onResume();
-    }
 
-    private void showAnkorsDialog() {
-        ankorsDialog = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle).create();
 
-        ankorsDialog.setTitle("Ankors Bulletin");
-        ankorsDialog.setMessage("DISCLAIMER: You are about to leave ShambaTimes. Clicking OK will take you to an external website.\n\nThe content on that site is provided by Ankors for information purposes only and we (ShambaTimes) and the website host do not make any claim to their validity.\n\nWe may not be held accountable for any harm that is a result of any information posted there.\n");
+        //This is in a handler to avoid an exception
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int currentNightMode = AppCompatDelegate.getDefaultNightMode();
 
-        ankorsDialog.setCanceledOnTouchOutside(false);
+                ((ShambaTimesApplication) getApplication()).updateNightModeFlagIfAutomatic();
 
-        ankorsDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK - I understand", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                try {
-                    String url = "http://shambs.epg.ninja";
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(url));
-                    startActivity(i);
-                } catch (Exception e) {
-                    Log.e("MainActivity", "Error launching intent", e);
+                if (currentNightMode != AppCompatDelegate.getDefaultNightMode()) {
+                    getDelegate().applyDayNight();
                 }
-                ankorsDialog.dismiss();
             }
-        });
 
-        ankorsDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                ankorsDialog.dismiss();
-            }
-        });
+        }, 1);
 
-        ankorsDialog.show();
+
+        super.onResume();
     }
 
     private void didTimeFormatChange() {
@@ -1089,7 +1134,7 @@ public class MainActivity extends AppCompatActivity {
 
             //I don't want to show the cedar lounge if it's 2015, but even though I'm restarting the activity
             //if I don't notify it of change in size, it crashes the app, so I'm notifying it.
-            StageScheduleFragment stageScheduleFragment = (StageScheduleFragment) getSupportFragmentManager().findFragmentByTag("STAGE");
+            StageScheduleFragment stageScheduleFragment = (StageScheduleFragment) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_STAGE);
             if (stageScheduleFragment != null) {
                 stageScheduleFragment.notifyStageAdapter();
             }
@@ -1108,11 +1153,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onEventMainThread(ActionBarColorEvent event) {
-        actionBarColor = event.getColor();
-        actionBarStage = event.getStage();
-        gradientColors[1] = event.getColor();
+        ColorUtil.setCurrentThemeColor(event.getColor());
 
-        Drawable colorDrawable = new ColorDrawable(actionBarColor);
+        actionBarStage = event.getStage();
+
+        int color = ColorUtil.dividerColor(MainActivity.this);
+        gradientColors = ColorUtil.getDividerGradientColor(color);
+
+        Drawable colorDrawable = new ColorDrawable(ColorUtil.themedGray(this));
         getSupportActionBar().setBackgroundDrawable(colorDrawable);
     }
 
@@ -1124,12 +1172,12 @@ public class MainActivity extends AppCompatActivity {
         collapseGlobalSearchActionView();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        StageScheduleFragment stageSchedule = (StageScheduleFragment) fragmentManager.findFragmentByTag("STAGE");
+        StageScheduleFragment stageSchedule = (StageScheduleFragment) fragmentManager.findFragmentByTag(Constants.FRAGMENT_STAGE);
 
         if (stageSchedule == null) {
             stageSchedule = new StageScheduleFragment();
             Bundle args = new Bundle();
-            args.putInt("STAGE", position);
+            args.putInt(Constants.FRAGMENT_STAGE, position);
             args.putString("NAME", name);
             stageSchedule.setArguments(args);
         }
@@ -1137,7 +1185,7 @@ public class MainActivity extends AppCompatActivity {
         scheduleBy = "Schedule by Stage";
         currentFragment = 1;
 
-        replaceFragment(R.id.content_frame, stageSchedule, "STAGE", false);
+        replaceFragment(R.id.content_frame, stageSchedule, Constants.FRAGMENT_STAGE, false);
 
         adapterBaseScheduleDays.notifyDataSetChanged();
         invalidateOptionsMenu();
@@ -1150,15 +1198,15 @@ public class MainActivity extends AppCompatActivity {
         collapseGlobalSearchActionView();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        TimeScheduleFragment timeSchedule = (TimeScheduleFragment) fragmentManager.findFragmentByTag("TIME");
+        TimeScheduleFragment timeSchedule = (TimeScheduleFragment) fragmentManager.findFragmentByTag(Constants.FRAGMENT_TIME);
 
         if (timeSchedule == null) {
             timeSchedule = new TimeScheduleFragment();
             Bundle args = new Bundle();
-            args.putInt("TIME", position);
+            args.putInt(Constants.FRAGMENT_TIME, position);
             currentTimePosition = position;
             timeSchedule.setArguments(args);
-            replaceFragment(R.id.content_frame, timeSchedule, "TIME", false);
+            replaceFragment(R.id.content_frame, timeSchedule, Constants.FRAGMENT_TIME, false);
         }
 
         scheduleBy = "Schedule by Time";
@@ -1176,19 +1224,19 @@ public class MainActivity extends AppCompatActivity {
         collapseGlobalSearchActionView();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        WeekScheduleFragment weekScheduleFragment = (WeekScheduleFragment) fragmentManager.findFragmentByTag("CALENDAR");
+        WeekScheduleFragment weekScheduleFragment = (WeekScheduleFragment) fragmentManager.findFragmentByTag(Constants.FRAGMENT_CALENDAR);
 
         if (weekScheduleFragment == null) {
             weekScheduleFragment = new WeekScheduleFragment();
             Bundle args = new Bundle();
-            args.putInt("TIME", position);
+            args.putInt(Constants.FRAGMENT_TIME, position);
             weekScheduleFragment.setArguments(args);
         }
 
         scheduleBy = "Schedule by Grid";
         currentFragment = FRAGMENT_CALENDAR;
 
-        replaceFragment(R.id.content_frame, weekScheduleFragment, "CALENDAR", false);
+        replaceFragment(R.id.content_frame, weekScheduleFragment, Constants.FRAGMENT_CALENDAR, false);
 
         adapterBaseScheduleDays.notifyDataSetChanged();
         invalidateOptionsMenu();
@@ -1272,7 +1320,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // TODO Auto-generated method stub
             return data.length;
         }
 
@@ -1342,7 +1389,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putInt("COLOR", actionBarColor);
+        savedInstanceState.putInt("COLOR", ColorUtil.getCurrentThemeColor());
         savedInstanceState.putInt("STAGE", actionBarStage);
         savedInstanceState.putInt("POSITION", currentFragment);
         savedInstanceState.putInt("DAY", currentDay);
@@ -1353,9 +1400,6 @@ public class MainActivity extends AppCompatActivity {
         savedInstanceState.putBoolean("artistDateSelected", artistDateSelected);
         savedInstanceState.putBoolean("genreFilteringActive", genreFilteringActive);
 
-        if (ankorsDialog != null) {
-            savedInstanceState.putBoolean("ankorsDialogShowing", ankorsDialog.isShowing());
-        }
 
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -1413,9 +1457,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        if (ankorsDialog != null && ankorsDialog.isShowing()) {
-            ankorsDialog.dismiss();
-        }
         super.onDestroy();
     }
 }

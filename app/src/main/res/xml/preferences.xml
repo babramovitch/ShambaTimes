@@ -18,11 +18,24 @@
         android:key="TIME_FORMAT"
         android:title="Schedule Time Format" />
 
+    <PreferenceCategory android:title="Night Mode">
+
+        <CheckBoxPreference
+            android:key="NIGHT_MODE"
+            android:summary="Takes effect after leaving settings"
+            android:title="Night Mode" />
+
+        <CheckBoxPreference
+            android:key="NIGHT_MODE_AUTOMATIC"
+            android:summary="Takes effect after leaving settings"
+            android:title="Automatic Night Mode" />
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="Schedule Alarms">
 
         <RingtonePreference
-            android:key="ALARM_SOUND"
             android:defaultValue="content://settings/system/alarm_alert"
+            android:key="ALARM_SOUND"
             android:ringtoneType="alarm"
             android:showDefault="true"
             android:summary="Choose the alarm sound"

@@ -3,9 +3,7 @@ package com.shambatimes.schedule;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -66,7 +64,7 @@ public class StageListScheduleFragment extends Fragment {
     AlarmHelper alarmHelper;
     DateTimeFormatter dateStringFormat;
 
-    static StageListScheduleFragment newInstance(int position, int date, String name, int dividerColor) {
+    public static StageListScheduleFragment newInstance(int position, int date, String name, int dividerColor) {
         StageListScheduleFragment frag = new StageListScheduleFragment();
         Bundle args = new Bundle();
 
@@ -98,7 +96,6 @@ public class StageListScheduleFragment extends Fragment {
         dateStringFormat = DateUtils.getTimeFormat(preferences.getString(SettingsActivity.TIME_FORMAT, "24"));
 
         listView = (ListView) rootView.findViewById(R.id.listView_schedule);
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -106,12 +103,6 @@ public class StageListScheduleFragment extends Fragment {
                 DateTime startTime = convertStringTimeToPosition(textView.getText().toString());
 
                 DateTime baseTime = convertStringTimeToPosition("11:00");
-//                if(date != 3) {
-//                     baseTime = convertStringTimeToPosition("11:00");
-//                }else{
-//                     baseTime = convertStringTimeToPosition("12:00");
-//                }
-
                 Minutes minutesToStart = Minutes.minutesBetween(baseTime, startTime);
 
                 int startPosition = minutesToStart.getMinutes() / 30;
@@ -130,12 +121,6 @@ public class StageListScheduleFragment extends Fragment {
                 DateTime startTime = convertStringTimeToPosition(textView.getText().toString());
 
                 DateTime baseTime = convertStringTimeToPosition("11:00");
-//                if(date != 3) {
-//                     baseTime = convertStringTimeToPosition("11:00");
-//                }else{
-//                     baseTime = convertStringTimeToPosition("12:00");
-//                }
-
                 Minutes minutesToStart = Minutes.minutesBetween(baseTime, startTime);
 
                 int startPosition = minutesToStart.getMinutes() / 30;
@@ -155,6 +140,11 @@ public class StageListScheduleFragment extends Fragment {
         updateSelectedListViewItems(false);
 
         return (rootView);
+    }
+
+    private void showStageClosedIfEmpty() {
+        TextView noArtistPlaying = (TextView) rootView.findViewById(R.id.no_artists_text);
+        noArtistPlaying.setVisibility(artists.size() == 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -323,48 +313,61 @@ public class StageListScheduleFragment extends Fragment {
 
         int color = R.drawable.list_pagoda_selector;
 
-        switch (stage) {
+        if (ColorUtil.nightMode) {
+            color = R.drawable.list_night_selector;
+        } else {
+            switch (stage) {
 
-            case 0:
-                color = R.drawable.list_pagoda_selector;
-                break;
-            case 1:
-                color = R.drawable.list_forest_selector;
-                break;
-            case 2:
-                color = R.drawable.list_grove_selector;
-                break;
-            case 3:
-                color = R.drawable.list_living_room_selector;
-                break;
-            case 4:
-                color = R.drawable.list_village_selector;
-                break;
-            case 5:
-                color = R.drawable.list_amphitheatre_selector;
-                break;
-            case 6:
-                color = R.drawable.cedar_lounge_selector;
-                break;
+                case 0:
+                    color = R.drawable.list_pagoda_selector;
+                    break;
+                case 1:
+                    color = R.drawable.list_forest_selector;
+                    break;
+                case 2:
+                    color = R.drawable.list_grove_selector;
+                    break;
+                case 3:
+                    color = R.drawable.list_living_room_selector;
+                    break;
+                case 4:
+                    color = R.drawable.list_village_selector;
+                    break;
+                case 5:
+                    color = R.drawable.list_amphitheatre_selector;
+                    break;
+                case 6:
+                    color = R.drawable.cedar_lounge_selector;
+                    break;
+            }
         }
 
         return color;
     }
 
     public void onEventMainThread(ActionBarColorEvent event) {
-        int color = event.getColor();
-        int[] colors = {0, color, 0};
+        ColorUtil.setCurrentThemeColor(event.getColor());
+
+        int color = ColorUtil.dividerColor(getActivity());
+        int[] colors;
+        if (ColorUtil.nightMode) {
+            colors = new int[]{color, color, color};
+        } else {
+            colors = new int[]{0, color, 0};
+        }
+
         listView.setDivider(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
+
         listView.setDividerHeight(1);
 
-        EdgeChanger.setEdgeGlowColor(listView, event.getColor());
+        EdgeChanger.setEdgeGlowColor(listView, ColorUtil.themedGray(getActivity()));
     }
 
     public void onEventMainThread(ChangeDateEvent event) {
         date = event.getPosition();
         rebuildAdapter();
         updateSelectedListViewItems(true);
-        //adapter.applyGenreFilter(filterList);
+        showStageClosedIfEmpty();
     }
 
     public void onEventMainThread(SearchSelectedEvent event) {

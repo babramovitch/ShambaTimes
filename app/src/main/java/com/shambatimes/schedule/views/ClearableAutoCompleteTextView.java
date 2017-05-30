@@ -2,6 +2,7 @@ package com.shambatimes.schedule.views;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,7 +17,7 @@ import com.shambatimes.schedule.myapplication.R;
  * @author Michael Derazon
  *
  */
-public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
+public class ClearableAutoCompleteTextView extends AppCompatAutoCompleteTextView {
     // was the text just cleared?
     boolean justCleared = false;
 
@@ -34,7 +35,7 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
     private OnClearListener onClearListener = defaultClearListener;
 
     // The image we defined for the clear button
-    public Drawable imgClearButton = getResources().getDrawable(R.drawable.abc_ic_clear_mtrl_alpha);
+    public Drawable imgClearButton = getResources().getDrawable(R.drawable.ic_close_white_18dp);
 
     public interface OnClearListener {
         void onClear();

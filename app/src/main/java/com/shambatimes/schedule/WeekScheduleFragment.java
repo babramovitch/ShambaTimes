@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -44,10 +45,12 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
 
     private View rootView;
     private WeekView mWeekView;
-    private boolean favouritesOnly = false; //todo save this in preferences
     private AlarmHelper alarmHelper;
     private Snackbar genreSnackbar;
+    private Artist snackbarArtist;
 
+    private boolean favouritesOnly = false;
+    private int currentDate = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,16 +72,23 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
 
         Bundle bundle = getArguments();
         if (bundle != null && bundle.getInt("TIME", -1) != -1) {
-            double hourPosition = (bundle.getInt("TIME", -1) / 2) - 0.5;
-            mWeekView.goToHour(hourPosition < 0 ? 0 : hourPosition);
+            gotoHour((bundle.getInt("TIME", -1) / 2) - 0.5);
         }
 
         return rootView;
     }
 
+    public void gotoHour(double hourPosition) {
+        mWeekView.goToHour(hourPosition < 0 ? 0 : hourPosition);
+    }
+
     public void toggleFavourites() {
         favouritesOnly = !favouritesOnly;
         mWeekView.toggleFavourites(favouritesOnly);
+    }
+
+    public boolean isFavoritesOnly() {
+        return favouritesOnly;
     }
 
     @Override
@@ -100,9 +110,7 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         //  mWeekView.setMinDate(Calendar.getInstance()); These are breaking the stop fling on touch somehow, so for now commenting out, and disabling the left/right gestures in WeekView
         //  mWeekView.setMaxDate(Calendar.getInstance()); These are breaking the stop fling on touch somehow, so for now commenting out, and disabling the left/right gestures in WeekView
         mWeekView.setStages(7);
-
         mWeekView.setNumberOfVisibleDays(7);
-
 
         mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
         mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 13, getResources().getDisplayMetrics()));
@@ -151,8 +159,6 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         });
     }
 
-    Artist snackbarArtist;
-
     @Override
     public void onEventClick(final WeekViewEvent event, RectF eventRect) {
 
@@ -171,10 +177,14 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
 
         View snackbarView = genreSnackbar.getView();
 
-        snackbarView.setBackgroundColor(ContextCompat.getColor(getActivity(), (ColorUtil.getStageColors()[event.getArtist().getStage()])));
+        AlarmHelper alarmHelper = new AlarmHelper(getContext(), null); //TODO fix this from color util / helper
+        snackbarView.setBackgroundColor(alarmHelper.getSnackBarColor(event.getArtist().getStage()));
 
         TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        snackBarTextView.setTextColor(ColorUtil.snackbarTextColor(getActivity()));
+
         TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
+        snackBarActionTextView.setTextColor(ColorUtil.snackbarTextColor(getActivity()));
 
         snackBarActionTextView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -185,15 +195,11 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
             }
         });
 
-        snackBarTextView.setTextColor(Color.WHITE);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             snackBarTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         }
-        snackBarActionTextView.setTextColor(Color.WHITE);
 
         snackBarActionTextView.setTextSize(14);
-
 
         genreSnackbar.show();
     }
@@ -231,12 +237,9 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
     public List<? extends WeekViewEvent> onLoadStage(int stage) {
         List<WeekViewEvent> currentPeriodEvents = new ArrayList<WeekViewEvent>();
 
-        ArrayList<Artist> artists = MainActivity.shambhala.getArtistsByDayAndStage(MainActivity.currentDay, stage);
-
-        int x = 0;
+        ArrayList<Artist> artists = MainActivity.shambhala.getArtistsByDayAndStage(currentDate, stage);
 
         for (Artist artist : artists) {
-
 
             DateTime startTime = DateUtils.getFullDateTimeForArtist(artist);
             DateTime endTime = DateUtils.getFullDateEndTimeForArtist(artist);
@@ -256,7 +259,7 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
             int color = ContextCompat.getColor(getContext(), ColorUtil.getStageColors()[stage]);
 
             if (!event.isFavourite()) {
-                color = ColorUtil.adjustAlpha(color, 0.58f);
+                color = fadeNonFavouriteColor(color);
             }
 
             event.setColor(color);
@@ -266,7 +269,17 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         return currentPeriodEvents;
     }
 
+    private int fadeNonFavouriteColor(int color) {
+        float[] hsvColor = new float[3];
+        Color.colorToHSV(color, hsvColor);
+        hsvColor[1] = 0.35f;
+        hsvColor[2] = hsvColor[2] + 0.05f;
+        color = Color.HSVToColor(hsvColor);
+        return color;
+    }
+
     public void onEventMainThread(ChangeDateEvent event) {
+        currentDate = event.getPosition();
         mWeekView.invalidate();
     }
 
@@ -274,7 +287,6 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         double hourPosition = (event.getArtist().getStartPosition() / 2) - 0.5;
         mWeekView.goToHour(hourPosition < 0 ? 0 : hourPosition);
     }
-
 
     @Override
     public void onStop() {
