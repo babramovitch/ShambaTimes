@@ -142,6 +142,7 @@
 
     <string name="tap_target_now_title">Now Playing</string>
     <string name="tap_target_now_description">Press the Now button to see who\'s currently playing</string>
+    <string name="stage_closed">Stage Closed</string>
 
 </resources>
 

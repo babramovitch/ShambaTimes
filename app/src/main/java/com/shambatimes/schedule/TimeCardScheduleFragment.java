@@ -252,7 +252,7 @@ public class TimeCardScheduleFragment extends Fragment {
                     }
                 });
             } else {
-                artistName.setText("Stage Closed");
+                artistName.setText(R.string.stage_closed);
                 artistName.setTextColor(ContextCompat.getColor(getActivity(), R.color.noArtistTextColor));
                 stageName.setTextColor(ContextCompat.getColor(getActivity(), R.color.noArtistTextColor));
 

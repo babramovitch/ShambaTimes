@@ -143,13 +143,8 @@ public class StageListScheduleFragment extends Fragment {
     }
 
     private void showStageClosedIfEmpty() {
-        if (artists.size() == 0) {
-            TextView noArtistPlaying = (TextView) rootView.findViewById(R.id.no_artists_text);
-            noArtistPlaying.setVisibility(View.VISIBLE);
-        } else {
-            TextView noArtistPlaying = (TextView) rootView.findViewById(R.id.no_artists_text);
-            noArtistPlaying.setVisibility(View.GONE);
-        }
+        TextView noArtistPlaying = (TextView) rootView.findViewById(R.id.no_artists_text);
+        noArtistPlaying.setVisibility(artists.size() == 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override

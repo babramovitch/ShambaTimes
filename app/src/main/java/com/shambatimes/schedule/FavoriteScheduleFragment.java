@@ -104,14 +104,9 @@ public class FavoriteScheduleFragment extends Fragment {
         return (rootView);
     }
 
-    private void showNoFavouritesIfEmpty(){
-        if (artists.size() == 0) {
-            TextView noArtistPlaying = (TextView) rootView.findViewById(R.id.no_artists_text);
-            noArtistPlaying.setVisibility(View.VISIBLE);
-        }else{
-            TextView noArtistPlaying = (TextView) rootView.findViewById(R.id.no_artists_text);
-            noArtistPlaying.setVisibility(View.GONE);
-        }
+    private void showNoFavouritesIfEmpty() {
+        TextView noArtistPlaying = (TextView) rootView.findViewById(R.id.no_artists_text);
+        noArtistPlaying.setVisibility(artists.size() == 0 ? View.VISIBLE : View.GONE);
     }
 
     public static class ArtistViewHolder extends RecyclerView.ViewHolder {

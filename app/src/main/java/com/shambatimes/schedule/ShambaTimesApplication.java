@@ -1,14 +1,13 @@
-package com.shambatimes.schedule.Widgets;
+package com.shambatimes.schedule;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatDelegate;
-import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.orm.SugarContext;
+
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.myapplication.BuildConfig;
@@ -29,7 +28,6 @@ public class ShambaTimesApplication extends Application {
         }
 
         SugarContext.init(this);
-
 
         // Initialize the preferences with default settings if
         // this is the first time the application is ever opened
