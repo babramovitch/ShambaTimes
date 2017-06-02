@@ -94,14 +94,6 @@
             android:name="com.shambatimes.Alarms.AlarmActivity"
             android:label="@string/title_activity_alarm"></activity>
 
-
-        <!--<receiver android:name="com.shambatimes.Alarms.AlarmActivity$cancelButtonListener">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="ALARM_ACTION" />-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
-
-
     </application>
 
 </manifest>

@@ -37,13 +37,13 @@ public class AlarmHelper {
     // TODO - REVIEW THIS http://pguardiola.com/blog/darealfragmentation-alarms/
     // TODO - REVIEW THIS https://github.com/evernote/android-job
 
-    Context context;
-    Artist artist;
-    View layout;
-    Snackbar snackbar;
-    OnAlarmStateChangedListener onAlarmStateChangedListener;
+    private Context context;
+    private Artist artist;
+    private View layout;
+    private Snackbar snackbar;
+    private OnAlarmStateChangedListener onAlarmStateChangedListener;
 
-    int[] stageColors = ColorUtil.getStageColors();
+    private int[] stageColors = ColorUtil.getStageColors();
 
     public AlarmHelper(Context context, View layout) {
         this.context = context;
@@ -65,34 +65,34 @@ public class AlarmHelper {
     public void showSetAlarmSnackBar(Artist artist) {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String alarmMinutes = "0"; //preferences.getString(SettingsActivity.ALARM_TIMES, "30");
+        String alarmMinutes = preferences.getString(SettingsActivity.ALARM_TIMES, "30");
 
-        //   if (DateUtils.getFullDateTimeForArtist(artist).minus(60000 * Integer.valueOf(alarmMinutes)).isAfter(System.currentTimeMillis())) {
-        if (Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR)) {
+        if (DateUtils.getFullDateTimeForArtist(artist).minus(60000 * Integer.valueOf(alarmMinutes)).isAfter(System.currentTimeMillis())) {
+            if (Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR)) {
 
-            this.artist = artist;
+                this.artist = artist;
 
-            final View coordinatorLayoutView = layout.findViewById(R.id.snackbarPosition);
-            coordinatorLayoutView.setVisibility(View.VISIBLE);
+                final View coordinatorLayoutView = layout.findViewById(R.id.snackbarPosition);
+                coordinatorLayoutView.setVisibility(View.VISIBLE);
 
-            snackbar = Snackbar.make(coordinatorLayoutView, "Add alarm " + alarmMinutes + " minutes before " + artist.getAristName() + "?", Snackbar.LENGTH_LONG)
-                    .setAction("OK", snackBarClickListener)
-                    .setDuration(Snackbar.LENGTH_LONG);
+                snackbar = Snackbar.make(coordinatorLayoutView, "Add alarm " + alarmMinutes + " minutes before " + artist.getAristName() + "?", Snackbar.LENGTH_LONG)
+                        .setAction("OK", snackBarClickListener)
+                        .setDuration(Snackbar.LENGTH_LONG);
 
-            View snackbarView = snackbar.getView();
-            snackbarView.setBackgroundColor(getSnackBarColor(artist.getStage()));
+                View snackbarView = snackbar.getView();
+                snackbarView.setBackgroundColor(getSnackBarColor(artist.getStage()));
 
-            TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-            TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
+                TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
 
-            snackBarTextView.setTextColor(ColorUtil.snackbarTextColor(context));
-            snackBarActionTextView.setTextColor(ColorUtil.snackbarTextColor(context));
+                snackBarTextView.setTextColor(ColorUtil.snackbarTextColor(context));
+                snackBarActionTextView.setTextColor(ColorUtil.snackbarTextColor(context));
 
-            snackBarActionTextView.setTextSize(14);
+                snackBarActionTextView.setTextSize(14);
 
-            snackbar.show();
+                snackbar.show();
+            }
         }
-        //   }
     }
 
     final View.OnClickListener snackBarClickListener = new View.OnClickListener() {
@@ -123,7 +123,6 @@ public class AlarmHelper {
 
             this.artist = artist;
 
-//            AlarmJob.scheduleJob();
             Log.i("AlarmHelper", "Alarm set for " + artist.getArtistName());
 
             Intent alarmIntent = new Intent(context, AlarmReceiver.class);
@@ -140,8 +139,6 @@ public class AlarmHelper {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             int alarmMinutes = Integer.valueOf(preferences.getString(SettingsActivity.ALARM_TIMES, "30"));
 
-
-            //TODO - Set the alarm to startTime minus [value from preferences] minutes.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, getAlarmTime(artist, alarmMinutes), pendingIntent);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -264,10 +261,7 @@ public class AlarmHelper {
         Log.i("AlarmHelper", "Artist Time:" + startTime.toString());
         Log.i("AlarmHelper", "Alarm  Time: " + alarmTime.toString());
 
-        DateTime now = new DateTime();
-        now = now.plusSeconds(5);
-
-        return now.getMillis();
+        return alarmTime.getMillis();
     }
 
     public static void cancelAlarmIntent(Context context, Artist artist) {

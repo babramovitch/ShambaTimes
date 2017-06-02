@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.TypedArray;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
@@ -20,7 +19,6 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.NotificationCompat;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -83,7 +81,7 @@ public class AlarmActivity extends Activity {
         setupAlarmLayout();
 
         if (savedInstanceState == null) {
-           // startAlarm();
+            startAlarm();
         }
     }
 
@@ -127,7 +125,6 @@ public class AlarmActivity extends Activity {
 
     private void setupAlarmLayout() {
         Intent intent = getIntent();
-
 
         final MySwipeLayout swipeLayout = (MySwipeLayout) findViewById(R.id.swipe_layout);
         swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
@@ -216,7 +213,7 @@ public class AlarmActivity extends Activity {
     }
 
     private void startAlarmTimeout() {
-        final int ONE_MINUTE_MILLISECONDS = 10000;
+        final int ONE_MINUTE_MILLISECONDS = 60000;
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -242,7 +239,7 @@ public class AlarmActivity extends Activity {
         PendingIntent pendingIntentDismiss = PendingIntent.getBroadcast(this, alarmNotificationId, dismissReceive, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification notification = new NotificationCompat.Builder(this)
-                .addAction(R.drawable.ic_alarm_black_18dp, getString(R.string.dismiss_button), pendingIntentDismiss) // #0
+                .addAction(R.drawable.ic_alarm_black_18dp, getString(R.string.dismiss_button), pendingIntentDismiss)
                 .setSmallIcon(R.drawable.ic_alarm_black_18dp)
                 .setContentTitle(artist.getArtistName())
                 .setContentText(alarmMessage)
@@ -259,8 +256,8 @@ public class AlarmActivity extends Activity {
     private void createMissedAlarmNotification() {
         Notification missedNotification = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_alarm_black_18dp)
-                .setContentTitle("Missed Alarm")
-                .setContentText("Missed alarm for " + artist.getAristName())
+                .setContentTitle(getString(R.string.missed_alarm_title))
+                .setContentText(getString(R.string.missed_alarm_message) + artist.getAristName())
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT) //must give priority to High, Max which will considered as heads-up notification
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC).build();

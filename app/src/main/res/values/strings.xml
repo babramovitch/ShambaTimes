@@ -145,6 +145,8 @@
     <string name="stage_closed">Stage Closed</string>
     <string name="dismiss_button">Dismiss</string>
     <string name="swipe_to_dismiss">Swipe to Dismiss</string>
+    <string name="missed_alarm_message">Missed alarm for </string>
+    <string name="missed_alarm_title">Missed Alarm</string>
 
 </resources>
 
