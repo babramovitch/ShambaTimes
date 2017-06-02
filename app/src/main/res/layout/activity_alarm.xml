@@ -50,43 +50,29 @@
         android:textSize="30sp"
         tools:text="30 minutes at the grove" />
 
-    <!--<Button-->
-    <!--android:id="@id/dismiss_alarm_button"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="Dismiss"-->
-    <!--android:textSize="30sp"-->
-    <!--android:textColor="@color/white"-->
-    <!--tools:background="@color/fractal_forest_color_light"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:layout_alignParentLeft="true"-->
-    <!--android:layout_alignParentStart="true"-->
-    <!--android:layout_alignParentRight="true"-->
-    <!--android:layout_alignParentEnd="true" />-->
-
-
     <com.shambatimes.schedule.views.MySwipeLayout
         android:id="@+id/swipe_layout"
         android:layout_width="match_parent"
         android:layout_height="80dp"
+        android:background="@color/offWhiteBackground"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-
-        android:layout_alignParentRight="true">
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp">
         <!-- Bottom View Start-->
         <LinearLayout
             android:id="@+id/bottom_wrapper"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#66ddff00"
             android:orientation="horizontal"
             android:weightSum="1">
+
             <!--What you want to show-->
             <Button
                 android:id="@+id/dismiss_alarm_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Dismiss"
+                android:text="Dismiss Alarm"
                 android:textColor="@color/white"
                 android:textSize="30sp"
                 tools:background="@color/fractal_forest_color_light" />
@@ -96,16 +82,25 @@
 
         <!-- Surface View Start -->
         <LinearLayout
+            android:id="@+id/top_wrapper"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#ffffff">
+            android:orientation="horizontal">
             <!--What you want to show in SurfaceView-->
 
-            <Button
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/ic_arrow_back_white_36dp" />
+
+            <TextView
                 android:id="@+id/swipe_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="swipe"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:text="@string/swipe_to_dismiss"
                 android:textColor="@color/white"
                 android:textSize="30sp"
                 tools:background="@color/fractal_forest_color_light" />

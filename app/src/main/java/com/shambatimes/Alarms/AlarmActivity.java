@@ -20,9 +20,11 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.NotificationCompat;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -81,7 +83,7 @@ public class AlarmActivity extends Activity {
         setupAlarmLayout();
 
         if (savedInstanceState == null) {
-            startAlarm();
+           // startAlarm();
         }
     }
 
@@ -161,14 +163,12 @@ public class AlarmActivity extends Activity {
         });
 
         RelativeLayout alarmLayout = (RelativeLayout) findViewById(R.id.alarm_layout);
+        LinearLayout topWrapper = (LinearLayout) findViewById(R.id.top_wrapper);
         TextView artistName = (TextView) findViewById(R.id.artist_name);
         TextView artistTime = (TextView) findViewById(R.id.artist_time);
         Button dismissButton = (Button) findViewById(R.id.dismiss_alarm_button);
 
         String[] stageNames = getResources().getStringArray(R.array.stages);
-
-        TypedArray colors = getResources().obtainTypedArray(R.array.stage_light_colors);
-
         String[] query1 = {intent.getStringExtra("id")};
 
         ArrayList<Artist> artists = (ArrayList<Artist>) Artist.find(Artist.class, "id = ?", query1, null, null, null);
@@ -179,16 +179,21 @@ public class AlarmActivity extends Activity {
             artist.save();
 
             int[] stageColors = ColorUtil.getStageColors();
+            float alpha = 0.5f;
 
-            alarmLayout.setBackgroundColor(ContextCompat.getColor(this, stageColors[artist.getStage()]));
+            if(ColorUtil.nightMode) {
+                alpha = 1f;
+                alarmLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.lighterSecondaryUISelectionGray));
+            }else{
+                alarmLayout.setBackgroundColor(ContextCompat.getColor(this, stageColors[artist.getStage()]));
+            }
             artistName.setText(artist.getArtistName());
             artistTime.setText(getResources().getString(R.string.alarm_time, alarmTime, stageNames[artist.getStage()]));
-            dismissButton.setBackgroundColor(colors.getColor(artist.getStage(), 0));
 
+            dismissButton.setBackgroundColor( ColorUtil.adjustAlpha(ContextCompat.getColor(this, stageColors[artist.getStage()]), alpha-0.1f));
+            topWrapper.setBackgroundColor( ColorUtil.adjustAlpha(ContextCompat.getColor(this, stageColors[artist.getStage()]), alpha));
             createAlarmNotification(getResources().getString(R.string.alarm_time, alarmTime, stageNames[artist.getStage()]));
         }
-
-        colors.recycle();
 
         dismissButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -297,5 +302,6 @@ public class AlarmActivity extends Activity {
         this.unregisterReceiver(this.dismissAlarmReceiver);
     }
 }
+
 
 

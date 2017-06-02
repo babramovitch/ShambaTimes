@@ -3,7 +3,6 @@ package com.shambatimes.schedule.views;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.daimajia.swipe.SwipeLayout;
 
@@ -24,7 +23,6 @@ public class MySwipeLayout extends SwipeLayout {
         super(context, attrs, defStyle);
     }
 
-
     /**
      * Process the surface release event.
      *
@@ -34,22 +32,19 @@ public class MySwipeLayout extends SwipeLayout {
      */
     @Override
     protected void processHandRelease(float xvel, float yvel, boolean isCloseBeforeDragged) {
-        float minVelocity = 0.1f;
-
         View surfaceView = getSurfaceView();
-        DragEdge currentDragEdge = DragEdge.Left;
-        if (currentDragEdge == null || surfaceView == null) {
+
+        if (surfaceView == null) {
             return;
         }
-        float willOpenPercent = 0.5f;
-        if (currentDragEdge == DragEdge.Left) {
-            if (xvel > minVelocity) open();
-            else if (xvel < -minVelocity) close();
-            else {
-                float openPercent = (1f * getSurfaceView().getLeft() / getDragDistance()) * -1;
-                if (openPercent > willOpenPercent) open();
-                else close();
-            }
+        float willOpenPercent = 0.60f;
+
+        float openPercent = (1f * getSurfaceView().getLeft() / getDragDistance()) * -1;
+
+        if (openPercent > willOpenPercent) {
+            open();
+        } else {
+            close();
         }
     }
 }
