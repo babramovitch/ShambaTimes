@@ -1,10 +1,10 @@
-package com.shambatimes.schedule.Receivers;
+package com.shambatimes.Alarms;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import com.shambatimes.schedule.Shambhala;
-import com.shambatimes.schedule.Util.AlarmHelper;
+
+import com.shambatimes.Alarms.AlarmHelper;
 
 public class DeviceBootReceiver extends BroadcastReceiver {
 

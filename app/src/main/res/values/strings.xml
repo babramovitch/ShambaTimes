@@ -143,6 +143,10 @@
     <string name="tap_target_now_title">Now Playing</string>
     <string name="tap_target_now_description">Press the Now button to see who\'s currently playing</string>
     <string name="stage_closed">Stage Closed</string>
+    <string name="dismiss_button">Dismiss</string>
+    <string name="swipe_to_dismiss">Swipe to Dismiss</string>
+    <string name="missed_alarm_message">Missed alarm for </string>
+    <string name="missed_alarm_title">Missed Alarm</string>
 
 </resources>
 

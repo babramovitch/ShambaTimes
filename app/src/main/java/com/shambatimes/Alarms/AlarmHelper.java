@@ -1,11 +1,10 @@
-package com.shambatimes.schedule.Util;
+package com.shambatimes.Alarms;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
@@ -16,9 +15,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.shambatimes.schedule.Artist;
-import com.shambatimes.schedule.Receivers.AlarmReceiver;
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Shambhala;
+import com.shambatimes.schedule.Util.ColorUtil;
+import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.myapplication.R;
 
 import org.joda.time.DateTime;
@@ -37,23 +37,23 @@ public class AlarmHelper {
     // TODO - REVIEW THIS http://pguardiola.com/blog/darealfragmentation-alarms/
     // TODO - REVIEW THIS https://github.com/evernote/android-job
 
-    Context context;
-    Artist artist;
-    View layout;
-    Snackbar snackbar;
-    OnAlarmStateChangedListener onAlarmStateChangedListener;
+    private Context context;
+    private Artist artist;
+    private View layout;
+    private Snackbar snackbar;
+    private OnAlarmStateChangedListener onAlarmStateChangedListener;
 
-    int[] stageColors = ColorUtil.getStageColors();
+    private int[] stageColors = ColorUtil.getStageColors();
 
     public AlarmHelper(Context context, View layout) {
         this.context = context;
         this.layout = layout;
     }
 
-    public int getSnackBarColor(int stage){
-        if(ColorUtil.nightMode) {
-            return ContextCompat.getColor(context,R.color.lighterSecondaryUISelectionGray);
-        }else{
+    public int getSnackBarColor(int stage) {
+        if (ColorUtil.nightMode) {
+            return ContextCompat.getColor(context, R.color.lighterSecondaryUISelectionGray);
+        } else {
             return ContextCompat.getColor(context, stageColors[stage]);
         }
     }
@@ -67,7 +67,7 @@ public class AlarmHelper {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String alarmMinutes = preferences.getString(SettingsActivity.ALARM_TIMES, "30");
 
-       // if (DateUtils.getFullDateTimeForArtist(artist).minus(60000 * Integer.valueOf(alarmMinutes)).isAfter(System.currentTimeMillis())) {
+        if (DateUtils.getFullDateTimeForArtist(artist).minus(60000 * Integer.valueOf(alarmMinutes)).isAfter(System.currentTimeMillis())) {
             if (Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR)) {
 
                 this.artist = artist;
@@ -92,7 +92,7 @@ public class AlarmHelper {
 
                 snackbar.show();
             }
-       // }
+        }
     }
 
     final View.OnClickListener snackBarClickListener = new View.OnClickListener() {
@@ -139,9 +139,9 @@ public class AlarmHelper {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             int alarmMinutes = Integer.valueOf(preferences.getString(SettingsActivity.ALARM_TIMES, "30"));
 
-
-            //TODO - Set the alarm to startTime minus [value from preferences] minutes.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, getAlarmTime(artist, alarmMinutes), pendingIntent);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 manager.setExact(AlarmManager.RTC_WAKEUP, getAlarmTime(artist, alarmMinutes), pendingIntent);
             } else {
                 manager.set(AlarmManager.RTC_WAKEUP, getAlarmTime(artist, alarmMinutes), pendingIntent);
@@ -239,7 +239,9 @@ public class AlarmHelper {
 
                 AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, getAlarmTime(artist, alarmMinutes), pendingIntent);
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     manager.setExact(AlarmManager.RTC_WAKEUP, getAlarmTime(artist, alarmMinutes), pendingIntent);
                 } else {
                     manager.set(AlarmManager.RTC_WAKEUP, getAlarmTime(artist, alarmMinutes), pendingIntent);
@@ -253,7 +255,6 @@ public class AlarmHelper {
     }
 
     private static long getAlarmTime(Artist artist, int minutes) {
-
         DateTime startTime = DateUtils.getFullDateTimeForArtist(artist);
 
         DateTime alarmTime = startTime.minus(60000 * minutes);
@@ -261,7 +262,6 @@ public class AlarmHelper {
         Log.i("AlarmHelper", "Alarm  Time: " + alarmTime.toString());
 
         return alarmTime.getMillis();
-
     }
 
     public static void cancelAlarmIntent(Context context, Artist artist) {

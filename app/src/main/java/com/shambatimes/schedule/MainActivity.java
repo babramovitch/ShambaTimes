@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -39,9 +38,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -51,11 +48,10 @@ import android.widget.Toast;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
 import com.shambatimes.schedule.Settings.SettingsActivity;
-import com.shambatimes.schedule.Util.AlarmHelper;
+import com.shambatimes.Alarms.AlarmHelper;
 import com.shambatimes.schedule.Util.AnimationHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
-import com.shambatimes.schedule.Widgets.ShambaTimesApplication;
 import com.shambatimes.schedule.animations.MyTransitionDrawable;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ArtistListLoadDoneEvent;
@@ -134,6 +130,38 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //  Declare a new thread to do a preference check
+//        Thread t = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                //  Initialize SharedPreferences
+//                SharedPreferences getPrefs = PreferenceManager
+//                        .getDefaultSharedPreferences(getBaseContext());
+//
+//                //  Create a new boolean and preference and set it to true
+//                //  boolean isFirstStart = getPrefs.getBoolean("firstStart", true);
+//
+//                //  If the activity has never started before...
+//                //if (isFirstStart) {
+//
+//                //  Launch app intro
+//                Intent i = new Intent(MainActivity.this, IntroActivity.class);
+//                startActivity(i);
+//
+//                //  Make a new preferences editor
+//                SharedPreferences.Editor e = getPrefs.edit();
+//
+//                //  Edit preference to make it false because we don't want this to run again
+//                //e.putBoolean("firstStart", false);
+//
+//                //  Apply changes
+//                e.apply();
+//            }
+//            //}
+//        });
+//
+//        // Start the thread
+//        t.start();
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         timeFormatPreference = prefs.getString(SettingsActivity.TIME_FORMAT, "24");

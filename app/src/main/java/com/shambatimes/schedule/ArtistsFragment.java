@@ -28,7 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.shambatimes.schedule.Settings.SettingsActivity;
-import com.shambatimes.schedule.Util.AlarmHelper;
+import com.shambatimes.Alarms.AlarmHelper;
 import com.shambatimes.schedule.Util.AnimationHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;

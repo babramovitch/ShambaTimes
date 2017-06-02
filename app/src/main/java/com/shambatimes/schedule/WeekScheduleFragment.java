@@ -3,20 +3,17 @@ package com.shambatimes.schedule;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.RectF;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.shambatimes.schedule.Util.AlarmHelper;
+import com.shambatimes.Alarms.AlarmHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.events.ChangeDateEvent;
@@ -39,7 +36,6 @@ import java.util.Locale;
 
 import de.greenrobot.event.EventBus;
 
-
 public class WeekScheduleFragment extends Fragment implements WeekView.EventClickListener, MonthLoader.MonthChangeListener, WeekView.EventLongPressListener {
     private static final String TAG = "WeekSchedule";
 
@@ -55,7 +51,7 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Forced landscape as the view doesn't work well in portrait =(
+        //Forced landscape as the view doesn't work well in portrait yet =(
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
     }
 
@@ -195,10 +191,6 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
             }
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            snackBarTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        }
-
         snackBarActionTextView.setTextSize(14);
 
         genreSnackbar.show();
@@ -246,6 +238,8 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
 
             //Rich-E-Rich goes past the apps festival end time of 11am (24h per day) so exception needs to be made for it.
             //or any other artist who goes past 11am.
+
+            //TODO alter this to dynamical check the end of festival time
             if (endTime.isAfter(new DateTime(2016, 8, 8, 11, 59, 59, 99).withZone(Constants.timeZone))) {
                 endTime = new DateTime(2016, 8, 8, 11, 0, 0, 0).withZone(Constants.timeZone);
             }
@@ -285,7 +279,7 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
 
     public void onEventMainThread(SearchSelectedEvent event) {
         double hourPosition = (event.getArtist().getStartPosition() / 2) - 0.5;
-        mWeekView.goToHour(hourPosition < 0 ? 0 : hourPosition);
+        gotoHour(hourPosition);
     }
 
     @Override

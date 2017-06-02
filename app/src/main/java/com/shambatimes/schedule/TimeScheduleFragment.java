@@ -19,7 +19,7 @@ import android.widget.ListView;
 import com.shambatimes.schedule.Adapters.ListTimeAdapter;
 import com.shambatimes.schedule.Adapters.TimeAdapter;
 import com.shambatimes.schedule.Settings.SettingsActivity;
-import com.shambatimes.schedule.Util.AlarmHelper;
+import com.shambatimes.Alarms.AlarmHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.Util.DateUtils;

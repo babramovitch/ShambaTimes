@@ -6,11 +6,10 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.shambatimes.schedule.Util.AlarmHelper;
+import com.shambatimes.Alarms.AlarmHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by babramovitch on 8/16/2015.

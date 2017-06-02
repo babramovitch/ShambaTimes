@@ -4,11 +4,11 @@
 
     <!-- <uses-permission android:name="android.permission.VIBRATE" /> -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name="com.shambatimes.schedule.Widgets.ShambaTimesApplication"
+        android:name="com.shambatimes.schedule.ShambaTimesApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -42,11 +42,14 @@
         </activity>
 
         <activity
+            android:name="com.shambatimes.schedule.IntroActivity"
+            android:label="@string/app_name" />
+
+        <activity
             android:name="com.shambatimes.schedule.Settings.SettingsActivity"
-            android:label="@string/app_name"
-            android:theme="@style/SettingsTheme"
             android:fitsSystemWindows="true"
-            />
+            android:label="@string/app_name"
+            android:theme="@style/SettingsTheme" />
 
         <receiver android:name="com.shambatimes.schedule.Widgets.ScheduleWidget">
             <intent-filter>
@@ -65,11 +68,17 @@
                 android:updatePeriodMillis="0"
                 android:widgetCategory="keyguard|home_screen" />
         </receiver>
-        <receiver android:name="com.shambatimes.schedule.Receivers.AlarmReceiver"></receiver>
+
+
+        <receiver android:name="com.shambatimes.Alarms.AlarmReceiver">
+            <intent-filter>
+                <action android:name="ALARM_ACTION" />
+            </intent-filter>
+        </receiver>
 
         <!-- Will not be called unless the application explicitly enables it -->
         <receiver
-            android:name="com.shambatimes.schedule.Receivers.DeviceBootReceiver"
+            android:name="com.shambatimes.Alarms.DeviceBootReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -82,8 +91,9 @@
             android:value="c101da43bff4ccc3ef4e4e34afa3607e58f10410" />
 
         <activity
-            android:name="com.shambatimes.schedule.AlarmActivity"
+            android:name="com.shambatimes.Alarms.AlarmActivity"
             android:label="@string/title_activity_alarm"></activity>
+
     </application>
 
 </manifest>

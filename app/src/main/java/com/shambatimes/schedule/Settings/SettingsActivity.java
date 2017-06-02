@@ -1,8 +1,5 @@
 package com.shambatimes.schedule.Settings;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -14,12 +11,11 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatDelegate;
 import android.view.MenuItem;
 
-import com.shambatimes.schedule.Util.AlarmHelper;
+import com.shambatimes.Alarms.AlarmHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
-import com.shambatimes.schedule.Widgets.ShambaTimesApplication;
+import com.shambatimes.schedule.ShambaTimesApplication;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.myapplication.R;
 

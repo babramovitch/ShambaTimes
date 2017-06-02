@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.shambatimes.schedule.Settings.SettingsActivity;
 
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class Shambhala {
             }
         }
 
-        if(artistsByDay.size() > 1 && artistsByDay.get(0) != null && artistsByDay.get(0).getArtistName().equals("2TIGHT")){
+        if (artistsByDay.size() > 1 && artistsByDay.get(0) != null && artistsByDay.get(0).getArtistName().equals("2TIGHT")) {
             Artist artist = artistsByDay.get(0);
             artistsByDay.remove(0);
             artistsByDay.add(artist);
@@ -127,7 +128,7 @@ public class Shambhala {
         String[] query1 = {"" + year};
         ArrayList<Artist> artistList = (ArrayList<Artist>) Artist.find(Artist.class, "year = ?", query1, null, "lower(artist_Name) asc", null);
 
-        if(artistList.size() > 1 && artistList.get(0) != null && artistList.get(0).getArtistName().equals("2TIGHT")){
+        if (artistList.size() > 1 && artistList.get(0) != null && artistList.get(0).getArtistName().equals("2TIGHT")) {
             Artist artist = artistList.get(0);
             artistList.remove(0);
             artistList.add(artist);
@@ -140,7 +141,7 @@ public class Shambhala {
         String[] query1 = {year, day};
         ArrayList<Artist> artistList = (ArrayList<Artist>) Artist.find(Artist.class, "year = ? and day = ?", query1, null, "lower(artist_Name) asc", null);
 
-        if(artistList.size() > 1 && artistList.get(0) != null && artistList.get(0).getArtistName().equals("2TIGHT")){
+        if (artistList.size() > 1 && artistList.get(0) != null && artistList.get(0).getArtistName().equals("2TIGHT")) {
             Artist artist = artistList.get(0);
             artistList.remove(0);
             artistList.add(artist);
@@ -150,8 +151,13 @@ public class Shambhala {
     }
 
     public static String getFestivalYear(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getString(SettingsActivity.FESTIVAL_YEAR, "2016");
+        try {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            return prefs.getString(SettingsActivity.FESTIVAL_YEAR, CURRENT_YEAR);
+        } catch (Exception e) {
+            Crashlytics.logException(e);
+            return CURRENT_YEAR;
+        }
     }
 
     public ArrayList<String> generateGenreList() {
