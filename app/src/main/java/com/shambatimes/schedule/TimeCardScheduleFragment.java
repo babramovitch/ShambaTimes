@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.Alarms.AlarmHelper;
 import com.shambatimes.schedule.Util.AnimationHelper;
@@ -127,22 +128,10 @@ public class TimeCardScheduleFragment extends Fragment {
         scheduleAdapter = new ScheduleAdapter(getActivity());
         gridView.setAdapter(scheduleAdapter);
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-
-            }
-        });
-
         gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                LinearLayout childView = (LinearLayout) parent.getChildAt(position);
-                CardView cardView = (CardView) childView.getChildAt(0);
-                RelativeLayout relativeLayout = (RelativeLayout) cardView.getChildAt(0);
-                TextView artistNameTextView = (TextView) relativeLayout.getChildAt(0);
-
                 EventBus.getDefault().post(new ToggleToGridEvent(timePosition));
-
                 return false;
             }
         });
@@ -150,12 +139,12 @@ public class TimeCardScheduleFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                LinearLayout childView = (LinearLayout) parent.getChildAt(position);
-                CardView cardView = (CardView) childView.getChildAt(0);
-                RelativeLayout relativeLayout = (RelativeLayout) cardView.getChildAt(0);
-                TextView artistNameTextView = (TextView) relativeLayout.getChildAt(0);
-
-                EventBus.getDefault().post(new ToggleToStageEvent(position, artistNameTextView.getText().toString()));
+                String artistName = "";
+                TextView textView = (TextView) view.findViewById(R.id.artist_text);
+                if (textView != null && textView.getText() != null) {
+                    artistName = textView.getText().toString();
+                }
+                EventBus.getDefault().post(new ToggleToStageEvent(position, artistName));
             }
         });
     }
