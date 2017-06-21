@@ -66,6 +66,7 @@ public class WeekView extends View {
 
     private boolean favouritesOnly = false;
     Paint eventBorderPaint;
+    Paint eventPlayingBorderPaint;
 
     public void toggleFavourites(boolean favouritesOnly) {
         this.favouritesOnly = favouritesOnly;
@@ -569,6 +570,16 @@ public class WeekView extends View {
         eventBorderPaint.setStrokeWidth(3);
         eventBorderPaint.setColor(mHourSeparatorColor);
 
+        eventPlayingBorderPaint = new Paint();
+        eventPlayingBorderPaint.setStyle(Paint.Style.STROKE);
+        eventPlayingBorderPaint.setStrokeWidth(5);
+
+        //TODO add a proper getter/setter for this so there's no dependency on ColorUtil or my values file
+        if(ColorUtil.nightMode) {
+            eventPlayingBorderPaint.setColor(getResources().getColor(R.color.white));
+        }else{
+            eventPlayingBorderPaint.setColor(getResources().getColor(R.color.asdf));
+        }
 
         // Prepare empty event background color.
         mNewEventBackgroundPaint = new Paint();
@@ -1056,7 +1067,22 @@ public class WeekView extends View {
                             mEventBackgroundPaint.setColor(mEventRects.get(i).event.getColor() == 0 ? mDefaultEventColor : mEventRects.get(i).event.getColor());
                             mEventBackgroundPaint.setShader(mEventRects.get(i).event.getShader());
                             canvas.drawRoundRect(mEventRects.get(i).rectF, mEventCornerRadius, mEventCornerRadius, mEventBackgroundPaint);
-                            canvas.drawRoundRect(mEventRects.get(i).rectF, mEventCornerRadius, mEventCornerRadius, eventBorderPaint);
+
+                            RectF myRect = mEventRects.get(i).rectF;
+                            canvas.drawRect(myRect.left, myRect.top, myRect.right ,myRect.bottom, eventBorderPaint);
+
+
+
+                            if(isArtistPlaying(mEventRects.get(i).event.getArtist())) {
+                                //RectF myRect = mEventRects.get(i).rectF;
+                               // canvas.drawRect(myRect.left+2, myRect.top+2, myRect.right-2 ,myRect.bottom-4, eventPlayingBorderPaint);
+                               // eventPlayingBorderPaint.setColor(mEventRects.get(i).event.getColor());
+                                canvas.drawRect(myRect.left+4, myRect.top+4, myRect.right-4 ,myRect.bottom-4, eventPlayingBorderPaint);
+
+                            } else{
+                          //  canvas.drawRect(myRect.left, myRect.top, myRect.right ,myRect.bottom, eventBorderPaint);
+                              //  canvas.drawRoundRect(mEventRects.get(i).rectF, mEventCornerRadius, mEventCornerRadius, eventBorderPaint);
+                            }
 
                             if (mEventRects.get(i).event.getId() != mNewEventId)
                                 drawEventTitle(mEventRects.get(i).event, mEventRects.get(i).rectF, canvas, top, left);
@@ -1069,6 +1095,20 @@ public class WeekView extends View {
             }
         }
     }
+
+    private boolean isArtistPlaying(Artist artist){
+        Artist currentlyPlayingArtist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(DateUtils.getCurrentDay(getContext()), DateUtils.getCurrentTimePosition(getContext()), artist.getStage());
+
+        if (currentlyPlayingArtist != null && !DateUtils.isPrePostFestival(getContext())
+                && artist.getArtistName().equals(currentlyPlayingArtist.getAristName())
+                && Shambhala.getFestivalYear(getContext()).equals(Shambhala.CURRENT_YEAR)) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
 
     /**
      * Draw the name of the event on top of the event rectangle.

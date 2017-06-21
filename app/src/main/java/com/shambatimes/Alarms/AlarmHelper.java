@@ -67,7 +67,7 @@ public class AlarmHelper {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String alarmMinutes = preferences.getString(SettingsActivity.ALARM_TIMES, "30");
 
-        if (DateUtils.getFullDateTimeForArtist(artist).minus(60000 * Integer.valueOf(alarmMinutes)).isAfter(System.currentTimeMillis())) {
+        //if (DateUtils.getFullDateTimeForArtist(artist).minus(60000 * Integer.valueOf(alarmMinutes)).isAfter(System.currentTimeMillis())) {
             if (Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR)) {
 
                 this.artist = artist;
@@ -92,27 +92,11 @@ public class AlarmHelper {
 
                 snackbar.show();
             }
-        }
+      //  }
     }
 
     final View.OnClickListener snackBarClickListener = new View.OnClickListener() {
         public void onClick(View v) {
-
-            final View coordinatorLayoutView = layout.findViewById(R.id.snackbarPosition);
-
-            snackbar = Snackbar.make(coordinatorLayoutView, "Alarm Added for " + artist.getAristName(), Snackbar.LENGTH_LONG)
-                    .setDuration(Snackbar.LENGTH_LONG);
-
-            View snackbarView = snackbar.getView();
-            snackbarView.setBackgroundColor(getSnackBarColor(artist.getStage()));
-
-            TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-
-            snackBarTextView.setTextColor(ColorUtil.snackbarTextColor(context));
-            snackBarTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-
-            snackbar.show();
-
             setAlarm(artist);
         }
     };
@@ -261,7 +245,9 @@ public class AlarmHelper {
         Log.i("AlarmHelper", "Artist Time:" + startTime.toString());
         Log.i("AlarmHelper", "Alarm  Time: " + alarmTime.toString());
 
-        return alarmTime.getMillis();
+        DateTime now = new DateTime();
+
+        return now.plusMillis(30000).getMillis(); //alarmTime.getMillis();
     }
 
     public static void cancelAlarmIntent(Context context, Artist artist) {

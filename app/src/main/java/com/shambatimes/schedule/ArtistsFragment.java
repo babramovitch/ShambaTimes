@@ -18,8 +18,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -35,6 +33,7 @@ import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.Util.Util;
 import com.shambatimes.schedule.animations.MyTransitionDrawable;
+import com.shambatimes.schedule.Util.SeenArtistHelper;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
@@ -143,6 +142,8 @@ public class ArtistsFragment extends Fragment {
         protected RelativeLayout artistLayout;
         protected View divider;
         protected ImageView image;
+        protected ImageView alarmImage;
+        protected ImageView seenImage;
 
         public ArtistViewHolder(View v) {
             super(v);
@@ -156,6 +157,8 @@ public class ArtistsFragment extends Fragment {
             artistLayout = (RelativeLayout) v.findViewById(R.id.artistLayout);
             image = (ImageView) v.findViewById(R.id.list_favorited);
             divider = v.findViewById(R.id.separator);
+            alarmImage = (ImageView) v.findViewById(R.id.list_alarm_set);
+            seenImage = (ImageView) v.findViewById(R.id.list_seen_set);
 
         }
     }
@@ -257,36 +260,20 @@ public class ArtistsFragment extends Fragment {
             artistViewHolder.artistStage.setText(stageNames[artist.getStage()]);
             artistViewHolder.divider.setBackground(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
 
+            artistViewHolder.alarmImage.setColorFilter(ColorUtil.imageInHeart(getActivity()));
+            artistViewHolder.alarmImage.setVisibility(artist.isAlarmSet() ? View.VISIBLE : View.GONE);
+
+
             setupFavorites(artistViewHolder, artist);
             setupGenreAnimations(artistViewHolder, i);
 
         }
 
-        public void ImageViewAnimatedChange(Context c, final ImageView v, final int new_image) {
-            final Animation anim_out = AnimationUtils.loadAnimation(c, android.R.anim.fade_out);
-            final Animation anim_in = AnimationUtils.loadAnimation(c, android.R.anim.fade_in);
-
-
-            v.setImageResource(new_image);
-            anim_in.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                }
-            });
-            v.startAnimation(anim_in);
-
-        }
-
-
         private void setupFavorites(final ArtistViewHolder artistViewHolder, final Artist artist) {
+
+
+            artistViewHolder.seenImage.setVisibility(artist.isSeenArtist() ? View.VISIBLE : View.GONE);
+            SeenArtistHelper.setSeenImageColor(getActivity(), artist, artistViewHolder.seenImage);
 
             artistViewHolder.image.setImageDrawable(AnimationHelper.getFavoriteTransitionDrawable(getActivity(), artist.isFavorite()));
             artistViewHolder.image.setColorFilter(ContextCompat.getColor(getActivity(), ColorUtil.getStageColors()[artist.getStage()]));
@@ -296,22 +283,59 @@ public class ArtistsFragment extends Fragment {
                                                               if (artist.isFavorite()) {
                                                                   MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) artistViewHolder.image.getDrawable();
                                                                   transitionDrawable.favoriteReverse(ANIMATION_DURATION_HEARTS);
+
+                                                                  if (artist.isAlarmSet()) {
+                                                                      artistViewHolder.alarmImage.postDelayed(new Runnable() {
+                                                                          @Override
+                                                                          public void run() {
+                                                                              if (isAdded()) {
+                                                                                  artistViewHolder.alarmImage.setVisibility(View.GONE);
+                                                                              }
+                                                                          }
+                                                                      }, ANIMATION_DURATION_HEARTS);
+                                                                  }
+
                                                                   artist.setFavorite(false);
+                                                                  artist.setIsAlarmSet(false);
                                                                   artist.save();
                                                                   alarmHelper.cancelAlarm(artist);
                                                                   alarmHelper.dismissSnackbar();
+
                                                               } else {
                                                                   MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) artistViewHolder.image.getDrawable();
-                                                                  Log.i("TAG", "Is Favorite Initial:" + transitionDrawable.isInitialFavorite());
                                                                   transitionDrawable.favoriteStart(ANIMATION_DURATION_HEARTS);
                                                                   artist.setFavorite(true);
                                                                   artist.save();
+
+                                                                  alarmHelper.setOnAlarmStateChangedListener(new AlarmHelper.OnAlarmStateChangedListener() {
+                                                                      @Override
+                                                                      public void alarmStateChanged() {
+                                                                          if (artist.isAlarmSet()) {
+                                                                              MainActivity.shambhala.updateArtistById(artist.getId());
+                                                                              artistViewHolder.alarmImage.setAlpha(0f);
+                                                                              artistViewHolder.alarmImage.setVisibility(View.VISIBLE);
+                                                                              artistViewHolder.alarmImage.animate().setDuration(500).alpha(1.0f);
+                                                                          }
+                                                                      }
+                                                                  });
+
                                                                   alarmHelper.showSetAlarmSnackBar(artist);
+
                                                               }
+                                                              SeenArtistHelper.setSeenImageColor(getActivity(), artist, artistViewHolder.seenImage);
                                                               MainActivity.shambhala.updateArtistById(artist.getId());
                                                           }
                                                       }
+
             );
+
+            artistViewHolder.image.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    SeenArtistHelper.updateSeenState(getActivity(), artist, artistViewHolder.seenImage, false);
+                    return true;
+                }
+            });
         }
 
         private void setupGenreAnimations(ArtistViewHolder artistViewHolder, int position) {
@@ -336,15 +360,14 @@ public class ArtistsFragment extends Fragment {
                 paramsGenres.setMargins((int) Util.convertDpToPixel(15, getActivity()), 0, 0, 0);
                 artistViewHolder.genres.setLayoutParams(paramsGenres);
 
-
                 if (!skipAnimations && (position >= firstVisiblePosition || position <= lastVisiblePosition)) {
-                    artistViewHolder.image.animate()
-                            .setDuration(Constants.ANIMATION_DURATION)
-                            .translationX(Util.convertDpToPixel(-115, getActivity()))
-                            .translationY(Util.convertDpToPixel(yAxisAnimationDistance, getActivity()));
+                    animateImagesIn(artistViewHolder.image);
+                    animateImagesIn(artistViewHolder.alarmImage);
+                    animateImagesIn(artistViewHolder.seenImage);
                 } else {
-                    artistViewHolder.image.setTranslationX(Util.convertDpToPixel(-115, getActivity()));
-                    artistViewHolder.image.setTranslationY(Util.convertDpToPixel(yAxisAnimationDistance, getActivity()));
+                    moveImagesIn(artistViewHolder.image);
+                    moveImagesIn(artistViewHolder.alarmImage);
+                    moveImagesIn(artistViewHolder.seenImage);
                 }
 
             } else {
@@ -362,15 +385,41 @@ public class ArtistsFragment extends Fragment {
                 artistViewHolder.genres.setLayoutParams(paramsGenres);
 
                 if (!skipAnimations && (linearLayoutManager.findLastVisibleItemPosition() <= position || linearLayoutManager.findFirstCompletelyVisibleItemPosition() <= position)) {
-                    artistViewHolder.image.animate()
-                            .setDuration(Constants.ANIMATION_DURATION)
-                            .translationX(Util.convertDpToPixel(0, getActivity()))
-                            .translationY(Util.convertDpToPixel(0, getActivity()));
+                    animateImagesOut(artistViewHolder.image);
+                    animateImagesOut(artistViewHolder.alarmImage);
+                    animateImagesOut(artistViewHolder.seenImage);
                 } else {
-                    artistViewHolder.image.setTranslationX(Util.convertDpToPixel(0, getActivity()));
-                    artistViewHolder.image.setTranslationY(Util.convertDpToPixel(0, getActivity()));
+                    moveImagesOut(artistViewHolder.image);
+                    moveImagesOut(artistViewHolder.alarmImage);
+                    moveImagesOut(artistViewHolder.seenImage);
                 }
             }
+        }
+
+        private void moveImagesIn(ImageView imageView) {
+            imageView.setTranslationX(Util.convertDpToPixel(-115, getActivity()));
+            imageView.setTranslationY(Util.convertDpToPixel(yAxisAnimationDistance, getActivity()));
+        }
+
+        private void animateImagesIn(ImageView imageView) {
+            imageView.animate()
+                    .setDuration(Constants.ANIMATION_DURATION)
+                    .translationX(Util.convertDpToPixel(-115, getActivity()))
+                    .translationY(Util.convertDpToPixel(yAxisAnimationDistance, getActivity()));
+
+
+        }
+
+        private void moveImagesOut(ImageView imageView) {
+            imageView.setTranslationX(Util.convertDpToPixel(0, getActivity()));
+            imageView.setTranslationY(Util.convertDpToPixel(0, getActivity()));
+        }
+
+        private void animateImagesOut(ImageView imageView) {
+            imageView.animate()
+                    .setDuration(Constants.ANIMATION_DURATION)
+                    .translationX(Util.convertDpToPixel(0, getActivity()))
+                    .translationY(Util.convertDpToPixel(0, getActivity()));
         }
 
         @Override

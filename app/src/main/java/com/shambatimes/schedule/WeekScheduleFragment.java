@@ -17,6 +17,7 @@ import com.shambatimes.Alarms.AlarmHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.events.ChangeDateEvent;
+import com.shambatimes.schedule.events.DataChangedEvent;
 import com.shambatimes.schedule.events.SearchSelectedEvent;
 import com.shambatimes.schedule.events.ToggleToStageEvent;
 import com.shambatimes.schedule.events.ToggleToTimeEvent;
@@ -204,18 +205,31 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
     };
 
     @Override
-    public void onEventLongPress(WeekViewEvent event, RectF eventRect) {
+    public void onEventLongPress(final WeekViewEvent event, RectF eventRect) {
         if (event.getArtist().isFavorite()) {
             event.getArtist().setFavorite(false);
+            event.getArtist().setIsAlarmSet(false);
             alarmHelper.dismissSnackbar();
             alarmHelper.cancelAlarm(event.getArtist());
         } else {
+
+            alarmHelper.setOnAlarmStateChangedListener(new AlarmHelper.OnAlarmStateChangedListener() {
+                @Override
+                public void alarmStateChanged() {
+                    if (event.getArtist().isAlarmSet()) {
+                        MainActivity.shambhala.updateArtistById(event.getArtist().getId());
+                    }
+                }
+            });
+
             alarmHelper.showSetAlarmSnackBar(event.getArtist());
             event.getArtist().setFavorite(true);
         }
 
         event.getArtist().save();
         MainActivity.shambhala.updateArtistById(event.getArtist().getId());
+
+        EventBus.getDefault().postSticky(new DataChangedEvent(true,event.getArtist().getId()));
 
         mWeekView.invalidate();
     }

@@ -15,17 +15,15 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.Alarms.AlarmHelper;
 import com.shambatimes.schedule.Util.AnimationHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.animations.MyTransitionDrawable;
+import com.shambatimes.schedule.Util.SeenArtistHelper;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
@@ -183,14 +181,13 @@ public class TimeCardScheduleFragment extends Fragment {
             TextView stageName = (TextView) gridView.findViewById(R.id.stage_text);
             TextView artistName = (TextView) gridView.findViewById(R.id.artist_text);
             TextView artistTime = (TextView) gridView.findViewById(R.id.time_text);
+            final ImageView alarmImage = (ImageView) gridView.findViewById(R.id.card_alarm_set);
+            final ImageView seenImage = (ImageView) gridView.findViewById(R.id.card_seen_set);
 
             stageName.setText(stageNames[position]);
 
-            if (ColorUtil.nightMode) {
-                card.setCardBackgroundColor(ContextCompat.getColor(getActivity(), R.color.cardBackgroundColor));
-            } else {
-                card.setCardBackgroundColor(ContextCompat.getColor(getActivity(), stageColors[position]));
-            }
+
+            card.setCardBackgroundColor(ColorUtil.themedBackground(getActivity(), position));
 
             final ImageView image = (ImageView) gridView.findViewById(R.id.card_favorited);
             final Artist artist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(date, timePosition, position);
@@ -208,6 +205,12 @@ public class TimeCardScheduleFragment extends Fragment {
                         " - "
                         + DateUtils.formatTime(dateStringFormat, artist.getEndTimeString()));
 
+                seenImage.setVisibility(artist.isSeenArtist() ? View.VISIBLE : View.GONE);
+                SeenArtistHelper.setReverseSeenImageColor(getActivity(), artist, seenImage);
+
+                alarmImage.setColorFilter(ColorUtil.themedBackground(getActivity(), artist.getStage()));
+                alarmImage.setVisibility(artist.isAlarmSet() ? View.VISIBLE : View.GONE);
+
                 image.setImageDrawable(AnimationHelper.getFavoriteTransitionDrawable(getActivity(), artist.isFavorite()));
                 if (ColorUtil.nightMode) {
                     image.setColorFilter(ContextCompat.getColor(getActivity(), ColorUtil.getStageColors()[artist.getStage()]));
@@ -219,12 +222,24 @@ public class TimeCardScheduleFragment extends Fragment {
                             if (artist.isFavorite()) {
                                 MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) image.getDrawable();
                                 transitionDrawable.favoriteReverse(ANIMATION_DURATION_HEARTS);
+
+                                if (artist.isAlarmSet()) {
+                                    alarmImage.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (isAdded()) {
+                                                alarmImage.setVisibility(View.GONE);
+                                            }
+                                        }
+                                    }, ANIMATION_DURATION_HEARTS);
+                                }
+
                                 artist.setFavorite(false);
                                 artist.setIsAlarmSet(false);
                                 artist.save();
 
                                 alarmHelper.cancelAlarm(artist);
-                                EventBus.getDefault().post(new ShowHideAlarmSnackbarEvent(null));
+                                EventBus.getDefault().post(new ShowHideAlarmSnackbarEvent(null, null));
 
                             } else {
                                 MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) image.getDrawable();
@@ -232,19 +247,31 @@ public class TimeCardScheduleFragment extends Fragment {
                                 artist.setFavorite(true);
                                 artist.save();
 
-                                EventBus.getDefault().post(new ShowHideAlarmSnackbarEvent(artist));
+                                EventBus.getDefault().post(new ShowHideAlarmSnackbarEvent(artist, alarmImage));
 
                             }
                         }
+
+                        SeenArtistHelper.setReverseSeenImageColor(getActivity(), artist, seenImage);
                         //TODO is this event needed? It's stopping the animations.  It may cause the artist to NOT be updated elsewhere?
                         //EventBus.getDefault().postSticky(new DataChangedEvent(true, artist.getId()));
                     }
                 });
+
+                image.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        SeenArtistHelper.updateSeenState(getActivity(), artist, seenImage, true);
+                        return true;
+                    }
+                });
+
             } else {
                 artistName.setText(R.string.stage_closed);
                 artistName.setTextColor(ContextCompat.getColor(getActivity(), R.color.noArtistTextColor));
                 stageName.setTextColor(ContextCompat.getColor(getActivity(), R.color.noArtistTextColor));
-
+                alarmImage.setVisibility(View.GONE);
+                seenImage.setVisibility(View.GONE);
                 if (ColorUtil.nightMode) {
                     card.setCardBackgroundColor(ContextCompat.getColor(getActivity(), R.color.noArtistBackgroundNight));
                 } else {

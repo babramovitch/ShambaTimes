@@ -97,5 +97,25 @@
         android:paddingRight="20dp"
         android:src="@drawable/new_favourite_border" />
 
+    <ImageView
+        android:id="@+id/list_alarm_set"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignLeft="@id/list_favorited"
+        android:layout_alignRight="@id/list_favorited"
+        android:layout_centerVertical="true"
+        android:paddingBottom="2dp"
+        android:src="@drawable/ic_alarm_black_18dp" />
+
+    <ImageView
+        android:id="@+id/list_seen_set"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignLeft="@id/list_favorited"
+        android:layout_alignRight="@id/list_favorited"
+        android:layout_centerVertical="true"
+        android:paddingBottom="2dp"
+        android:src="@drawable/ic_check_black_18dp" />
+
 
 </RelativeLayout>

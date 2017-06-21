@@ -27,6 +27,7 @@ public class Artist extends SugarRecord {
     private String endTimeString;
     private int year;
 
+
     public String getGenres() {
         if (genres == null) {
             return "";
@@ -46,6 +47,16 @@ public class Artist extends SugarRecord {
     private String genres;
 
     private boolean isAlarmSet;
+
+    public boolean isSeenArtist() {
+        return seenArtist;
+    }
+
+    public void setSeenArtist(boolean sawArtist) {
+        this.seenArtist = sawArtist;
+    }
+
+    private boolean seenArtist;
 
     @Ignore
     private DateTime startTime, endTime;

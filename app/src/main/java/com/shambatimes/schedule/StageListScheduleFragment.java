@@ -14,8 +14,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.shambatimes.schedule.Settings.SettingsActivity;
@@ -24,6 +24,7 @@ import com.shambatimes.schedule.Util.AnimationHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.Util.EdgeChanger;
+import com.shambatimes.schedule.Util.SeenArtistHelper;
 import com.shambatimes.schedule.animations.MyTransitionDrawable;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
@@ -237,7 +238,7 @@ public class StageListScheduleFragment extends Fragment {
                 mViewHolder.artistTime = (TextView) convertView.findViewById(R.id.artistTime);
                 mViewHolder.artistGenres = (TextView) convertView.findViewById(R.id.artistGenres);
                 mViewHolder.artistStartTimePosition = (TextView) convertView.findViewById(R.id.artistStartTimePosition);
-                mViewHolder.artistLayout = (LinearLayout) convertView.findViewById(R.id.artistLayout);
+                mViewHolder.artistLayout = (RelativeLayout) convertView.findViewById(R.id.artistLayout);
                 mViewHolder.artistLayout.setBackgroundResource(getPressedColor(stage));
             } else {
                 mViewHolder = (MyViewHolder) convertView.getTag();
@@ -275,19 +276,48 @@ public class StageListScheduleFragment extends Fragment {
             }
             mViewHolder.artistStartTimePosition.setText(artist.getStartTimeString());
 
-            final ImageView image = (ImageView) convertView.findViewById(R.id.list_favorited);
+            final ImageView alarmImage = (ImageView) convertView.findViewById(R.id.list_alarm_set);
+            alarmImage.setColorFilter(ColorUtil.imageInHeart(getActivity()));
+            alarmImage.setVisibility(artist.isAlarmSet() ? View.VISIBLE : View.GONE);
 
+            final ImageView seenImage = (ImageView) convertView.findViewById(R.id.list_seen_set);
+            seenImage.setVisibility(artist.isSeenArtist() ? View.VISIBLE : View.GONE);
+            SeenArtistHelper.setSeenImageColor(getActivity(),artist,seenImage);
+
+            final ImageView image = (ImageView) convertView.findViewById(R.id.list_favorited);
             image.setImageDrawable(AnimationHelper.getFavoriteTransitionDrawable(getActivity(), artist.isFavorite()));
             image.setColorFilter(ContextCompat.getColor(getActivity(), ColorUtil.getStageColors()[artist.getStage()]));
+
+            image.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    SeenArtistHelper.updateSeenState(getActivity(), artist, seenImage, false);
+                    return true;
+                }
+            });
+
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (artist.isFavorite()) {
                         MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) image.getDrawable();
                         transitionDrawable.favoriteReverse(ANIMATION_DURATION_HEARTS);
+
+                        if (artist.isAlarmSet()) {
+                            alarmImage.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (isAdded()) {
+                                        alarmImage.setVisibility(View.GONE);
+                                    }
+                                }
+                            }, ANIMATION_DURATION_HEARTS);
+                        }
+
                         artist.setFavorite(false);
                         artist.setIsAlarmSet(false);
                         artist.save();
+                        MainActivity.shambhala.updateArtistById(artist.getId());
                         alarmHelper.cancelAlarm(artist);
                         alarmHelper.dismissSnackbar();
                     } else {
@@ -295,17 +325,34 @@ public class StageListScheduleFragment extends Fragment {
                         transitionDrawable.favoriteStart(ANIMATION_DURATION_HEARTS);
                         artist.setFavorite(true);
                         artist.save();
+
+                        alarmHelper.setOnAlarmStateChangedListener(new AlarmHelper.OnAlarmStateChangedListener() {
+                            @Override
+                            public void alarmStateChanged() {
+                                if (artist.isAlarmSet()) {
+                                    MainActivity.shambhala.updateArtistById(artist.getId());
+                                    alarmImage.setAlpha(0f);
+                                    alarmImage.setVisibility(View.VISIBLE);
+                                    alarmImage.animate().setDuration(500).alpha(1.0f);
+                                }
+                            }
+                        });
+
                         alarmHelper.showSetAlarmSnackBar(artist);
                     }
+
+                    SeenArtistHelper.setSeenImageColor(getActivity(), artist, seenImage);
                 }
             });
 
             return convertView;
         }
 
+
         private class MyViewHolder {
             TextView artistName, artistTime, artistStartTimePosition, artistGenres;
-            LinearLayout artistLayout;
+            RelativeLayout artistLayout;
+            ImageView alarmImage, seenImage;
         }
     }
 

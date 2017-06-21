@@ -53,6 +53,7 @@ import com.shambatimes.schedule.Util.AnimationHelper;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.animations.MyTransitionDrawable;
+import com.shambatimes.schedule.Util.SeenArtistHelper;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ArtistListLoadDoneEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
@@ -542,6 +543,8 @@ public class MainActivity extends AppCompatActivity {
                 TextView artistStage = (TextView) convertView.findViewById(R.id.artistStage);
                 TextView artistGenres = (TextView) convertView.findViewById(R.id.artistGenres);
 
+                final ImageView artistAlarmSet = (ImageView) convertView.findViewById(R.id.list_alarm_set);
+                final ImageView artistSeenArtist = (ImageView) convertView.findViewById(R.id.list_seen_set);
 
                 final ImageView artistFavorite = (ImageView) convertView.findViewById(R.id.list_favorited);
                 View artistDivider = (View) convertView.findViewById(R.id.separator);
@@ -568,6 +571,13 @@ public class MainActivity extends AppCompatActivity {
                 artistFavorite.setImageDrawable(AnimationHelper.getFavoriteTransitionDrawable(MainActivity.this, artist.isFavorite()));
                 artistFavorite.setColorFilter(ContextCompat.getColor(MainActivity.this, ColorUtil.getStageColors()[artist.getStage()]));
 
+                artistSeenArtist.setVisibility(artist.isSeenArtist() ? View.VISIBLE : View.GONE);
+                SeenArtistHelper.setSeenImageColor(MainActivity.this, artist, artistSeenArtist);
+
+                artistAlarmSet.setVisibility(artist.isAlarmSet() ? View.VISIBLE : View.GONE);
+                artistAlarmSet.setColorFilter(ColorUtil.imageInHeart(MainActivity.this));
+
+
                 String formattedGenres = artist.getGenres().replace(",", ", ").toLowerCase();
                 if (formattedGenres.length() == 0 || Shambhala.getFestivalYear(MainActivity.this).equals("2015")) {
                     artistGenres.setVisibility(View.GONE);
@@ -585,9 +595,22 @@ public class MainActivity extends AppCompatActivity {
                             MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) artistFavorite.getDrawable();
                             // adding 200 as something is causing the animation to appear faster in this scenario, and otherwise be unnoticed.
                             transitionDrawable.favoriteReverse(ANIMATION_DURATION_HEARTS + 200);
+
+                            if (artist.isAlarmSet()) {
+                                artistAlarmSet.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (artistAlarmSet != null) {
+                                            artistAlarmSet.setVisibility(View.GONE);
+                                        }
+                                    }
+                                }, ANIMATION_DURATION_HEARTS + 200);
+                            }
+
                             AlarmHelper alarmHelper = new AlarmHelper(MainActivity.this, null);
                             alarmHelper.cancelAlarm(artist);
                             artist.setFavorite(false);
+                            artist.setIsAlarmSet(false);
                             artist.save();
                         } else {
                             MyTransitionDrawable transitionDrawable = (MyTransitionDrawable) artistFavorite.getDrawable();
@@ -596,7 +619,17 @@ public class MainActivity extends AppCompatActivity {
                             artist.save();
                         }
 
+                        SeenArtistHelper.setSeenImageColor(MainActivity.this, artist, artistSeenArtist);
                         EventBus.getDefault().post(new DataChangedEvent(true, artist.getId()));
+                    }
+                });
+
+                artistFavorite.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        SeenArtistHelper.updateSeenState(MainActivity.this, artist, artistSeenArtist, false);
+                        EventBus.getDefault().post(new DataChangedEvent(true, artist.getId()));
+                        return true;
                     }
                 });
 
@@ -922,7 +955,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (currentFragment == FRAGMENT_CALENDAR) {
             WeekScheduleFragment weekScheduleFragment = (WeekScheduleFragment) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_CALENDAR);
             if (weekScheduleFragment != null) {
-                double position = ( (double) DateUtils.getCurrentTimePosition(this)) / 2;
+                double position = ((double) DateUtils.getCurrentTimePosition(this)) / 2;
                 weekScheduleFragment.gotoHour(position);
                 scheduleSpinner.setSelection(DateUtils.getCurrentDay(this));
             }

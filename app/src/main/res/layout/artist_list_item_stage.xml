@@ -1,62 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
+    android:id="@+id/artistLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="?android:attr/listPreferredItemHeight"
     android:gravity="center_vertical"
-    android:id="@+id/artistLayout"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:orientation="horizontal"
     android:paddingBottom="5dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:layout_weight="1"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/list_favorited"
         android:orientation="vertical">
-    <TextView
-        style="@style/ListViewLarge"
-        android:fontFamily="sans-serif-condensed"
-        android:textStyle="bold"
-        android:textSize="19sp"
-        tools:text="Artist Name"
-        android:paddingTop="5dp"
-        android:id="@+id/artistName"
-        android:textColor="@color/primaryTextColor"/>
+
+        <TextView
+            android:id="@+id/artistName"
+            style="@style/ListViewLarge"
+            android:fontFamily="sans-serif-condensed"
+            android:paddingTop="5dp"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="19sp"
+            android:textStyle="bold"
+            tools:text="Artist Name" />
 
         <TextView
             android:id="@+id/artistGenres"
             style="@style/ListViewSmall"
-            android:fontFamily="sans-serif-light"
-            android:textStyle="italic"
             android:layout_width="fill_parent"
             android:layout_below="@id/artistName"
+            android:fontFamily="sans-serif-light"
             android:text="Hip hop, Electro, Funk"
             android:textColor="@color/genreTextColor"
-            />
+            android:textStyle="italic" />
 
-    <TextView
-        android:fontFamily="sans-serif-condensed"
-        android:id="@+id/artistTime"
-        tools:text="Schedule Times"
-        style="@style/ListViewSmall"
-        android:paddingTop="8dp"
-        android:textColor="@color/secondaryTextColor"/>
+        <TextView
+            android:id="@+id/artistTime"
+            style="@style/ListViewSmall"
+            android:fontFamily="sans-serif-condensed"
+            android:paddingTop="8dp"
+            android:textColor="@color/secondaryTextColor"
+            tools:text="Schedule Times" />
 
 
-
-    <TextView
-        android:id="@+id/artistStartTimePosition"
-        android:visibility="gone"
-        style="@style/ListViewSmall" />
+        <TextView
+            android:id="@+id/artistStartTimePosition"
+            style="@style/ListViewSmall"
+            android:visibility="gone" />
     </LinearLayout>
 
     <ImageView
+        android:id="@id/list_favorited"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="5dp"
+        android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:paddingLeft="30dp"
-        android:src="@drawable/new_favourite_border"
-        android:id="@+id/list_favorited" />
+        android:src="@drawable/new_favourite_border" />
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/list_alarm_set"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignLeft="@id/list_favorited"
+        android:layout_alignRight="@id/list_favorited"
+        android:layout_centerVertical="true"
+        android:paddingBottom="2dp"
+        android:src="@drawable/ic_alarm_black_18dp" />
+
+    <ImageView
+        android:id="@+id/list_seen_set"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignLeft="@id/list_favorited"
+        android:layout_alignRight="@id/list_favorited"
+        android:layout_centerVertical="true"
+        android:paddingBottom="2dp"
+        android:src="@drawable/ic_check_black_18dp" />
+
+
+</RelativeLayout>

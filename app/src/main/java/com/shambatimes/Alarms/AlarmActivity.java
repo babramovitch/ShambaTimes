@@ -30,11 +30,14 @@ import com.daimajia.swipe.SwipeLayout;
 import com.shambatimes.schedule.Artist;
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.ColorUtil;
+import com.shambatimes.schedule.events.DataChangedEvent;
 import com.shambatimes.schedule.myapplication.R;
 import com.shambatimes.schedule.views.MySwipeLayout;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import de.greenrobot.event.EventBus;
 
 public class AlarmActivity extends Activity {
 
@@ -175,20 +178,23 @@ public class AlarmActivity extends Activity {
             artist.setIsAlarmSet(false);
             artist.save();
 
+            //Notify the rest of the app so the artist if shown no longer shows an alarm clock
+            EventBus.getDefault().post(new DataChangedEvent(true, artist.getId()));
+
             int[] stageColors = ColorUtil.getStageColors();
             float alpha = 0.5f;
 
-            if(ColorUtil.nightMode) {
+            if (ColorUtil.nightMode) {
                 alpha = 1f;
                 alarmLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.lighterSecondaryUISelectionGray));
-            }else{
+            } else {
                 alarmLayout.setBackgroundColor(ContextCompat.getColor(this, stageColors[artist.getStage()]));
             }
             artistName.setText(artist.getArtistName());
             artistTime.setText(getResources().getString(R.string.alarm_time, alarmTime, stageNames[artist.getStage()]));
 
-            dismissButton.setBackgroundColor( ColorUtil.adjustAlpha(ContextCompat.getColor(this, stageColors[artist.getStage()]), alpha-0.1f));
-            topWrapper.setBackgroundColor( ColorUtil.adjustAlpha(ContextCompat.getColor(this, stageColors[artist.getStage()]), alpha));
+            dismissButton.setBackgroundColor(ColorUtil.adjustAlpha(ContextCompat.getColor(this, stageColors[artist.getStage()]), alpha - 0.1f));
+            topWrapper.setBackgroundColor(ColorUtil.adjustAlpha(ContextCompat.getColor(this, stageColors[artist.getStage()]), alpha));
             createAlarmNotification(getResources().getString(R.string.alarm_time, alarmTime, stageNames[artist.getStage()]));
         }
 

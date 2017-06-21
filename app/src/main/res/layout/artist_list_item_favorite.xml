@@ -67,17 +67,6 @@
         android:textColor="@color/secondaryTextColor"
          />
 
-    <ImageView
-        android:id="@+id/list_alarm_set"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginLeft="10dp"
-        android:src="@drawable/ic_alarm_black_18dp"
-        android:layout_below="@+id/artistStage"
-        android:layout_toRightOf="@+id/artistTime"
-        android:layout_toEndOf="@+id/artistTime"
-        android:layout_alignBottom="@id/artistTime"/>
-
     <TextView
         android:id="@+id/artistStartTimePosition"
         android:layout_width="wrap_content"
@@ -92,8 +81,28 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginBottom="5dp"
-        android:paddingLeft="30dp"
+        android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:src="@drawable/new_favourite_border" />
+
+    <ImageView
+        android:id="@+id/list_alarm_set"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignLeft="@id/list_favorited"
+        android:layout_alignRight="@id/list_favorited"
+        android:layout_centerVertical="true"
+        android:paddingBottom="2dp"
+        android:src="@drawable/ic_alarm_black_18dp" />
+
+    <ImageView
+        android:id="@+id/list_seen_set"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignLeft="@id/list_favorited"
+        android:layout_alignRight="@id/list_favorited"
+        android:layout_centerVertical="true"
+        android:paddingBottom="2dp"
+        android:src="@drawable/ic_check_black_18dp" />
 
 </RelativeLayout>

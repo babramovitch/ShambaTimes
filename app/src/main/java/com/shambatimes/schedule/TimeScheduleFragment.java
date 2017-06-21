@@ -304,9 +304,22 @@ public class TimeScheduleFragment extends Fragment {
         resetListViewValues();
     }
 
-    public void onEventMainThread(ShowHideAlarmSnackbarEvent event) {
+    public void onEventMainThread(final ShowHideAlarmSnackbarEvent event) {
 
         if (event.getArtist() != null) {
+
+            alarmHelper.setOnAlarmStateChangedListener(new AlarmHelper.OnAlarmStateChangedListener() {
+                @Override
+                public void alarmStateChanged() {
+                    if (event.getImageView() != null) {
+                        MainActivity.shambhala.updateArtistById(event.getArtist().getId());
+                        event.getImageView().setAlpha(0f);
+                        event.getImageView().setVisibility(View.VISIBLE);
+                        event.getImageView().animate().setDuration(500).alpha(1f);
+                    }
+                }
+            });
+
             alarmHelper.showSetAlarmSnackBar(event.getArtist());
         } else {
             alarmHelper.dismissSnackbar();

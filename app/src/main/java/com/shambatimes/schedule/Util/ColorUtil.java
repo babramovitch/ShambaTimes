@@ -124,4 +124,22 @@ public class ColorUtil {
             return getColor(context, R.color.white);
         }
     }
+
+    public static int imageInHeart(Context context) {
+        if (nightMode) {
+            return getColor(context, R.color.listItemBackgroundColor);
+        } else {
+            return getColor(context, R.color.white);
+        }
+    }
+
+
+
+    public static int themedBackground(Context context, int stage) {
+        if (nightMode) {
+            return getColor(context, R.color.cardBackgroundColor);
+        } else {
+            return getColor(context, ColorUtil.getStageColors()[stage]);
+        }
+    }
 }

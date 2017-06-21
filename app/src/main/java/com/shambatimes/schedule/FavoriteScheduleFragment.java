@@ -26,6 +26,7 @@ import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.Util.EdgeChanger;
 import com.shambatimes.schedule.animations.MyTransitionDrawable;
+import com.shambatimes.schedule.Util.SeenArtistHelper;
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
@@ -118,8 +119,9 @@ public class FavoriteScheduleFragment extends Fragment {
         protected TextView artistGenres;
         protected RelativeLayout artistLayout;
         protected View divider;
-        protected ImageView alarm;
+        protected ImageView alarmImage;
         protected ImageView image;
+        protected ImageView seenImage;
 
         public ArtistViewHolder(View v) {
 
@@ -131,8 +133,9 @@ public class FavoriteScheduleFragment extends Fragment {
             artistStage = (TextView) v.findViewById(R.id.artistStage);
             artistGenres = (TextView) v.findViewById(R.id.artistGenres);
             artistLayout = (RelativeLayout) v.findViewById(R.id.artistLayout);
-            alarm = (ImageView) v.findViewById(R.id.list_alarm_set);
+            alarmImage = (ImageView) v.findViewById(R.id.list_alarm_set);
             image = (ImageView) v.findViewById(R.id.list_favorited);
+            seenImage = (ImageView) v.findViewById(R.id.list_seen_set);
             divider = v.findViewById(R.id.separator);
 
 
@@ -200,14 +203,14 @@ public class FavoriteScheduleFragment extends Fragment {
             artistViewHolder.artistStage.setText(stageNames[artist.getStage()]);
             artistViewHolder.divider.setBackground(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
 
-            if (artist.isAlarmSet()) {
-                artistViewHolder.alarm.setVisibility(View.VISIBLE);
-            } else {
-                artistViewHolder.alarm.setVisibility(View.GONE);
-            }
-
             artistViewHolder.image.setImageDrawable(AnimationHelper.getFavoriteTransitionDrawable(getActivity(), artist.isFavorite()));
             artistViewHolder.image.setColorFilter(ContextCompat.getColor(getActivity(), ColorUtil.getStageColors()[artist.getStage()]));
+
+            artistViewHolder.seenImage.setVisibility(artist.isSeenArtist() ? View.VISIBLE : View.GONE);
+            SeenArtistHelper.setSeenImageColor(getActivity(), artist, artistViewHolder.seenImage);
+
+            artistViewHolder.alarmImage.setColorFilter(ColorUtil.imageInHeart(getActivity()));
+            artistViewHolder.alarmImage.setVisibility(artist.isAlarmSet() ? View.VISIBLE : View.GONE);
 
             artistViewHolder.image.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -246,6 +249,14 @@ public class FavoriteScheduleFragment extends Fragment {
                 }
             });
 
+            artistViewHolder.image.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    SeenArtistHelper.updateSeenState(getActivity(), artist, artistViewHolder.seenImage, false);
+                    return true;
+                }
+            });
+
             alarmHelper.setOnAlarmStateChangedListener(null);
 
             artistViewHolder.artistLayout.setOnClickListener(new View.OnClickListener() {
@@ -261,9 +272,10 @@ public class FavoriteScheduleFragment extends Fragment {
                     alarmHelper.setOnAlarmStateChangedListener(new AlarmHelper.OnAlarmStateChangedListener() {
                         @Override
                         public void alarmStateChanged() {
-                            if (adapter != null) {
-                                adapter.notifyDataSetChanged();
-                            }
+                            MainActivity.shambhala.updateArtistById(artist.getId());
+                            artistViewHolder.alarmImage.setAlpha(artist.isAlarmSet() ? 0f : 1f);
+                            artistViewHolder.alarmImage.setVisibility(View.VISIBLE);
+                            artistViewHolder.alarmImage.animate().setDuration(500).alpha(artist.isAlarmSet() ? 1f : 0f);
                         }
                     });
                 }
