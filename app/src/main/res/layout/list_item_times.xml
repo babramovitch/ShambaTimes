@@ -8,9 +8,8 @@
     <TextView
         android:id="@+id/times"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:gravity="center"
-        android:minHeight="?android:attr/listPreferredItemHeight"
         android:paddingLeft="6dip"
         android:paddingRight="10dip"
         android:textAppearance="?android:attr/textAppearanceMedium" />
