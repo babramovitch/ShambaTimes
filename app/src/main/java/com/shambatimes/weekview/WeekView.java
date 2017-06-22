@@ -65,11 +65,20 @@ import static com.shambatimes.weekview.WeekViewUtil.*;
 public class WeekView extends View {
 
     private boolean favouritesOnly = false;
+    private boolean nowOnly = false;
+
     Paint eventBorderPaint;
     Paint eventPlayingBorderPaint;
 
     public void toggleFavourites(boolean favouritesOnly) {
         this.favouritesOnly = favouritesOnly;
+        this.nowOnly = false;
+        invalidate();
+    }
+
+    public void toggleNow(boolean nowOnly) {
+        this.nowOnly = nowOnly;
+        this.favouritesOnly = false;
         invalidate();
     }
 
@@ -572,7 +581,7 @@ public class WeekView extends View {
 
         eventPlayingBorderPaint = new Paint();
         eventPlayingBorderPaint.setStyle(Paint.Style.STROKE);
-        eventPlayingBorderPaint.setStrokeWidth(5);
+        eventPlayingBorderPaint.setStrokeWidth(6);
 
         //TODO add a proper getter/setter for this so there's no dependency on ColorUtil or my values file
         if(ColorUtil.nightMode) {
@@ -1039,7 +1048,9 @@ public class WeekView extends View {
             for (int i = 0; i < mEventRects.size(); i++) {
                 if (mEventRects.get(i).originalEvent.getStage() == stage && !mEventRects.get(i).event.isAllDay()) {
 
-                    if(!favouritesOnly || favouritesOnly && mEventRects.get(i).originalEvent.getArtist().isFavorite()) {
+                    if(!favouritesOnly && !nowOnly
+                            || favouritesOnly && mEventRects.get(i).originalEvent.getArtist().isFavorite()
+                            || nowOnly && isArtistPlaying(mEventRects.get(i).originalEvent.getArtist())) {
 
                         // Calculate top.
                         float top = mHourHeight * 24 * mEventRects.get(i).top / 1440 + mCurrentOrigin.y + mHeaderHeight + mHeaderRowPadding * 2 + mHeaderMarginBottom + mTimeTextHeight / 2 + mEventMarginVertical;
@@ -1127,7 +1138,9 @@ public class WeekView extends View {
         SpannableStringBuilder bob = new SpannableStringBuilder();
         if (event.getName() != null) {
             bob.append(event.getName());
-            bob.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, bob.length(), 0);
+            if(event.getArtist().isFavorite()) {
+                 bob.setSpan(new StyleSpan(Typeface.BOLD_ITALIC), 0, bob.length(), 0);
+            }
             bob.append(' ');
         }
 

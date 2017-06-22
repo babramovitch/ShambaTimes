@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +52,7 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
     private Artist snackbarArtist;
 
     private boolean favouritesOnly = false;
+    private boolean showOnlyNow = false;
     private int currentDate = 0;
 
     @Override
@@ -73,18 +75,29 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
 
         Bundle bundle = getArguments();
         if (bundle != null && bundle.getInt("TIME", -1) != -1) {
-            gotoHour((bundle.getInt("TIME", -1) / 2) - 0.5);
+            gotoHour((bundle.getInt("TIME", -1) / 2));
         }
 
         return rootView;
     }
 
+    public void setShowOnlyNow(boolean showOnlyNow) {
+        this.showOnlyNow = showOnlyNow;
+    }
+
+    public boolean isShowOnlyNow() {
+        return showOnlyNow;
+    }
+
     public void gotoHour(double hourPosition) {
-        mWeekView.goToHour(hourPosition < 0 ? 0 : hourPosition);
+        mWeekView.goToHour(hourPosition < 1.5 ? 0 : hourPosition - 1.5);
+        favouritesOnly = false;
+        mWeekView.toggleNow(showOnlyNow);
     }
 
     public void toggleFavourites() {
         favouritesOnly = !favouritesOnly;
+        showOnlyNow = false;
         mWeekView.toggleFavourites(favouritesOnly);
     }
 
@@ -291,7 +304,9 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
     private int fadeNonFavouriteColor(int color) {
         float[] hsvColor = new float[3];
         Color.colorToHSV(color, hsvColor);
-        hsvColor[1] = 0.35f;
+        Log.i("TAG: ", "Color was: " + hsvColor[1]);
+
+        hsvColor[1] = hsvColor[1] - (hsvColor[1] * 0.3f);
         hsvColor[2] = hsvColor[2] + 0.05f;
         color = Color.HSVToColor(hsvColor);
         return color;

@@ -956,6 +956,7 @@ public class MainActivity extends AppCompatActivity {
             WeekScheduleFragment weekScheduleFragment = (WeekScheduleFragment) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_CALENDAR);
             if (weekScheduleFragment != null) {
                 double position = ((double) DateUtils.getCurrentTimePosition(this)) / 2;
+                weekScheduleFragment.setShowOnlyNow(!weekScheduleFragment.isShowOnlyNow());
                 weekScheduleFragment.gotoHour(position);
                 scheduleSpinner.setSelection(DateUtils.getCurrentDay(this));
             }
@@ -1290,7 +1291,7 @@ public class MainActivity extends AppCompatActivity {
         if (weekScheduleFragment == null) {
             weekScheduleFragment = new WeekScheduleFragment();
             Bundle args = new Bundle();
-            args.putInt(Constants.FRAGMENT_TIME, position);
+            args.putInt(Constants.FRAGMENT_TIME, position+2);
             weekScheduleFragment.setArguments(args);
         }
 
