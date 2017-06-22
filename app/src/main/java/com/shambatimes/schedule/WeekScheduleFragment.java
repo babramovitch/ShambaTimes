@@ -1,9 +1,11 @@
 package com.shambatimes.schedule;
 
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -14,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.shambatimes.Alarms.AlarmHelper;
+import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.events.ChangeDateEvent;
@@ -28,6 +31,7 @@ import com.shambatimes.weekview.WeekView;
 import com.shambatimes.weekview.WeekViewEvent;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -168,8 +172,15 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         final View coordinatorLayoutView = rootView.findViewById(R.id.snackbarPosition);
         coordinatorLayoutView.setVisibility(View.VISIBLE);
 
-        genreSnackbar = Snackbar.make(coordinatorLayoutView, event.getArtist().getArtistName() + ": " + event.getArtist().getGenres().replace(",", ", "), Snackbar.LENGTH_LONG)
-                .setAction("Jump", snackBarClickListener)
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String format = preferences.getString(SettingsActivity.TIME_FORMAT, "24");
+        DateTimeFormatter dateStringFormat = DateUtils.getTimeFormat(format);
+
+        genreSnackbar = Snackbar.make(coordinatorLayoutView, event.getArtist().getArtistName()
+                + " - " + DateUtils.formatTime(dateStringFormat, snackbarArtist.getStartTimeString())
+                + " to " + DateUtils.formatTime(dateStringFormat, snackbarArtist.getEndTimeString())
+                + " : " + snackbarArtist.getGenres().replace(",", ", "), Snackbar.LENGTH_LONG)
+                .setAction(R.string.jump, snackBarClickListener)
                 .setDuration(Snackbar.LENGTH_LONG);
 
         View snackbarView = genreSnackbar.getView();
@@ -229,7 +240,7 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         event.getArtist().save();
         MainActivity.shambhala.updateArtistById(event.getArtist().getId());
 
-        EventBus.getDefault().postSticky(new DataChangedEvent(true,event.getArtist().getId()));
+        EventBus.getDefault().postSticky(new DataChangedEvent(true, event.getArtist().getId()));
 
         mWeekView.invalidate();
     }
