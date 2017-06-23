@@ -59,7 +59,8 @@
 
         <CheckBoxPreference
             android:key="ALARM_VIBRATE"
-            android:title="Vibrate during alarm" />
+            android:title="Vibrate during alarm"
+            android:defaultValue="true"/>
 
 
     </PreferenceCategory>

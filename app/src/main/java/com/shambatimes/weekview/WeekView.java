@@ -220,33 +220,49 @@ public class WeekView extends View {
             if (mIsZooming)
                 return true;
 
+            //TODO the 3 needs to be how many items can be off screen
+            float paintWidth =  ((mWidthPerStage * 3) * -1 );
+
+            Log.i("SCROLL", " mCurrentOrigin.x  " +  mCurrentOrigin.x + " Distance X: " + distanceX + " stage Width " + paintWidth);
+
+
+            if(mCurrentOrigin.x - distanceX > 0 ) {
+                Log.i("SCROLL", "Abort Left");
+                distanceX  = 0;
+            }
+
+            if(mCurrentOrigin.x - distanceX < paintWidth) {
+                distanceX  = 0;
+            }
+
+
             switch (mCurrentScrollDirection) {
                 case NONE: {
                     // Allow scrolling only in one direction.
                     if (Math.abs(distanceX) > Math.abs(distanceY)) {
-//                        if (distanceX > 0) {
-//                            mCurrentScrollDirection = Direction.LEFT;
-//                        } else {
-//                            mCurrentScrollDirection = Direction.RIGHT;
-//                        }
+                        if (distanceX > 0) {
+                            mCurrentScrollDirection = Direction.LEFT;
+                        } else {
+                            mCurrentScrollDirection = Direction.RIGHT;
+                        }
                     } else {
                         mCurrentScrollDirection = Direction.VERTICAL;
                     }
-                    break;
+                    //break;
                 }
                 case LEFT: {
                     // Change direction if there was enough change.
-//                    if (Math.abs(distanceX) > Math.abs(distanceY) && (distanceX < -mScaledTouchSlop)) {
-//                        mCurrentScrollDirection = Direction.RIGHT;
-//                    }
-                    break;
+                    if (Math.abs(distanceX) > Math.abs(distanceY) && (distanceX < -mScaledTouchSlop)) {
+                        mCurrentScrollDirection = Direction.RIGHT;
+                    }
+                  //  break;
                 }
                 case RIGHT: {
                     // Change direction if there was enough change.
-//                    if (Math.abs(distanceX) > Math.abs(distanceY) && (distanceX > mScaledTouchSlop)) {
-//                        mCurrentScrollDirection = Direction.LEFT;
-//                    }
-                    break;
+                    if (Math.abs(distanceX) > Math.abs(distanceY) && (distanceX > mScaledTouchSlop)) {
+                        mCurrentScrollDirection = Direction.LEFT;
+                    }
+                  //  break;
                 }
             }
 
@@ -254,17 +270,20 @@ public class WeekView extends View {
             switch (mCurrentScrollDirection) {
                 case LEFT:
                 case RIGHT:
-//                    float minX = getXMinLimit();
-//                    float maxX = getXMaxLimit();
-//                    if ((mCurrentOrigin.x - (distanceX * mXScrollingSpeed)) > maxX) {
-//                        mCurrentOrigin.x = maxX;
-//                    } else if ((mCurrentOrigin.x - (distanceX * mXScrollingSpeed)) < minX) {
-//                        mCurrentOrigin.x = minX;
-//                    } else {
-//                        mCurrentOrigin.x -= distanceX * mXScrollingSpeed;
-//                    }
-//                    ViewCompat.postInvalidateOnAnimation(WeekView.this);
-                    break;
+                    float minX =  getXMinLimit();
+                    float maxX = getXMaxLimit();
+
+
+
+                    if ((mCurrentOrigin.x - (distanceX * mXScrollingSpeed)) > maxX) {
+                        mCurrentOrigin.x = maxX;
+                    } else if ((mCurrentOrigin.x - (distanceX * mXScrollingSpeed)) < minX) {
+                        mCurrentOrigin.x = minX;
+                    } else {
+                        mCurrentOrigin.x -= distanceX * mXScrollingSpeed;
+                    }
+                    ViewCompat.postInvalidateOnAnimation(WeekView.this);
+                   // break;
                 case VERTICAL:
                     float minY = getYMinLimit();
                     float maxY = getYMaxLimit();
@@ -277,7 +296,7 @@ public class WeekView extends View {
                     }
 
                     ViewCompat.postInvalidateOnAnimation(WeekView.this);
-                    break;
+                   // break;
             }
             return true;
         }
@@ -287,8 +306,10 @@ public class WeekView extends View {
             if (mIsZooming)
                 return true;
 
-            if ((mCurrentFlingDirection == Direction.LEFT && !mHorizontalFlingEnabled) ||
-                    (mCurrentFlingDirection == Direction.RIGHT && !mHorizontalFlingEnabled) ||
+
+
+            if ((mCurrentFlingDirection == Direction.LEFT ) ||
+                    (mCurrentFlingDirection == Direction.RIGHT) ||
                     (mCurrentFlingDirection == Direction.VERTICAL && !mVerticalFlingEnabled)) {
                 return true;
             }
@@ -299,7 +320,7 @@ public class WeekView extends View {
             switch (mCurrentFlingDirection) {
                 case LEFT:
                 case RIGHT:
-                    //mScroller.fling((int) mCurrentOrigin.x, (int) mCurrentOrigin.y, (int) (velocityX * mXScrollingSpeed), 0, (int) getXMinLimit(), (int) getXMaxLimit(), (int) getYMinLimit(), (int) getYMaxLimit());
+                  //  mScroller.fling((int) mCurrentOrigin.x, (int) mCurrentOrigin.y, (int) (velocityX * mXScrollingSpeed), 0, (int) getXMinLimit(), (int) getXMaxLimit(), (int) getYMinLimit(), (int) getYMaxLimit());
                     break;
                 case VERTICAL:
                     mScroller.fling((int) mCurrentOrigin.x, (int) mCurrentOrigin.y, 0, (int) velocityY, (int) getXMinLimit(), (int) getXMaxLimit(), (int) getYMinLimit(), (int) getYMaxLimit());
@@ -399,7 +420,6 @@ public class WeekView extends View {
         @Override
         public void onLongPress(MotionEvent e) {
             super.onLongPress(e);
-
 
 
             if (mEventLongPressListener != null && allEvents != null) {
@@ -581,7 +601,7 @@ public class WeekView extends View {
 
         eventPlayingBorderPaint = new Paint();
         eventPlayingBorderPaint.setStyle(Paint.Style.STROKE);
-        eventPlayingBorderPaint.setStrokeWidth(6);
+        eventPlayingBorderPaint.setStrokeWidth(5);
 
         //TODO add a proper getter/setter for this so there's no dependency on ColorUtil or my values file
         if(ColorUtil.nightMode) {
@@ -902,6 +922,10 @@ public class WeekView extends View {
 
         for (int stageNumber = leftStagesWithGaps; stageNumber <= leftStagesWithGaps + getRealNumberOfVisibleStages() + 1; stageNumber++) {
 
+
+
+
+
 //            // Check if the day is today.
 //            day = (Calendar) mHomeDate.clone();
 //            mLastVisibleDay = (Calendar) day.clone();
@@ -978,24 +1002,32 @@ public class WeekView extends View {
 //
 //        // Draw the header row texts.
         startPixel = startFromPixel;
-        for (int stageNumber = 0; stageNumber <= getVisibleStageCount(); stageNumber++) {
+
+
+
+      //  Log.i("START", "Start Pixel: " + startPixel);
+
+        for (int stageNumber = leftStagesWithGaps; stageNumber <= leftStagesWithGaps + getVisibleStageCount(); stageNumber++) {
             //Log.i("TAG", "leftStagesWithGaps: " + leftStagesWithGaps);
             // Check if the day is today.
 //            day = (Calendar) mHomeDate.clone();
 //            day.add(Calendar.DATE, stageNumber - 1);
 //            boolean isToday = isSameDay(day, today);
 
-//            // Don't draw days which are outside requested range
+            // Don't draw days which are outside requested range
 //            if (!dateIsValid(day))
 //                continue;
 
             // Draw the day labels.
-            String dayLabel = stageNames[stageNumber];
-            //Log.i("TAG", "Stage: " + dayLabel);
 
-            //getDateTimeInterpreter().interpretDate(day);
+            if(stageNumber >= 0 && stageNumber <=6) {
+                String dayLabel = stageNames[stageNumber];
+                //Log.i("TAG", "Stage: " + dayLabel);
 
-            canvas.drawText(dayLabel, startPixel + mWidthPerStage / 2, (mHeaderTextHeight * 2) + mHeaderRowPadding, mHeaderTextPaint);
+                //getDateTimeInterpreter().interpretDate(day);
+
+                canvas.drawText(dayLabel, startPixel + mWidthPerStage / 2, (mHeaderTextHeight * 2) + mHeaderRowPadding, mHeaderTextPaint);
+            }
 
 
             startPixel += mWidthPerStage + mColumnGap;
@@ -2454,13 +2486,13 @@ public class WeekView extends View {
         boolean val = mGestureDetector.onTouchEvent(event);
 
         // Check after call of mGestureDetector, so mCurrentFlingDirection and mCurrentScrollDirection are set.
-        if (event.getAction() == MotionEvent.ACTION_UP && !mIsZooming && mCurrentFlingDirection == Direction.NONE) {
-            if (mCurrentScrollDirection == Direction.RIGHT || mCurrentScrollDirection == Direction.LEFT) {
-                //TODO maybe get rid of this if I do scrolling, snapping makes it feel more rigid
-                goToNearestOrigin();
-            }
-            mCurrentScrollDirection = Direction.NONE;
-        }
+//        if (event.getAction() == MotionEvent.ACTION_UP && !mIsZooming && mCurrentFlingDirection == Direction.NONE) {
+//            if (mCurrentScrollDirection == Direction.RIGHT || mCurrentScrollDirection == Direction.LEFT) {
+//                //TODO maybe get rid of this if I do scrolling, snapping makes it feel more rigid
+//                goToNearestOrigin();
+//            }
+//            mCurrentScrollDirection = Direction.NONE;
+//        }
 
         return val;
     }

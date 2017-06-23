@@ -96,7 +96,7 @@ public class AlarmActivity extends Activity {
     private void loadPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         alarmTime = sharedPreferences.getString(SettingsActivity.ALARM_TIMES, "30");
-        vibrate = sharedPreferences.getBoolean(SettingsActivity.ALARM_VIBRATE, false);
+        vibrate = sharedPreferences.getBoolean(SettingsActivity.ALARM_VIBRATE, true);
         alarmLength = Integer.valueOf(sharedPreferences.getString(SettingsActivity.ALARM_LENGTH, "5"));
         ringtone = sharedPreferences.getString(SettingsActivity.ALARM_SOUND, "content://settings/system/alarm_alert");
     }

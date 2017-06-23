@@ -995,12 +995,19 @@ public class MainActivity extends AppCompatActivity {
                 }, 200);
 
                 WeekScheduleFragment weekScheduleFragmentTwo = (WeekScheduleFragment) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_CALENDAR);
-                if (weekScheduleFragmentTwo != null && weekScheduleFragmentTwo.isFavoritesOnly()) {
-                    weekScheduleFragmentTwo.toggleFavourites();
+                if (weekScheduleFragmentTwo != null) {
+                    if (weekScheduleFragmentTwo.isFavoritesOnly()) {
+                        weekScheduleFragmentTwo.toggleFavourites();
+                    }
+
+                    if (weekScheduleFragmentTwo.isShowOnlyNow()) {
+                        weekScheduleFragmentTwo.toggleNow();
+                    }
                 }
             }
         }
     }
+
 
     /**
      * Swaps fragments in the main content view
@@ -1115,7 +1122,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
 
-                scheduleBy = "Schedule by Grid";
+                scheduleBy = "Grid";
 
                 if (currentFragment == FRAGMENT_ARTISTS) {
                     currentFragment = FRAGMENT_CALENDAR;
@@ -1291,11 +1298,11 @@ public class MainActivity extends AppCompatActivity {
         if (weekScheduleFragment == null) {
             weekScheduleFragment = new WeekScheduleFragment();
             Bundle args = new Bundle();
-            args.putInt(Constants.FRAGMENT_TIME, position+2);
+            args.putInt(Constants.FRAGMENT_TIME, position + 2);
             weekScheduleFragment.setArguments(args);
         }
 
-        scheduleBy = "Schedule by Grid";
+        scheduleBy = "Grid";
         currentFragment = FRAGMENT_CALENDAR;
 
         replaceFragment(R.id.content_frame, weekScheduleFragment, Constants.FRAGMENT_CALENDAR, false);
@@ -1505,6 +1512,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
     }
 
     public void onEventMainThread(ShowHideAutoCompleteSearchClearButtonEvent event) {

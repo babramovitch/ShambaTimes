@@ -59,7 +59,7 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Forced landscape as the view doesn't work well in portrait yet =(
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+      //  getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
     }
 
     @Override
@@ -101,6 +101,12 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         mWeekView.toggleFavourites(favouritesOnly);
     }
 
+    public void toggleNow() {
+        favouritesOnly = false;
+        showOnlyNow = !showOnlyNow;
+        mWeekView.toggleNow(showOnlyNow);
+    }
+
     public boolean isFavoritesOnly() {
         return favouritesOnly;
     }
@@ -123,8 +129,10 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
 
         //  mWeekView.setMinDate(Calendar.getInstance()); These are breaking the stop fling on touch somehow, so for now commenting out, and disabling the left/right gestures in WeekView
         //  mWeekView.setMaxDate(Calendar.getInstance()); These are breaking the stop fling on touch somehow, so for now commenting out, and disabling the left/right gestures in WeekView
+
+
         mWeekView.setStages(7);
-        mWeekView.setNumberOfVisibleDays(7);
+        mWeekView.setNumberOfVisibleDays(4);
 
         mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
         mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 13, getResources().getDisplayMetrics()));
@@ -304,9 +312,8 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
     private int fadeNonFavouriteColor(int color) {
         float[] hsvColor = new float[3];
         Color.colorToHSV(color, hsvColor);
-        Log.i("TAG: ", "Color was: " + hsvColor[1]);
 
-        hsvColor[1] = hsvColor[1] - (hsvColor[1] * 0.3f);
+        hsvColor[1] = hsvColor[1] - (hsvColor[1] * 0.35f);
         hsvColor[2] = hsvColor[2] + 0.05f;
         color = Color.HSVToColor(hsvColor);
         return color;
