@@ -24,17 +24,19 @@ public class SeenArtistHelper {
 
         DateTime now = new DateTime();
 
-        //  if (now.isAfter(DateUtils.getFullDateTimeForArtist(artist))) {
-        if (reverseColor) {
-            SeenArtistHelper.setReverseSeenImageColor(context, artist, seenImage);
-        } else {
-            SeenArtistHelper.setSeenImageColor(context, artist, seenImage);
+        DateTime artistStartTime = DateUtils.getFullDateTimeForArtist(artist);
+
+        if (now.isAfter(artistStartTime)) {
+            if (reverseColor) {
+                SeenArtistHelper.setReverseSeenImageColor(context, artist, seenImage);
+            } else {
+                SeenArtistHelper.setSeenImageColor(context, artist, seenImage);
+            }
+            SeenArtistHelper.animateVisibility(seenImage, !artist.isSeenArtist());
+            artist.setSeenArtist(!artist.isSeenArtist());
+            artist.save();
+            MainActivity.shambhala.updateArtistById(artist.getId());
         }
-        SeenArtistHelper.animateVisibility(seenImage, !artist.isSeenArtist());
-        artist.setSeenArtist(!artist.isSeenArtist());
-        artist.save();
-        MainActivity.shambhala.updateArtistById(artist.getId());
-        // }
     }
 
     static public void animateVisibility(final ImageView image, boolean visible) {

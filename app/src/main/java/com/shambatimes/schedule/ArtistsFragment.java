@@ -454,7 +454,7 @@ public class ArtistsFragment extends Fragment {
 
                     for (String genre : artistGenreArray) {
 
-                        if (filteredGenres.contains(genre.toLowerCase())) {
+                        if (filteredGenres.contains(genre.trim().toLowerCase())) {
                             newArtistList.add(originalArtistList.get(i));
                             matchFound = true;
                         }

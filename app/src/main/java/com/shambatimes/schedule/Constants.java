@@ -18,7 +18,7 @@ public class Constants {
     public static final int MINUTES_IN_DAY = 1440;
 
     public static int REFERENCE_TIME = 660;
-    public static int SUNDAY_REFERENCE_TIME = 720;
+    public static int SUNDAY_REFERENCE_TIME_2015 = 720;
     public static int GENERAL_REFERENCE_TIME = 660;
 
     public static int ANIMATION_DURATION = 400;

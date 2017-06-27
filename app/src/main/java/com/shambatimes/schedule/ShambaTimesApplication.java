@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatDelegate;
 import com.crashlytics.android.Crashlytics;
 import com.orm.SugarContext;
 
+import com.shambatimes.Alarms.AlarmHelper;
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.myapplication.BuildConfig;
@@ -34,6 +35,9 @@ public class ShambaTimesApplication extends Application {
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        //In case the user force closes the app, re-add all alarms on restart
+        AlarmHelper.recalculateAllAlarmTimes(this);
 
         boolean isNightMode = prefs.getBoolean(SettingsActivity.NIGHT_MODE, false);
         boolean isNightModeAutomatic = prefs.getBoolean(SettingsActivity.NIGHT_MODE_AUTOMATIC, false);

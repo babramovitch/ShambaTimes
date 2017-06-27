@@ -1,14 +1,19 @@
 package com.shambatimes.schedule;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.RectF;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -16,10 +21,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.shambatimes.Alarms.AlarmHelper;
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
+import com.shambatimes.schedule.Util.Util;
 import com.shambatimes.schedule.events.ChangeDateEvent;
 import com.shambatimes.schedule.events.DataChangedEvent;
 import com.shambatimes.schedule.events.SearchSelectedEvent;
@@ -44,6 +51,9 @@ import de.greenrobot.event.EventBus;
 
 public class WeekScheduleFragment extends Fragment implements WeekView.EventClickListener, MonthLoader.MonthChangeListener, WeekView.EventLongPressListener {
     private static final String TAG = "WeekSchedule";
+    private static final String FAVORITES_ONLY = "favoritesOnly";
+    private static final String NOW_ONLY = "nowOnly";
+    private static final String VISIBLE_HOUR = "visibleHour";
 
     private View rootView;
     private WeekView mWeekView;
@@ -55,11 +65,11 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
     private boolean showOnlyNow = false;
     private int currentDate = 0;
 
+    AlertDialog alertDialog;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Forced landscape as the view doesn't work well in portrait yet =(
-      //  getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
     }
 
     @Override
@@ -70,12 +80,59 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         rootView = inflater.inflate(R.layout.week_fragment, container, false);
         alarmHelper = new AlarmHelper(getActivity(), rootView);
 
+
         setupWeekView();
         setupDateTimeInterpreter(true);
 
-        Bundle bundle = getArguments();
-        if (bundle != null && bundle.getInt("TIME", -1) != -1) {
-            gotoHour((bundle.getInt("TIME", -1) / 2));
+        if (savedInstanceState != null) {
+            favouritesOnly = savedInstanceState.getBoolean(FAVORITES_ONLY, false);
+            showOnlyNow = savedInstanceState.getBoolean(NOW_ONLY, false);
+
+            double visibleHour = savedInstanceState.getDouble(VISIBLE_HOUR, 0);
+
+            if (isFavoritesOnly()) {
+                mWeekView.toggleFavourites(true);
+            }
+
+            if (isShowOnlyNow()) {
+                mWeekView.toggleNow(true);
+            }
+
+            if (visibleHour != 0) {
+                gotoHour(visibleHour + 1.5);
+            }
+
+        } else {
+            Bundle bundle = getArguments();
+
+            if (bundle != null) {
+                if (bundle.getInt("TIME", -1) != -1) {
+                    gotoHour((bundle.getInt("TIME", -1) / 2));
+                }
+            }
+        }
+
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        if (!prefs.getBoolean("instructionsSeen", false)) {
+            alertDialog = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle).create();
+            alertDialog.setMessage(Html.fromHtml("Here's some quick info about the new grid schedule so you can get the most out of it<br><br>" +
+                    "1. You can zoom in and out with the 2 finger pinch gesture<br><br>" +
+                    "2. You can see all the stages at once in landscape<br><br>" +
+                    "3. Long pressing on an artist will mark it as favorite<br><br>" +
+                    "4. Pressing on the heart above will show only your favorites<br><br>" +
+                    "5. Pressing on an artist will present a JUMP button. You can <b>press</b> or <b>long press</b> this button to jump to the artist on the Time or Stage schedules<br><br>" +
+                    "6. Long pressing an artist on the Time or Stage schedules will take you here"));
+
+            alertDialog.setCancelable(false);
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Got it!",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            prefs.edit().putBoolean("instructionsSeen", true).apply();
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
         }
 
         return rootView;
@@ -90,6 +147,7 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
     }
 
     public void gotoHour(double hourPosition) {
+        Log.i("TAG", "Go to hour: " + hourPosition);
         mWeekView.goToHour(hourPosition < 1.5 ? 0 : hourPosition - 1.5);
         favouritesOnly = false;
         mWeekView.toggleNow(showOnlyNow);
@@ -130,13 +188,25 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         //  mWeekView.setMinDate(Calendar.getInstance()); These are breaking the stop fling on touch somehow, so for now commenting out, and disabling the left/right gestures in WeekView
         //  mWeekView.setMaxDate(Calendar.getInstance()); These are breaking the stop fling on touch somehow, so for now commenting out, and disabling the left/right gestures in WeekView
 
-
         mWeekView.setStages(7);
-        mWeekView.setNumberOfVisibleDays(4);
+
+        if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            mWeekView.setNumberOfVisibleDays(7);
+            mWeekView.setScheduleScrollingEnabled(false);
+        } else {
+            mWeekView.setNumberOfVisibleDays(4);
+            mWeekView.setScheduleScrollingEnabled(true);
+        }
 
         mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
         mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 13, getResources().getDisplayMetrics()));
         mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 13, getResources().getDisplayMetrics()));
+
+        float startingHourHeight = getResources().getDimension(R.dimen.hour_height);
+
+        Log.i("TAG", "Starting hour: " + startingHourHeight);
+        mWeekView.setHourHeight((int) startingHourHeight);
+
     }
 
     /**
@@ -213,7 +283,11 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         snackBarTextView.setTextColor(ColorUtil.snackbarTextColor(getActivity()));
 
         TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
-        snackBarActionTextView.setTextColor(ColorUtil.snackbarTextColor(getActivity()));
+        if (ColorUtil.nightMode) {
+            snackBarActionTextView.setTextColor(ContextCompat.getColor(getActivity(), ColorUtil.getStageColors()[snackbarArtist.getStage()]));
+        } else {
+            snackBarActionTextView.setTextColor(Color.WHITE);
+        }
 
         snackBarActionTextView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -285,9 +359,8 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
             //Rich-E-Rich goes past the apps festival end time of 11am (24h per day) so exception needs to be made for it.
             //or any other artist who goes past 11am.
 
-            //TODO alter this to dynamical check the end of festival time
-            if (endTime.isAfter(new DateTime(2016, 8, 8, 11, 59, 59, 99).withZone(Constants.timeZone))) {
-                endTime = new DateTime(2016, 8, 8, 11, 0, 0, 0).withZone(Constants.timeZone);
+            if (endTime.isAfter(DateUtils.getEndOfFestivalGridDate(getActivity()))) {
+                endTime = DateUtils.getEndOfFestivalGridDate(getActivity());
             }
 
             WeekViewEvent event = new WeekViewEvent(1, artist.getAristName(), startTime.toGregorianCalendar(), endTime.toGregorianCalendar());
@@ -321,6 +394,27 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
 
     public void onEventMainThread(ChangeDateEvent event) {
         currentDate = event.getPosition();
+
+        //Hack because thursday starts with AMP off screen, and given how the database is set up,
+        //it's a lot of work to re-order the stages given past data.
+        if (currentDate == 0) {
+            mWeekView.post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                            float offset = mWeekView.getWidthPerStage() * 2f * -1;
+                            Log.i("SCROLL", "OFFSET: " + offset);
+                            mWeekView.setXOriginOffset(offset);
+                        }
+                    } catch (Exception e) {
+                        //Something went wrong, but don't crash the app over this failing
+                        Crashlytics.logException(e);
+                    }
+                }
+            });
+        }
+
         mWeekView.invalidate();
     }
 
@@ -330,8 +424,33 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
     }
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+        savedInstanceState.putBoolean(FAVORITES_ONLY, favouritesOnly);
+        savedInstanceState.putBoolean(NOW_ONLY, showOnlyNow);
+
+        if (mWeekView != null) {
+            savedInstanceState.putDouble(VISIBLE_HOUR, mWeekView.getFirstVisibleHour());
+        }
+
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onDestroy() {
+
+        if (alertDialog != null && alertDialog.isShowing()) {
+            alertDialog.dismiss();
+        }
+
+        super.onDestroy();
+
     }
 }

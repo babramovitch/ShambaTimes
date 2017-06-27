@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.shambatimes.Alarms.AlarmHelper;
+import com.shambatimes.schedule.Settings.SettingsActivity;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -169,7 +170,7 @@ public class DatabaseScheduleUpdates {
         if (!prefs.contains("update_two_complete")) {
 
             try {
-                
+
                 Iterator<Artist> artists = Artist.findAll(Artist.class);
 
                 while (artists.hasNext()) {
@@ -201,8 +202,8 @@ public class DatabaseScheduleUpdates {
                 prefs.edit().putBoolean("cedar_lounge_loaded_2016", true).apply();
                 prefs.edit().putBoolean("update_one_complete_2016", true).apply();
                 prefs.edit().putBoolean("update_two_complete_2016", true).apply();
-            }catch(Exception e){
-                Toast.makeText(context,"Error Loading 2016 Schedule", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Toast.makeText(context, "Error Loading 2016 Schedule", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -216,8 +217,8 @@ public class DatabaseScheduleUpdates {
                 ArtistGenerator artistGenerator = new ArtistGenerator(context);
                 artistGenerator.get2016CedarLoungeArtists();
                 prefs.edit().putBoolean("cedar_lounge_loaded_2016", true).apply();
-            }catch(Exception e){
-                Toast.makeText(context,"Error Loading 2016 Schedule", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Toast.makeText(context, "Error Loading 2016 Schedule", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -231,7 +232,7 @@ public class DatabaseScheduleUpdates {
             try {
                 ArrayList<Artist> artists;
 
-                String[] query5 = {"the noisy freaks", "3","2016"};
+                String[] query5 = {"the noisy freaks", "3", "2016"};
                 artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query5, null, "day ASC, start_Position ASC", null);
                 if (artists.size() > 0) {
                     Artist artist = artists.get(0);
@@ -244,7 +245,7 @@ public class DatabaseScheduleUpdates {
                     AlarmHelper.cancelAlarmIntent(context, artist);
                 }
 
-                String[] query6 = {"isick", "2","2016"};
+                String[] query6 = {"isick", "2", "2016"};
                 artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query6, null, "day ASC, start_Position ASC", null);
                 if (artists.size() > 0) {
                     Artist artist = artists.get(0);
@@ -274,7 +275,7 @@ public class DatabaseScheduleUpdates {
             try {
                 ArrayList<Artist> artists;
 
-                String[] query5 = {"justin martin", "1","2016"};
+                String[] query5 = {"justin martin", "1", "2016"};
                 artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query5, null, "day ASC, start_Position ASC", null);
                 if (artists.size() > 0) {
                     Artist artist = artists.get(0);
@@ -285,7 +286,7 @@ public class DatabaseScheduleUpdates {
                     artist.save();
                 }
 
-                String[] query6 = {"alunageorge", "1","2016"};
+                String[] query6 = {"alunageorge", "1", "2016"};
                 artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query6, null, "day ASC, start_Position ASC", null);
                 if (artists.size() > 0) {
                     Artist artist = artists.get(0);
@@ -301,6 +302,17 @@ public class DatabaseScheduleUpdates {
             } catch (Exception e) {
                 Log.e("UpdateDatabase", "Error Updating", e);
             }
+        }
+    }
+
+    public static void load2017Database(Context context) {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (!prefs.contains("2017_loaded")) {
+            ArtistGenerator artistGenerator = new ArtistGenerator(context);
+            artistGenerator.get2017Artists();
+            prefs.edit().putBoolean("2017_loaded", true).apply();
         }
     }
 }

@@ -3,11 +3,13 @@ package com.shambatimes.schedule;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.Alarms.AlarmHelper;
 import com.shambatimes.schedule.Util.AnimationHelper;
@@ -129,7 +133,13 @@ public class TimeCardScheduleFragment extends Fragment {
         gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                EventBus.getDefault().post(new ToggleToGridEvent(timePosition));
+                Log.i("TAG", "Position: " + position);
+                final Artist artist = MainActivity.shambhala.getArtistsByDayAndPositionAndStage(date, timePosition, position);
+                if (artist != null) {
+                    EventBus.getDefault().post(new ToggleToGridEvent(artist.getStartPosition()));
+                } else {
+                    EventBus.getDefault().post(new ToggleToGridEvent(timePosition));
+                }
                 return false;
             }
         });
@@ -185,7 +195,6 @@ public class TimeCardScheduleFragment extends Fragment {
             final ImageView seenImage = (ImageView) gridView.findViewById(R.id.card_seen_set);
 
             stageName.setText(stageNames[position]);
-
 
             card.setCardBackgroundColor(ColorUtil.themedBackground(getActivity(), position));
 
@@ -284,6 +293,8 @@ public class TimeCardScheduleFragment extends Fragment {
 
     public void onEventMainThread(ChangeDateEvent event) {
         if (event.getPosition() != date) {
+
+            //Adjust position based off shifted schedule
             if (Shambhala.getFestivalYear(getActivity()).equals("2015")) {
                 if (date == 3 && event.getPosition() != 3) {
                     timePosition = timePosition + 2;

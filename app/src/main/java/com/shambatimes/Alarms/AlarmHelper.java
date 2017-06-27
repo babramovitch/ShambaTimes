@@ -5,12 +5,12 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -67,7 +67,7 @@ public class AlarmHelper {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String alarmMinutes = preferences.getString(SettingsActivity.ALARM_TIMES, "30");
 
-        //if (DateUtils.getFullDateTimeForArtist(artist).minus(60000 * Integer.valueOf(alarmMinutes)).isAfter(System.currentTimeMillis())) {
+        if (DateUtils.getFullDateTimeForArtist(artist).minus(60000 * Integer.valueOf(alarmMinutes)).isAfter(System.currentTimeMillis())) {
             if (Shambhala.getFestivalYear(context).equals(Shambhala.CURRENT_YEAR)) {
 
                 this.artist = artist;
@@ -85,14 +85,19 @@ public class AlarmHelper {
                 TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
                 TextView snackBarActionTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
 
+                if (ColorUtil.nightMode) {
+                    snackBarActionTextView.setTextColor(ContextCompat.getColor(context, ColorUtil.getStageColors()[artist.getStage()]));
+                } else {
+                    snackBarActionTextView.setTextColor(Color.WHITE);
+                }
+                
                 snackBarTextView.setTextColor(ColorUtil.snackbarTextColor(context));
-                snackBarActionTextView.setTextColor(ColorUtil.snackbarTextColor(context));
 
                 snackBarActionTextView.setTextSize(14);
 
                 snackbar.show();
             }
-      //  }
+        }
     }
 
     final View.OnClickListener snackBarClickListener = new View.OnClickListener() {
@@ -245,9 +250,7 @@ public class AlarmHelper {
         Log.i("AlarmHelper", "Artist Time:" + startTime.toString());
         Log.i("AlarmHelper", "Alarm  Time: " + alarmTime.toString());
 
-        DateTime now = new DateTime();
-
-        return now.plusMillis(30000).getMillis(); //alarmTime.getMillis();
+        return  alarmTime.getMillis();
     }
 
     public static void cancelAlarmIntent(Context context, Artist artist) {

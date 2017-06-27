@@ -72,6 +72,7 @@
     <string-array name="ScheduleYears">
         <item>2015</item>
         <item>2016</item>
+        <item>2017</item>
     </string-array>
 
     <string-array name="AlarmTimeDisplayed">
@@ -142,6 +143,10 @@
 
     <string name="tap_target_now_title">Now Playing</string>
     <string name="tap_target_now_description">Press the Now button to see who\'s currently playing</string>
+
+    <string name="tap_target_seen_title">Track who you saw</string>
+    <string name="tap_target_seen_description">Long press the hearts to track who you saw play</string>
+
     <string name="stage_closed">Stage Closed</string>
     <string name="dismiss_button">Dismiss</string>
     <string name="swipe_to_dismiss">Swipe to Dismiss</string>

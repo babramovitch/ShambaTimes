@@ -1,6 +1,7 @@
 package com.shambatimes.schedule;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -20,6 +21,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -126,6 +128,8 @@ public class MainActivity extends AppCompatActivity {
 
     boolean genreFilteringActive = false;
 
+    private AlertDialog welcomeDialog2017;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,7 +168,13 @@ public class MainActivity extends AppCompatActivity {
 //        // Start the thread
 //        t.start();
 
+
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if (!prefs.contains("2017_loaded")) {
+            prefs.edit().putString(SettingsActivity.FESTIVAL_YEAR, "2017").apply();
+        }
+
         timeFormatPreference = prefs.getString(SettingsActivity.TIME_FORMAT, "24");
         festivalYear = Shambhala.getFestivalYear(this);
 
@@ -198,6 +208,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RESULT_SETTINGS) {
+            didFestivalYearChange();
+            didTimeFormatChange();
             getDelegate().applyDayNight();
         }
     }
@@ -206,10 +218,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (prefs.contains("database_loaded")) {
 
-            if (!prefs.contains("2016_loaded")) {
-                Toast.makeText(this, "Preparing 2016 Database", Toast.LENGTH_LONG).show();
-            } else if (!prefs.contains("cedar_lounge_loaded_2016")) {
-                Toast.makeText(this, "Updating 2016 Database - Cedar Lounge", Toast.LENGTH_LONG).show();
+            if (!prefs.contains("2017_loaded")) {
+                Toast.makeText(this, "Preparing 2017 Database", Toast.LENGTH_LONG).show();
             }
 
             new Thread(new Runnable() {
@@ -223,6 +233,9 @@ public class MainActivity extends AppCompatActivity {
                     DatabaseScheduleUpdates.load2016CedarLounge(MainActivity.this);
                     DatabaseScheduleUpdates.scheduleUpdateOne2016(MainActivity.this);
                     DatabaseScheduleUpdates.scheduleUpdateTwo2016(MainActivity.this);
+
+                    //2017 updates
+                    DatabaseScheduleUpdates.load2017Database(MainActivity.this);
 
                     fetchAllArtistsForYear(festivalYear);
                 }
@@ -239,9 +252,15 @@ public class MainActivity extends AppCompatActivity {
                     prefs.edit().putBoolean("database_load_started", true).apply();
                     ArtistGenerator artistGenerator = new ArtistGenerator(MainActivity.this);
 
+                    //2017 loaded first so app is quick
+                    artistGenerator.get2017Artists();
+                    prefs.edit().putBoolean("2017_loaded", true).apply();
+                    prefs.edit().putString(SettingsActivity.FESTIVAL_YEAR, "2017").apply();
+                    fetchAllArtistsForYear(festivalYear);
+
+                    //Historical data loaded later
                     //2015
                     artistGenerator.get2015Artists();
-                    prefs.edit().putBoolean("database_loaded", true).apply();
                     prefs.edit().putBoolean("update_one_complete", true).apply();
                     prefs.edit().putBoolean("update_two_complete", true).apply();
 
@@ -252,9 +271,8 @@ public class MainActivity extends AppCompatActivity {
                     prefs.edit().putBoolean("cedar_lounge_loaded_2016", true).apply();
                     prefs.edit().putBoolean("update_one_complete_2016", true).apply();
                     prefs.edit().putBoolean("update_two_complete_2016", true).apply();
-                    prefs.edit().putString(SettingsActivity.FESTIVAL_YEAR, "2016").apply();
 
-                    fetchAllArtistsForYear(festivalYear);
+                    prefs.edit().putBoolean("database_loaded", true).apply();
 
                 }
             }).start();
@@ -339,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         if (toolbar != null) {
-            setupToolBarTapTarget();
+            toolbar.inflateMenu(R.menu.menu_main);
 
             try {
                 setSupportActionBar(toolbar);
@@ -362,39 +380,55 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setupToolBarTapTarget() {
+    private void showTips() {
+        if(!DateUtils.isPrePostFestival(this)) {
+            if (!prefs.getBoolean("tapTargetNowSeen", false)) {
 
-        if (!prefs.getBoolean("tapTargetNowSeen", false) && !DateUtils.isPrePostFestival(this)) {
-            prefs.edit().putBoolean("tapTargetNowSeen", true).apply();
+                TapTargetView.showFor(MainActivity.this,
+                        TapTarget.forToolbarMenuItem(toolbar, R.id.now_playing, getString(R.string.tap_target_now_title), getString(R.string.tap_target_now_description))
+                                .outerCircleColorInt(ColorUtil.themedGray(this))
+                                .outerCircleAlpha(0.96f)            // Specify the alpha amount for the outer circle
+                                .targetCircleColor(R.color.white)   // Specify a color for the target circle
+                                .titleTextSize(20)                  // Specify the size (in sp) of the title text
+                                .titleTextColor(R.color.white)      // Specify the color of the title text
+                                .descriptionTextSize(16)            // Specify the size (in sp) of the description text
+                                .descriptionTextColor(R.color.primaryTextColorWhite)  // Specify the color of the description text
+                                .textColor(R.color.primaryTextColorWhite)            // Specify a color for both the title and description text
+                                .textTypeface(Typeface.SANS_SERIF)  // Specify a typeface for the text
+                                .dimColor(R.color.black)            // If set, will dim behind the view with 30% opacity of the given color
+                                .drawShadow(true)                   // Whether to draw a drop shadow or not
+                                .cancelable(true)                   // Whether tapping outside the outer circle dismisses the view
+                                .tintTarget(true)                   // Whether to tint the target view's color
+                                .transparentTarget(false)           // Specify whether the target is transparent (displays the content underneath)
+                                .targetRadius(60),                  // Specify the target radius (in dp)
+                        new TapTargetView.Listener() {              // The listener can listen for regular clicks, long clicks or cancels
 
-            //TapTarget.forToolbarMenuItem requires the toolbar to be inflated to reference the view
-            //Normally this isn't needed as I use setSupportActionBar, so I'm only doing it in the one instance to show the target.
-            toolbar.inflateMenu(R.menu.menu_main);
+                            @Override
+                            public void onTargetDismissed(TapTargetView view, boolean userInitiated) {
+                                prefs.edit().putBoolean("tapTargetNowSeen", true).apply();
+                                super.onTargetDismissed(view, userInitiated);
+                            }
 
-            TapTargetView.showFor(MainActivity.this,
-                    TapTarget.forToolbarMenuItem(toolbar, R.id.now_playing, getString(R.string.tap_target_now_title), getString(R.string.tap_target_now_description))
-                            .outerCircleColorInt(ColorUtil.themedGray(this))
-                            .outerCircleAlpha(0.96f)            // Specify the alpha amount for the outer circle
-                            .targetCircleColor(R.color.white)   // Specify a color for the target circle
-                            .titleTextSize(20)                  // Specify the size (in sp) of the title text
-                            .titleTextColor(R.color.white)      // Specify the color of the title text
-                            .descriptionTextSize(16)            // Specify the size (in sp) of the description text
-                            .descriptionTextColor(R.color.primaryTextColorWhite)  // Specify the color of the description text
-                            .textColor(R.color.primaryTextColorWhite)            // Specify a color for both the title and description text
-                            .textTypeface(Typeface.SANS_SERIF)  // Specify a typeface for the text
-                            .dimColor(R.color.black)            // If set, will dim behind the view with 30% opacity of the given color
-                            .drawShadow(true)                   // Whether to draw a drop shadow or not
-                            .cancelable(true)                   // Whether tapping outside the outer circle dismisses the view
-                            .tintTarget(true)                   // Whether to tint the target view's color
-                            .transparentTarget(false)           // Specify whether the target is transparent (displays the content underneath)
-                            .targetRadius(60),                  // Specify the target radius (in dp)
-                    new TapTargetView.Listener() {              // The listener can listen for regular clicks, long clicks or cancels
-                        @Override
-                        public void onTargetClick(TapTargetView view) {
-                            gotoNow();
-                            super.onTargetClick(view);          // This call is optional
-                        }
-                    });
+                            @Override
+                            public void onTargetClick(TapTargetView view) {
+                                gotoNow();
+                                super.onTargetClick(view);          // This call is optional
+                            }
+                        });
+            }else if (!prefs.getBoolean("SawSeenDialog", false)){
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this, R.style.AppCompatAlertDialogStyle).create();
+                alertDialog.setTitle("Who have you seen?");
+                alertDialog.setMessage("Did you know you can track which artists you've seen?\n\nSimply long press on any heart once their set has begun to mark them as seen.");
+                alertDialog.setCancelable(false);
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                prefs.edit().putBoolean("SawSeenDialog", true).apply();
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
         }
     }
 
@@ -419,13 +453,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                     currentDay = position;
-
-                    if (currentDay == 3 && Shambhala.getFestivalYear(MainActivity.this).equals("2015")) {
-                        Constants.REFERENCE_TIME = Constants.SUNDAY_REFERENCE_TIME;
-                    } else {
-                        Constants.REFERENCE_TIME = Constants.GENERAL_REFERENCE_TIME;
-                    }
-
+                    DateUtils.setReferenceTime(MainActivity.this, currentDay);
                     EventBus.getDefault().postSticky(new ChangeDateEvent(position));
                 }
 
@@ -493,11 +521,8 @@ public class MainActivity extends AppCompatActivity {
                     if (!firstSpinnerLoad) {
                         artistDateSelected = true;
                         currentDay = position - 1;
-                        if (currentDay == 3 && Shambhala.getFestivalYear(MainActivity.this).equals("2015")) {
-                            Constants.REFERENCE_TIME = Constants.SUNDAY_REFERENCE_TIME;
-                        } else {
-                            Constants.REFERENCE_TIME = Constants.GENERAL_REFERENCE_TIME;
-                        }
+
+                        DateUtils.setReferenceTime(MainActivity.this, currentDay);
 
                         EventBus.getDefault().postSticky(new ChangeDateEvent(position - 1, true));
                     } else {
@@ -875,7 +900,6 @@ public class MainActivity extends AppCompatActivity {
         MenuItem nowPlaying = menu.findItem(R.id.now_playing);
         MenuItem gridFavourites = menu.findItem(R.id.grid_favourites);
 
-
         if (globalSearchItem != null) {
             DrawableCompat.setTint(globalSearchItem.getIcon(), ContextCompat.getColor(this, R.color.primaryTextColorWhite));
             globalSearchItem.setVisible(!isDrawerOpen);
@@ -1162,9 +1186,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        didFestivalYearChange();
-        didTimeFormatChange();
 
+        showTips();
 
         //This is in a handler to avoid an exception
         handler.postDelayed(new Runnable() {
@@ -1298,7 +1321,8 @@ public class MainActivity extends AppCompatActivity {
         if (weekScheduleFragment == null) {
             weekScheduleFragment = new WeekScheduleFragment();
             Bundle args = new Bundle();
-            args.putInt(Constants.FRAGMENT_TIME, position + 2);
+            args.putInt(Constants.FRAGMENT_TIME, position + 1);
+            args.putInt("date", currentDay);
             weekScheduleFragment.setArguments(args);
         }
 
