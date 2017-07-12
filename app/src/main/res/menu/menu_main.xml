@@ -23,6 +23,13 @@
         app:showAsAction="ifRoom|collapseActionView" />
 
     <item
+        android:id="@+id/share_favourites"
+        android:icon="@drawable/ic_share_white_36dp"
+        android:title="Show Favourites Only"
+        app:showAsAction="ifRoom|collapseActionView" />
+
+
+    <item
         android:id="@+id/global_search"
         android:icon="@drawable/ic_search_white_36dp"
         android:title="Search"
