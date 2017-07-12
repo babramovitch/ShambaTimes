@@ -80,6 +80,20 @@ public class Artist extends SugarRecord {
         this.genres = genres;
         this.year = year;
 
+        updateStartPosition();
+        updateEndPosition();
+        
+    }
+
+    private DateTime convertStringTimeToPosition(String stringTime) {
+
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
+        DateTime dateTime = formatter.parseDateTime(stringTime);
+
+        return dateTime;
+    }
+
+    public void updateStartPosition() {
         DateTime baseTime;
         if (day == 3 && year == 2015) {
             baseTime = DateTime.now().withZone(Constants.timeZone).withTimeAtStartOfDay().plusMinutes(Constants.SUNDAY_REFERENCE_TIME_2015);
@@ -92,26 +106,33 @@ public class Artist extends SugarRecord {
 
         baseTime = convertStringTimeToPosition(test);
 
-        Minutes minutesToStart = Minutes.minutesBetween(baseTime, this.startTime);
-        Minutes minutesToEnd = Minutes.minutesBetween(baseTime, this.endTime);
+        Minutes minutesToStart = Minutes.minutesBetween(baseTime, convertStringTimeToPosition(startTimeString));
 
         startPosition = minutesToStart.getMinutes() / 30;
-        endPosition = minutesToEnd.getMinutes() / 30;
 
         //To handle the midnight cross over
         if (startPosition < 0) startPosition += 48;
+    }
+
+    public void updateEndPosition(){
+        DateTime baseTime;
+        if (day == 3 && year == 2015) {
+            baseTime = DateTime.now().withZone(Constants.timeZone).withTimeAtStartOfDay().plusMinutes(Constants.SUNDAY_REFERENCE_TIME_2015);
+        } else {
+            baseTime = DateTime.now().withZone(Constants.timeZone).withTimeAtStartOfDay().plusMinutes(Constants.GENERAL_REFERENCE_TIME);
+        }
+
+        DateTimeFormatter dateStringFormat = DateTimeFormat.forPattern("HH:mm");
+        String test = dateStringFormat.print(baseTime);
+        baseTime = convertStringTimeToPosition(test);
+
+        Minutes minutesToEnd = Minutes.minutesBetween(baseTime, convertStringTimeToPosition(endTimeString));
+
+        endPosition = minutesToEnd.getMinutes() / 30;
+
+        //To handle the midnight cross over
         if (endPosition < 0) endPosition += 48;
-
     }
-
-    private DateTime convertStringTimeToPosition(String stringTime) {
-
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
-        DateTime dateTime = formatter.parseDateTime(stringTime);
-
-        return dateTime;
-    }
-
 
     public String getStartTimeString() {
         return startTimeString;
