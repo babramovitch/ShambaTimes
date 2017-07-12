@@ -315,4 +315,280 @@ public class DatabaseScheduleUpdates {
             prefs.edit().putBoolean("2017_loaded", true).apply();
         }
     }
+
+    public static void scheduleUpdateOne2017(Context context) {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (!prefs.contains("update_one_complete_2017")) {
+
+
+            try {
+                ArrayList<Artist> artists;
+
+                //Thursday Changes
+                new Artist(2017, Constants.LIVINGROOM, 0, "16:30", "17:30", "Hoola", "disco house,dub,dancehall,hip hop").save();
+
+                String[] query1 = {"meowmix", "0", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query1, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setArtistName("Meowmix ft. Sweets");
+                    artist.save();
+                }
+
+                //Friday Changes
+
+                new Artist(2017, Constants.LIVINGROOM, 1, "18:30", "19:00", "Hoola", "disco house,dub,dancehall,hip hop").save();
+                new Artist(2017, Constants.GROVE, 1, "13:00", "14:00", "Opening Ceremonies w/ Soul Fire Dance", "").save();
+
+                String[] query2 = {"val kilmer and the new coke", "1", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query2, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setEndTimeString("20:30");
+                    artist.updateEndPosition();
+
+                    artist.save();
+                }
+
+                String[] query3 = {"hoola", "1", "20:00", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and start_Time_string = ? and year = ?", query3, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("20:30");
+                    artist.updateStartPosition();
+
+                    artist.save();
+                }
+
+                String[] query4 = {"dj soup", "1", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query4, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setEndTimeString("19:15");
+                    artist.updateEndPosition();
+
+                    artist.save();
+                }
+
+                String[] query5 = {"rrotik", "1", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query5, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("19:15");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("20:30");
+                    artist.updateEndPosition();
+
+                    artist.save();
+                }
+
+                String[] query6 = {"chris lorenzo", "1", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query6, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("20:30");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("22:00");
+                    artist.updateEndPosition();
+
+                    artist.save();
+                }
+
+                String[] query7 = {"destructo", "1", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query7, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.delete();
+                }
+
+                String[] query8 = {"justin martin", "1", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query8, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("22:00");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("23:30");
+                    artist.updateEndPosition();
+
+                    artist.save();
+                }
+
+                String[] query9 = {"chris lake", "1", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query9, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("23:30");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("01:00");
+                    artist.updateEndPosition();
+
+                    artist.save();
+                }
+
+                String[] query10 = {"black tiger sex machine", "1", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query10, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("01:00");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("02:30");
+                    artist.updateEndPosition();
+
+                    artist.save();
+                }
+
+                String[] query11 = {"ephwurd", "1", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query11, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("02:30");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("04:00");
+                    artist.updateEndPosition();
+
+                    artist.save();
+                }
+
+                String[] query12 = {"destructo sermon", "1", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query12, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("04:00");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("08:00");
+                    artist.updateEndPosition();
+
+                    artist.setArtistName("Destructo");
+
+                    artist.save();
+                }
+
+                String[] query18 = {"kytami", "1", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query18, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setArtistName("Kytami w/Phonik Ops");
+                    artist.save();
+                }
+
+                //Saturday Changes
+                new Artist(2017, Constants.GROVE, 2, "22:00", "22:30", "Omnika", "theatrical dance and circus").save();
+
+                String[] query19 = {"beats antique", "2", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query19, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setArtistName("Beats Antique ft David Satori & Sidecar Tommy");
+                    artist.save();
+                }
+
+                //Sunday Changes
+                new Artist(2017, Constants.CEDAR_LOUNGE, 3, "02:30", "04:00", "Sideshow", "").save();
+
+                String[] query13 = {"footprints", "3", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query13, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("21:00");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("22:00");
+                    artist.updateEndPosition();
+
+                    artist.save();
+                }
+
+                String[] query14 = {"ihf", "3", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query14, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("22:00");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("23:00");
+                    artist.updateEndPosition();
+
+                    artist.save();
+                }
+
+                String[] query15 = {"circus acts insomniacs", "3", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query15, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("23:00");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("23:30");
+                    artist.updateEndPosition();
+
+                    artist.save();
+                }
+
+                String[] query16 = {"z-trip", "3", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query16, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("23:30");
+                    artist.updateStartPosition();
+
+                    artist.save();
+                }
+
+                //Special case for Marten Hoger and Deekline which have been separated
+                boolean alarm = false;
+                boolean favourite = false;
+
+                String[] query17 = {"marten hørger b2b deekline", "3", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query17, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    alarm = artist.isAlarmSet();
+                    favourite = artist.isFavorite();
+
+                    artist.delete();
+                }
+
+                Artist martenHoger = new Artist(2017, Constants.FOREST, 3, "01:30", "02:30", "Marten Hørger", "house,breaks,trap,bass");
+                martenHoger.setFavorite(favourite);
+                martenHoger.setIsAlarmSet(alarm);
+                martenHoger.save();
+
+                Artist deekline = new Artist(2017, Constants.FOREST, 3, "02:30", "03:30", "Deekline", "uk bass,breaks,drum & bass,jungle");
+                deekline.setFavorite(favourite);
+                deekline.setIsAlarmSet(alarm);
+                deekline.save();
+
+                prefs.edit().putBoolean("update_one_complete_2017", true).apply();
+
+                AlarmHelper.recalculateAllAlarmTimes(context);
+
+            } catch (Exception e) {
+                Log.e("UpdateDatabase", "Error Updating", e);
+            }
+        }
+    }
 }

@@ -237,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
 
                     //2017 updates
                     DatabaseScheduleUpdates.load2017Database(MainActivity.this);
+                    DatabaseScheduleUpdates.scheduleUpdateOne2017(MainActivity.this);
 
                     fetchAllArtistsForYear(festivalYear);
                 }
@@ -256,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
                     //2017 loaded first so app is quick
                     artistGenerator.get2017Artists();
                     prefs.edit().putBoolean("2017_loaded", true).apply();
+                    prefs.edit().putBoolean("update_one_complete_2017", true).apply();
                     prefs.edit().putString(SettingsActivity.FESTIVAL_YEAR, "2017").apply();
                     fetchAllArtistsForYear(festivalYear);
 
