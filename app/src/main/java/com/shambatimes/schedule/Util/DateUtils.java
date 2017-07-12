@@ -95,32 +95,32 @@ public final class DateUtils {
             return true;
         }
 
-        DateTime startThursday = new DateTime(2017, 8, 10, 11, 0, 0, 0).withZone(Constants.timeZone);
-        DateTime endThursday = new DateTime(2017, 8, 11, 10, 59, 59, 99).withZone(Constants.timeZone);
+        DateTime startThursday = new DateTime(2017, 8, 10, 11, 0, 0, 0, Constants.timeZone);
+        DateTime endThursday = new DateTime(2017, 8, 11, 10, 59, 59, 99, Constants.timeZone);
         interval = new Interval(startThursday, endThursday);
 
         if (interval.contains(DateTime.now().withZone(Constants.timeZone))) {
             day = 0;
         }
 
-        DateTime startFriday = new DateTime(2017, 8, 11, 11, 0, 0, 0).withZone(Constants.timeZone);
-        DateTime endFriday = new DateTime(2017, 8, 12, 10, 59, 59, 99).withZone(Constants.timeZone);
+        DateTime startFriday = new DateTime(2017, 8, 11, 11, 0, 0, 0, Constants.timeZone);
+        DateTime endFriday = new DateTime(2017, 8, 12, 10, 59, 59, 99, Constants.timeZone);
         interval = new Interval(startFriday, endFriday);
 
         if (interval.contains(DateTime.now().withZone(Constants.timeZone))) {
             day = 1;
         }
 
-        DateTime startSaturday = new DateTime(2017, 8, 12, 11, 0, 0, 0).withZone(Constants.timeZone);
-        DateTime endSaturday = new DateTime(2017, 8, 13, 10, 59, 59, 99).withZone(Constants.timeZone);
+        DateTime startSaturday = new DateTime(2017, 8, 12, 11, 0, 0, 0, Constants.timeZone);
+        DateTime endSaturday = new DateTime(2017, 8, 13, 10, 59, 59, 99, Constants.timeZone);
         interval = new Interval(startSaturday, endSaturday);
 
         if (interval.contains(DateTime.now().withZone(Constants.timeZone))) {
             day = 2;
         }
 
-        DateTime startSunday = new DateTime(2017, 8, 13, 11, 0, 0, 0).withZone(Constants.timeZone);
-        DateTime endSunday = new DateTime(2017, 8, 14, 11, 59, 59, 99).withZone(Constants.timeZone);
+        DateTime startSunday = new DateTime(2017, 8, 13, 11, 0, 0, 0, Constants.timeZone);
+        DateTime endSunday = new DateTime(2017, 8, 14, 11, 59, 59, 99, Constants.timeZone);
         interval = new Interval(startSunday, endSunday);
 
         if (interval.contains(DateTime.now().withZone(Constants.timeZone))) {
@@ -144,32 +144,32 @@ public final class DateUtils {
             return 0;
         }
 
-        DateTime startThursday = new DateTime(2017, 8, 10, 11, 0, 0, 0).withZone(Constants.timeZone);
-        DateTime endThursday = new DateTime(2017, 8, 11, 10, 59, 59, 99).withZone(Constants.timeZone);
+        DateTime startThursday = new DateTime(2017, 8, 10, 11, 0, 0, 0, Constants.timeZone);
+        DateTime endThursday = new DateTime(2017, 8, 11, 10, 59, 59, 99, Constants.timeZone);
         interval = new Interval(startThursday, endThursday);
 
         if (interval.contains(DateTime.now().withZone(Constants.timeZone))) {
             day = 0;
         }
 
-        DateTime startFriday = new DateTime(2017, 8, 11, 11, 0, 0, 0).withZone(Constants.timeZone);
-        DateTime endFriday = new DateTime(2017, 8, 12, 10, 59, 59, 99).withZone(Constants.timeZone);
+        DateTime startFriday = new DateTime(2017, 8, 11, 11, 0, 0, 0, Constants.timeZone);
+        DateTime endFriday = new DateTime(2017, 8, 12, 10, 59, 59, 99, Constants.timeZone);
         interval = new Interval(startFriday, endFriday);
 
         if (interval.contains(DateTime.now().withZone(Constants.timeZone))) {
             day = 1;
         }
 
-        DateTime startSaturday = new DateTime(2017, 8, 12, 11, 0, 0, 0).withZone(Constants.timeZone);
-        DateTime endSaturday = new DateTime(2017, 8, 13, 10, 59, 59, 99).withZone(Constants.timeZone);
+        DateTime startSaturday = new DateTime(2017, 8, 12, 11, 0, 0, 0, Constants.timeZone);
+        DateTime endSaturday = new DateTime(2017, 8, 13, 10, 59, 59, 99, Constants.timeZone);
         interval = new Interval(startSaturday, endSaturday);
 
         if (interval.contains(DateTime.now().withZone(Constants.timeZone))) {
             day = 2;
         }
 
-        DateTime startSunday = new DateTime(2017, 8, 13, 11, 0, 0, 0).withZone(Constants.timeZone);
-        DateTime endSunday = new DateTime(2017, 8, 14, 11, 59, 59, 99).withZone(Constants.timeZone);
+        DateTime startSunday = new DateTime(2017, 8, 13, 11, 0, 0, 0, Constants.timeZone);
+        DateTime endSunday = new DateTime(2017, 8, 14, 11, 59, 59, 99, Constants.timeZone);
         interval = new Interval(startSunday, endSunday);
 
         if (interval.contains(DateTime.now().withZone(Constants.timeZone))) {
@@ -201,7 +201,7 @@ public final class DateUtils {
 
         String[] setTime = artist.getStartTimeString().split(":");
 
-        return new DateTime(artist.getYear(), 8, day, Integer.valueOf(setTime[0]), Integer.valueOf(setTime[1]), 0, 0).withZone(Constants.timeZone);
+        return new DateTime(artist.getYear(), 8, day, Integer.valueOf(setTime[0]), Integer.valueOf(setTime[1]), 0, 0, Constants.timeZone);
     }
 
     public static DateTime getFullDateEndTimeForArtist(Artist artist) {
@@ -225,7 +225,7 @@ public final class DateUtils {
 
         String[] setTime = artist.getEndTimeString().split(":");
 
-        return new DateTime(artist.getYear(), 8, day, Integer.valueOf(setTime[0]), Integer.valueOf(setTime[1]), 0, 0).withZone(Constants.timeZone);
+        return new DateTime(artist.getYear(), 8, day, Integer.valueOf(setTime[0]), Integer.valueOf(setTime[1]), 0, 0, Constants.timeZone);
     }
 
 
@@ -314,16 +314,16 @@ public final class DateUtils {
         switch (festivalYear) {
 
             case "2015":
-                endTime = new DateTime(2015, 8, 10, 11, 0, 0, 0).withZone(Constants.timeZone);
+                endTime = new DateTime(2015, 8, 10, 11, 0, 0, 0, Constants.timeZone);
                 break;
             case "2016":
-                endTime = new DateTime(2016, 8, 8, 11, 0, 0, 0).withZone(Constants.timeZone);
+                endTime = new DateTime(2016, 8, 8, 11, 0, 0, 0, Constants.timeZone);
                 break;
             case "2017":
-                endTime = new DateTime(2017, 8, 14, 11, 0, 0, 0).withZone(Constants.timeZone);
+                endTime = new DateTime(2017, 8, 14, 11, 0, 0, 0, Constants.timeZone);
                 break;
             default:
-                endTime = new DateTime(2017, 8, 14, 11, 0, 0, 0).withZone(Constants.timeZone);
+                endTime = new DateTime(2017, 8, 14, 11, 0, 0, 0, Constants.timeZone);
         }
 
 

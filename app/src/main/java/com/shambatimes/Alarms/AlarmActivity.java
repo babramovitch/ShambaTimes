@@ -19,6 +19,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -179,7 +180,7 @@ public class AlarmActivity extends Activity {
             artist.save();
 
             //Notify the rest of the app so the artist if shown no longer shows an alarm clock
-            EventBus.getDefault().post(new DataChangedEvent(true, artist.getId()));
+            EventBus.getDefault().postSticky(new DataChangedEvent(true, artist.getId()));
 
             int[] stageColors = ColorUtil.getStageColors();
             float alpha = 0.5f;

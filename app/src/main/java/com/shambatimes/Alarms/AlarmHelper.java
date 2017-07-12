@@ -219,6 +219,11 @@ public class AlarmHelper {
 
             for (Artist artist : artists) {
 
+                if ((DateUtils.getFullDateTimeForArtist(artist).getMillis() - DateTime.now().getMillis() < (60000 * alarmMinutes))) {
+                    Log.i("AlarmHelper", "Ignoring past alarm");
+                    continue;
+                }
+
                 Intent alarmIntent = new Intent(context, AlarmReceiver.class);
                 alarmIntent.putExtra("name", artist.getArtistName());
                 alarmIntent.putExtra("id", artist.getId().toString());
@@ -250,7 +255,7 @@ public class AlarmHelper {
         Log.i("AlarmHelper", "Artist Time:" + startTime.toString());
         Log.i("AlarmHelper", "Alarm  Time: " + alarmTime.toString());
 
-        return  alarmTime.getMillis();
+        return alarmTime.getMillis();
     }
 
     public static void cancelAlarmIntent(Context context, Artist artist) {
