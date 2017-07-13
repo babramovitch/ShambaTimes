@@ -263,7 +263,7 @@ public class TimeCardScheduleFragment extends Fragment {
 
                         SeenArtistHelper.setReverseSeenImageColor(getActivity(), artist, seenImage);
                         //TODO is this event needed? It's stopping the animations.  It may cause the artist to NOT be updated elsewhere?
-                        //EventBus.getDefault().postSticky(new DataChangedEvent(true, artist.getId()));
+                        EventBus.getDefault().postSticky(new DataChangedEvent(true, artist.getId()));
                     }
                 });
 
