@@ -319,6 +319,7 @@ public class TimeScheduleFragment extends Fragment {
                         event.getImageView().setVisibility(View.VISIBLE);
                         event.getImageView().animate().setDuration(500).alpha(1f);
 
+                        //Delaying event as it interrupts animations
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override

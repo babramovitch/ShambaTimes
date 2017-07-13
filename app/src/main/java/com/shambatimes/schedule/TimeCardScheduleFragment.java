@@ -262,7 +262,7 @@ public class TimeCardScheduleFragment extends Fragment {
 
                         SeenArtistHelper.setReverseSeenImageColor(getActivity(), artist, seenImage);
 
-                        //TODO is this event needed? It's stopping the animations.  It may cause the artist to NOT be updated elsewhere?
+                        //Ignoring self event as it interrupts animations
                         ignoreSelfDataChangedEvent = true;
                         EventBus.getDefault().postSticky(new DataChangedEvent(true, artist.getId()));
 
@@ -273,6 +273,10 @@ public class TimeCardScheduleFragment extends Fragment {
                     @Override
                     public boolean onLongClick(View v) {
                         SeenArtistHelper.updateSeenState(getActivity(), artist, seenImage, true);
+
+                        //Ignoring self event as it interrupts animations
+                        ignoreSelfDataChangedEvent = true;
+                        EventBus.getDefault().postSticky(new DataChangedEvent(true, artist.getId()));
                         return true;
                     }
                 });
