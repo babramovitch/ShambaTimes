@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MyViewPager;
@@ -28,6 +29,7 @@ import de.greenrobot.event.EventBus;
 
 import com.shambatimes.schedule.events.ActionBarColorEvent;
 import com.shambatimes.schedule.events.ChangeDateEvent;
+import com.shambatimes.schedule.events.DataChangedEvent;
 import com.shambatimes.schedule.events.DatabaseLoadFinishedEvent;
 import com.shambatimes.schedule.events.SearchSelectedEvent;
 import com.shambatimes.schedule.events.ShowHideAlarmSnackbarEvent;
@@ -316,6 +318,15 @@ public class TimeScheduleFragment extends Fragment {
                         event.getImageView().setAlpha(0f);
                         event.getImageView().setVisibility(View.VISIBLE);
                         event.getImageView().animate().setDuration(500).alpha(1f);
+
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                EventBus.getDefault().postSticky(new DataChangedEvent(true, event.getArtist().getId()));
+                            }
+                        }, 500);
+
                     }
                 }
             });

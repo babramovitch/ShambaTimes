@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -255,15 +256,16 @@ public class TimeCardScheduleFragment extends Fragment {
                                 transitionDrawable.favoriteStart(ANIMATION_DURATION_HEARTS);
                                 artist.setFavorite(true);
                                 artist.save();
-
                                 EventBus.getDefault().post(new ShowHideAlarmSnackbarEvent(artist, alarmImage));
-
                             }
                         }
 
                         SeenArtistHelper.setReverseSeenImageColor(getActivity(), artist, seenImage);
+
                         //TODO is this event needed? It's stopping the animations.  It may cause the artist to NOT be updated elsewhere?
+                        ignoreSelfDataChangedEvent = true;
                         EventBus.getDefault().postSticky(new DataChangedEvent(true, artist.getId()));
+
                     }
                 });
 
@@ -313,14 +315,17 @@ public class TimeCardScheduleFragment extends Fragment {
         }
     }
 
+    boolean ignoreSelfDataChangedEvent = false;
     public void onEventMainThread(DataChangedEvent event) {
         EventBus.getDefault().removeStickyEvent(event);
 
-        if (event.isChanged()) {
+        if (event.isChanged() && !ignoreSelfDataChangedEvent) {
             MainActivity.shambhala.updateArtistById(event.getArtistId());
             scheduleAdapter = new ScheduleAdapter(getActivity());
             gridView.setAdapter(scheduleAdapter);
         }
+
+        ignoreSelfDataChangedEvent = false;
     }
 
     public void onEventMainThread(ActionBarColorEvent event) {
