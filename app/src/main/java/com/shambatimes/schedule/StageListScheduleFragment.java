@@ -103,7 +103,14 @@ public class StageListScheduleFragment extends Fragment {
                 TextView textView = (TextView) view.findViewById(R.id.artistStartTimePosition);
                 DateTime startTime = convertStringTimeToPosition(textView.getText().toString());
 
-                DateTime baseTime = convertStringTimeToPosition("11:00");
+
+                String convertBaseTime;
+                if (Shambhala.getFestivalYear(getActivity()).equals("2017")) {
+                    convertBaseTime = "10:00";
+                } else {
+                    convertBaseTime = "11:00";
+                }
+                DateTime baseTime = convertStringTimeToPosition(convertBaseTime);
                 Minutes minutesToStart = Minutes.minutesBetween(baseTime, startTime);
 
                 int startPosition = minutesToStart.getMinutes() / 30;
@@ -282,7 +289,7 @@ public class StageListScheduleFragment extends Fragment {
 
             final ImageView seenImage = (ImageView) convertView.findViewById(R.id.list_seen_set);
             seenImage.setVisibility(artist.isSeenArtist() ? View.VISIBLE : View.GONE);
-            SeenArtistHelper.setSeenImageColor(getActivity(),artist,seenImage);
+            SeenArtistHelper.setSeenImageColor(getActivity(), artist, seenImage);
 
             final ImageView image = (ImageView) convertView.findViewById(R.id.list_favorited);
             image.setImageDrawable(AnimationHelper.getFavoriteTransitionDrawable(getActivity(), artist.isFavorite()));

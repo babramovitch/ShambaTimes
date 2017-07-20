@@ -22,7 +22,9 @@ public final class DateUtils {
     }
 
     public static void setReferenceTime(Context context, int currentDay) {
-        if (currentDay == 3 && Shambhala.getFestivalYear(context).equals("2015")) {
+        if (Shambhala.getFestivalYear(context).equals("2017")) {
+            Constants.REFERENCE_TIME = Constants.GENERAL_REFERENCE_TIME_2017;
+        } else if (currentDay == 3 && Shambhala.getFestivalYear(context).equals("2015")) {
             Constants.REFERENCE_TIME = Constants.SUNDAY_REFERENCE_TIME_2015;
         } else {
             Constants.REFERENCE_TIME = Constants.GENERAL_REFERENCE_TIME;
@@ -188,11 +190,6 @@ public final class DateUtils {
         //Since I don't have full dates available, and no sets begin before 10:00AM, 0 means next day
         boolean addDay = artist.getStartTimeString().substring(0, 1).equals("0");
 
-        //This is a really lame exception I have to add due to the awkwardness of making different days start at different times
-        if (artist.getYear() == 2017 && artist.getArtistName().equals("Marty Carter and Russ")) {
-            addDay = true;
-        }
-
         if (addDay) {
             day = getDayOfWeek(day, artist.getYear()) + 1;
         } else {
@@ -211,11 +208,6 @@ public final class DateUtils {
         //TODO THIS IS NOT TRUE!  Not all artists had a leading 0 (OOPS!) and cedar lounge had one starting at 10:00am
         //Since I don't have full dates available, and no sets begin before 10:00AM, 0 means next day
         boolean addDay = artist.getEndTimeString().substring(0, 1).equals("0") || artist.getStartTimeString().substring(0, 1).equals("0");
-
-        //This is a really lame exception I have to add due to the awkwardness of making different days start at different times
-        if (artist.getYear() == 2017 && artist.getArtistName().equals("Marty Carter and Russ")) {
-            addDay = true;
-        }
 
         if (addDay) {
             day = getDayOfWeek(day, artist.getYear()) + 1;
@@ -320,7 +312,7 @@ public final class DateUtils {
                 endTime = new DateTime(2016, 8, 8, 11, 0, 0, 0, Constants.timeZone);
                 break;
             case "2017":
-                endTime = new DateTime(2017, 8, 14, 11, 0, 0, 0, Constants.timeZone);
+                endTime = new DateTime(2017, 8, 14, 10, 0, 0, 0, Constants.timeZone);
                 break;
             default:
                 endTime = new DateTime(2017, 8, 14, 11, 0, 0, 0, Constants.timeZone);

@@ -172,6 +172,9 @@ public class AlarmActivity extends Activity {
         String[] stageNames = getResources().getStringArray(R.array.stages);
         String[] query1 = {intent.getStringExtra("id")};
 
+        //TODO Test this, and possibly put a blank alarm in when it happens
+       // query1[0] = null;
+
         ArrayList<Artist> artists = (ArrayList<Artist>) Artist.find(Artist.class, "id = ?", query1, null, null, null);
         if (artists.size() > 0) {
 

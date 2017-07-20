@@ -313,6 +313,8 @@ public class DatabaseScheduleUpdates {
             ArtistGenerator artistGenerator = new ArtistGenerator(context);
             artistGenerator.get2017Artists();
             prefs.edit().putBoolean("2017_loaded", true).apply();
+            prefs.edit().putBoolean("update_one_complete_2017", true).apply();
+            prefs.edit().putBoolean("update_two_complete_2017", true).apply();
         }
     }
 
@@ -583,6 +585,147 @@ public class DatabaseScheduleUpdates {
                 deekline.save();
 
                 prefs.edit().putBoolean("update_one_complete_2017", true).apply();
+
+            } catch (Exception e) {
+                Log.e("UpdateDatabase", "Error Updating", e);
+            }
+        }
+    }
+
+    public static void scheduleUpdateTwo2017(Context context) {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (!prefs.contains("update_two_complete_2017")) {
+
+            try {
+                ArrayList<Artist> artists;
+
+                //Thursday New
+                new Artist(2017, Constants.AMPHITHEATER, 0, "10:45", "11:45", "Hosted by ThinkTank & Def3", "").save();
+                new Artist(2017, Constants.LIVINGROOM, 0, "10:30", "11:00", "Opening Ceremony with Joaqopelli", "").save();
+
+                //Friday New
+                new Artist(2017, Constants.AMPHITHEATER, 1, "11:30", "12:30", "Hosted by DEF3 & ThinkTank", "indie,blues,acoustic hip hop").save();
+                new Artist(2017, Constants.CEDAR_LOUNGE, 1, "14:00", "15:30", "Levi Bannier Shamanic Yoga Flow", "").save();
+                new Artist(2017, Constants.CEDAR_LOUNGE, 1, "15:30", "17:00", "Momentom Collective Art of Flight: Acro Yoga", "").save();
+
+                //Saturday New
+                new Artist(2017, Constants.AMPHITHEATER, 2, "12:30", "13:30", "Hosted by ThinkTank @ Def3", "").save();
+                new Artist(2017, Constants.AMPHITHEATER, 2, "15:00", "16:00", "Blenda", "").save();
+                new Artist(2017, Constants.LIVINGROOM, 2, "11:00", "12:00", "Classical Hour", "").save();
+                new Artist(2017, Constants.CEDAR_LOUNGE, 2, "12:00", "13:00", "Tamara Dawn The Tantric Perspective on  Surya Namaskar", "").save();
+                new Artist(2017, Constants.CEDAR_LOUNGE, 2, "13:00", "14:30", "Levi Banner Astrology Basics and Beyond", "").save();
+                new Artist(2017, Constants.CEDAR_LOUNGE, 2, "14:30", "15:30", "Leiah Luz Engel Movement Exploration", "").save();
+                new Artist(2017, Constants.CEDAR_LOUNGE, 2, "15:30", "17:30", "Momentom Collective Flow & Transition: Acro Yoga", "").save();
+
+                //Sunday New
+                new Artist(2017, Constants.AMPHITHEATER, 3, "12:00", "13:00", "Hosted by Wet Spot", "").save();
+                new Artist(2017, Constants.CEDAR_LOUNGE, 3, "12:00", "13:30", "Tamara Dawn Traditional Tantric Yoga", "").save();
+                new Artist(2017, Constants.CEDAR_LOUNGE, 3, "13:30", "15:00", "Levi Banner Shamanic Breath Work", "").save();
+                new Artist(2017, Constants.CEDAR_LOUNGE, 3, "15:00", "16:30", "James Jesson Healing the Past", "").save();
+                new Artist(2017, Constants.CEDAR_LOUNGE, 3, "16:30", "18:00", "Momentom Collective Thai & Fly Acro Yoga", "").save();
+                new Artist(2017, Constants.GROVE, 3, "03:00", "04:30", "Mystery Guest ???", "").save();
+
+                //Friday Changes
+
+                String[] query1 = {"excision", "1", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query1, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setArtistName("Excision Special 10th Anniversary Set");
+                    artist.save();
+                }
+
+                String[] query2 = {"destructo", "1", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query2, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setArtistName("Destructo Sunrise Sermon");
+                    artist.save();
+                }
+
+                //Saturday Changes
+
+                String[] query3 = {"rhoneil", "2", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query3, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.delete();
+                }
+
+                String[] query4 = {"calyx & teebee", "2", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query4, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setArtistName("Calyx & Teebee w/ Armanni Reign");
+                    artist.save();
+                }
+
+                String[] query8 = {"marty carter and russ", "2", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query8, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setDay(3);
+                    artist.save();
+                }
+
+                //Sunday Changes
+
+                String[] query5 = {"smalltown djs", "3", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query5, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setArtistName("Fractal Forest Funk Jam Hosted by Smalltown DJs");
+                    artist.save();
+                }
+
+                String[] query6 = {"ltj bukem b2b armanni reign", "3", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query6, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setArtistName("LTJ Bukem w/ Armanni Reign");
+                    artist.save();
+                }
+
+                String[] query7 = {"hoola", "3", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query7, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setArtistName("The Pride Obscuri-Teaze Ft Hoola & Guests, closing with Joaqopelli at 11:30am");
+                    artist.save();
+                }
+
+                String[] query10 = {"jfb", "3", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query10, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setEndTimeString("00:00");
+                    artist.updateEndPosition();
+                    artist.save();
+                }
+
+                String[] query11 = {"stanton warriors", "3", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query11, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setStartTimeString("00:00");
+                    artist.updateStartPosition();
+                    artist.save();
+                }
+
+                //Update all the start/end positions for 2017 artists due to the shift from an 11am to 10am start.  UGH I can't wait to move to real dates.
+                String[] query9 = {"2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "year = ?", query9, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    for (Artist artist : artists) {
+                        artist.updateStartPosition();
+                        artist.updateEndPosition();
+                        artist.save();
+                    }
+                }
+
+                prefs.edit().putBoolean("update_two_complete_2017", true).apply();
 
                 AlarmHelper.recalculateAllAlarmTimes(context);
 

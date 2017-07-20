@@ -20,6 +20,7 @@ public class Constants {
     public static int REFERENCE_TIME = 660;
     public static int SUNDAY_REFERENCE_TIME_2015 = 720;
     public static int GENERAL_REFERENCE_TIME = 660;
+    public static int GENERAL_REFERENCE_TIME_2017 = 600;
 
     public static int ANIMATION_DURATION = 400;
     public static int ANIMATION_DURATION_HEARTS = 300;

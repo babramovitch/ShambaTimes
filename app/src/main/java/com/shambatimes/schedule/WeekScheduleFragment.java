@@ -178,6 +178,10 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
     private void setupWeekView() {
         mWeekView = (WeekView) rootView.findViewById(R.id.weekView);
 
+        int startingHour = (int) (Constants.REFERENCE_TIME / 60);
+
+        mWeekView.setStartingHour(startingHour);
+
         mWeekView.setOnEventClickListener(this);
         mWeekView.setEventLongPressListener(this);
 

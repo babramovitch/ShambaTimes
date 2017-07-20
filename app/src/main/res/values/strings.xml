@@ -153,6 +153,7 @@
     <string name="missed_alarm_message">Missed alarm for </string>
     <string name="missed_alarm_title">Missed Alarm</string>
     <string name="jump">Jump</string>
+    <string name="to_add_a_favourite_press_the_hearts_beside_an_artists_name">To add a favourite, press the hearts beside an artists name</string>
 
 </resources>
 

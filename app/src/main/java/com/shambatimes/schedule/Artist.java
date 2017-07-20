@@ -97,6 +97,8 @@ public class Artist extends SugarRecord {
         DateTime baseTime;
         if (day == 3 && year == 2015) {
             baseTime = DateTime.now().withZone(Constants.timeZone).withTimeAtStartOfDay().plusMinutes(Constants.SUNDAY_REFERENCE_TIME_2015);
+        } else if (year == 2017) {
+            baseTime = DateTime.now().withZone(Constants.timeZone).withTimeAtStartOfDay().plusMinutes(Constants.GENERAL_REFERENCE_TIME_2017);
         } else {
             baseTime = DateTime.now().withZone(Constants.timeZone).withTimeAtStartOfDay().plusMinutes(Constants.GENERAL_REFERENCE_TIME);
         }
@@ -118,7 +120,9 @@ public class Artist extends SugarRecord {
         DateTime baseTime;
         if (day == 3 && year == 2015) {
             baseTime = DateTime.now().withZone(Constants.timeZone).withTimeAtStartOfDay().plusMinutes(Constants.SUNDAY_REFERENCE_TIME_2015);
-        } else {
+        } else if (year == 2017) {
+            baseTime = DateTime.now().withZone(Constants.timeZone).withTimeAtStartOfDay().plusMinutes(Constants.GENERAL_REFERENCE_TIME_2017);
+        } else{
             baseTime = DateTime.now().withZone(Constants.timeZone).withTimeAtStartOfDay().plusMinutes(Constants.GENERAL_REFERENCE_TIME);
         }
 
@@ -158,7 +162,17 @@ public class Artist extends SugarRecord {
         this.stage = stage;
     }
 
+    @Ignore
+    boolean sadfaceUpdatedStartPositions = false;
+
+    @Ignore
+    boolean sadfaceUpdatedEndPositions = false;
+
     public int getStartPosition() {
+//        if(!sadfaceUpdatedStartPositions){
+//            sadfaceUpdatedStartPositions = true;
+//            updateStartPosition();
+//        }
         return startPosition;
     }
 
@@ -167,6 +181,10 @@ public class Artist extends SugarRecord {
     }
 
     public int getEndPosition() {
+//        if(!sadfaceUpdatedEndPositions){
+//            sadfaceUpdatedEndPositions = true;
+//            updateEndPosition();
+//        }
         return endPosition;
     }
 

@@ -219,8 +219,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (prefs.contains("database_loaded")) {
 
-            if (!prefs.contains("2017_loaded")) {
-                Toast.makeText(this, "Preparing 2017 Database", Toast.LENGTH_LONG).show();
+            if (!prefs.contains("update_two_complete_2017")) {
+                Toast.makeText(this, "Updating Database", Toast.LENGTH_LONG).show();
             }
 
             new Thread(new Runnable() {
@@ -238,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
                     //2017 updates
                     DatabaseScheduleUpdates.load2017Database(MainActivity.this);
                     DatabaseScheduleUpdates.scheduleUpdateOne2017(MainActivity.this);
+                    DatabaseScheduleUpdates.scheduleUpdateTwo2017(MainActivity.this);
 
                     fetchAllArtistsForYear(festivalYear);
                 }
@@ -258,6 +259,7 @@ public class MainActivity extends AppCompatActivity {
                     artistGenerator.get2017Artists();
                     prefs.edit().putBoolean("2017_loaded", true).apply();
                     prefs.edit().putBoolean("update_one_complete_2017", true).apply();
+                    prefs.edit().putBoolean("update_two_complete_2017", true).apply();
                     prefs.edit().putString(SettingsActivity.FESTIVAL_YEAR, "2017").apply();
                     fetchAllArtistsForYear(festivalYear);
 

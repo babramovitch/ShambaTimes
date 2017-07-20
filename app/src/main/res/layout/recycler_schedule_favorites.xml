@@ -17,7 +17,8 @@
         android:layout_gravity="center"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:text="To add a favourite, press the hearts beside an artists name"
+        android:layout_margin="15dp"
+        android:text="@string/to_add_a_favourite_press_the_hearts_beside_an_artists_name"
         android:textColor="@color/primaryTextColor"
         android:visibility="gone"
         android:textSize="20sp" />

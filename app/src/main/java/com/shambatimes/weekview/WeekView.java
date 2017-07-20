@@ -71,6 +71,7 @@ public class WeekView extends View {
     Paint eventPlayingBorderPaint;
 
     private boolean scheduleScrollingEnabled;
+    private int startingHour;
 
     public void toggleFavourites(boolean favouritesOnly) {
         this.favouritesOnly = favouritesOnly;
@@ -82,6 +83,10 @@ public class WeekView extends View {
         this.nowOnly = nowOnly;
         this.favouritesOnly = false;
         invalidate();
+    }
+
+    public void setStartingHour(int startingHour) {
+        this.startingHour = startingHour;
     }
 
     public void setXOriginOffset(float offset) {
@@ -236,7 +241,6 @@ public class WeekView extends View {
         }
 
 
-
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 
@@ -251,13 +255,13 @@ public class WeekView extends View {
 
             //Don't initiate left/right scrolling until the lesser direction has enough movement.
             //This allows for a smoother up/down or left/right scrolling if you aren't intentionally trying to pan diagonally.
-            if(Math.abs(distanceX) > Math.abs(distanceY)) {
+            if (Math.abs(distanceX) > Math.abs(distanceY)) {
                 mCurrentScrollDirection = Direction.NONE;
                 if (Math.abs(distanceY) < 15) {
                     distanceY = 0;
                 }
             }
-            if(Math.abs(distanceY) > Math.abs(distanceX)) {
+            if (Math.abs(distanceY) > Math.abs(distanceX)) {
                 mCurrentScrollDirection = Direction.VERTICAL;
                 if (Math.abs(distanceX) < 15) {
                     distanceX = 0;
@@ -305,7 +309,6 @@ public class WeekView extends View {
                     mScroller.fling((int) mCurrentOrigin.x, (int) mCurrentOrigin.y, 0, (int) velocityY, (int) getXMinLimit(), (int) getXMaxLimit(), (int) getYMinLimit(), (int) getYMaxLimit());
                     break;
             }
-
 
 
             ViewCompat.postInvalidateOnAnimation(WeekView.this);
@@ -772,7 +775,9 @@ public class WeekView extends View {
             float top = mHeaderHeight + mHeaderRowPadding * 2 + mCurrentOrigin.y + timeSpacing * i + mHeaderMarginBottom;
 
             //Adjust for an 11am to 11am schedule format
-            hour = hour + 11;
+
+            hour = hour + startingHour;
+
             if (hour > 24) {
                 hour = hour - 24;
             }
@@ -936,7 +941,7 @@ public class WeekView extends View {
 
             if (mWidthPerStage + startPixel - start > 0) {
                 //TODO The background color is drawn by the layout file, so this is causing overdraw.  Can remove it.
-               // canvas.drawRect(start, mHeaderHeight + mHeaderRowPadding * 2 + mTimeTextHeight / 2 + mHeaderMarginBottom, startPixel + mWidthPerStage, getHeight(), mDayBackgroundPaint);
+                // canvas.drawRect(start, mHeaderHeight + mHeaderRowPadding * 2 + mTimeTextHeight / 2 + mHeaderMarginBottom, startPixel + mWidthPerStage, getHeight(), mDayBackgroundPaint);
             }
 
             // Prepare the separator lines for hours.
@@ -1542,10 +1547,12 @@ public class WeekView extends View {
                     eventRect.left = j / columns.size();
                     if (!eventRect.event.isAllDay()) {
 
-                        int topHour = ((eventRect.event.getStartTime().get(Calendar.HOUR_OF_DAY) - 11) * 60);
+
+
+                        int topHour = ((eventRect.event.getStartTime().get(Calendar.HOUR_OF_DAY) - startingHour) * 60);
                         int topMinute = eventRect.event.getStartTime().get(Calendar.MINUTE);
 
-                        int bottomHour = (eventRect.event.getEndTime().get(Calendar.HOUR_OF_DAY) - 11) * 60;
+                        int bottomHour = (eventRect.event.getEndTime().get(Calendar.HOUR_OF_DAY) - startingHour) * 60;
                         int bottomMinute = eventRect.event.getEndTime().get(Calendar.MINUTE);
 
                         if (topHour < 0) {
@@ -2466,8 +2473,8 @@ public class WeekView extends View {
 //c         Check after call of mGestureDetector, so mCurrentFlingDirection and mCurrentScrollDirection are set.
         if (event.getAction() == MotionEvent.ACTION_UP && !mIsZooming && mCurrentFlingDirection == Direction.NONE) {
             //if (mCurrentScrollDirection == Direction.RIGHT || mCurrentScrollDirection == Direction.LEFT) {
-                //TODO maybe get rid of this if I do scrolling, snapping makes it feel more rigid
-                goToNearestOrigin();
+            //TODO maybe get rid of this if I do scrolling, snapping makes it feel more rigid
+            goToNearestOrigin();
             //}
             mCurrentScrollDirection = Direction.NONE;
         }
@@ -2607,7 +2614,7 @@ public class WeekView extends View {
         }
 
         //Account for the zoom being applied while the view is loaded
-        if(mNewHourHeight > 0){
+        if (mNewHourHeight > 0) {
             mHourHeight = mNewHourHeight;
         }
 
@@ -2751,7 +2758,7 @@ public class WeekView extends View {
         public boolean onScale(ScaleGestureDetector detector) {
             final float scale = detector.getScaleFactor();
 
-            Log.i("SCALE","Previous Height: " + mHourHeight + " New Height: " + Math.round(mHourHeight * scale));
+            Log.i("SCALE", "Previous Height: " + mHourHeight + " New Height: " + Math.round(mHourHeight * scale));
 
             mNewHourHeight = Math.round(mHourHeight * scale);
 
