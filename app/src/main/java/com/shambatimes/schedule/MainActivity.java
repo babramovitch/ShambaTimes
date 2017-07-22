@@ -1015,9 +1015,8 @@ public class MainActivity extends AppCompatActivity {
         DateTimeFormatter timeFormatter = DateUtils.getTimeFormat(prefs.getString(SettingsActivity.TIME_FORMAT, "24"));
 
         String[] stageNames = getResources().getStringArray(R.array.stages);
-        String[] args = {"1"};
-
-        ArrayList<Artist> artists = (ArrayList<Artist>) Artist.find(Artist.class, "favorite = ?", args, null, "day ASC, start_Position ASC", null);
+        String[] args = {"1", Shambhala.getFestivalYear(this)};
+        ArrayList<Artist> artists = (ArrayList<Artist>) Artist.find(Artist.class, "favorite = ? and year = ?", args, null, "day ASC, start_Position ASC", null);
 
         int previousDay = -1;
 
