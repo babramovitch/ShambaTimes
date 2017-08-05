@@ -258,6 +258,11 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
     @Override
     public void onEventClick(final WeekViewEvent event, RectF eventRect) {
 
+        if(getActivity() == null){
+            //Can be null while click spamming / rotating device
+            return;
+        }
+
         if (genreSnackbar != null && genreSnackbar.isShown()) {
             genreSnackbar.dismiss();
         }
