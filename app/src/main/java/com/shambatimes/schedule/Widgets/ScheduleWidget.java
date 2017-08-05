@@ -8,11 +8,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import com.shambatimes.schedule.Constants;
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Shambhala;
+import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.Util.DateUtils;
 import com.shambatimes.schedule.events.DataChangedEvent;
 import com.shambatimes.schedule.Artist;
@@ -39,10 +42,12 @@ public class ScheduleWidget extends AppWidgetProvider {
     private static final String SYNC_CLICKED_AMPH = "amph";
     private static final String SYNC_CLICKED_CEDAR_LOUNGE = "cedar";
 
-    Integer[] artist_array = {R.id.pagoda_artist, R.id.forest_artist, R.id.grove_artist, R.id.living_room_artist, R.id.village_artist, R.id.amphitheatre_artist,R.id.cedar_lounge_artist};
-    Integer[] like_array = {R.id.pagoda_like, R.id.forest_like, R.id.grove_like, R.id.living_room_like, R.id.village_like, R.id.amphitheatre_like,R.id.cedar_lounge_like};
-    Integer[] time_array = {R.id.pagoda_time, R.id.forest_time, R.id.grove_time, R.id.living_room_time, R.id.village_time, R.id.amphitheatre_time,R.id.cedar_lounge_time};
-    String[] stage_array = {SYNC_CLICKED_PAGODA, SYNC_CLICKED_FOREST, SYNC_CLICKED_GROVE_, SYNC_CLICKED_LIVINGROOM, SYNC_CLICKED_VILLAGE, SYNC_CLICKED_AMPH,SYNC_CLICKED_CEDAR_LOUNGE};
+    Integer[] stage_title_array = {R.id.pagoda_title, R.id.forest_title, R.id.grove_title , R.id.living_room_title, R.id.village_title, R.id.amphitheatre_title, R.id.cedar_lounge_title};
+    Integer[] widget_array = {R.id.pagoda_widget, R.id.forest_widget, R.id.grove_widget, R.id.living_room_widget, R.id.village_widget, R.id.amphitheatre_widget, R.id.cedar_lounge_widget};
+    Integer[] artist_array = {R.id.pagoda_artist, R.id.forest_artist, R.id.grove_artist, R.id.living_room_artist, R.id.village_artist, R.id.amphitheatre_artist, R.id.cedar_lounge_artist};
+    Integer[] like_array = {R.id.pagoda_like, R.id.forest_like, R.id.grove_like, R.id.living_room_like, R.id.village_like, R.id.amphitheatre_like, R.id.cedar_lounge_like};
+    Integer[] time_array = {R.id.pagoda_time, R.id.forest_time, R.id.grove_time, R.id.living_room_time, R.id.village_time, R.id.amphitheatre_time, R.id.cedar_lounge_time};
+    String[] stage_array = {SYNC_CLICKED_PAGODA, SYNC_CLICKED_FOREST, SYNC_CLICKED_GROVE_, SYNC_CLICKED_LIVINGROOM, SYNC_CLICKED_VILLAGE, SYNC_CLICKED_AMPH, SYNC_CLICKED_CEDAR_LOUNGE};
 
 //http://stackoverflow.com/questions/14798073/button-click-event-for-android-widget
 
@@ -75,13 +80,14 @@ public class ScheduleWidget extends AppWidgetProvider {
     }
 
     DateTimeFormatter dateStringFormat;
+
     private RemoteViews updateArtist(RemoteViews views, Context context) {
 
         int position = DateUtils.getCurrentTimePosition(context);
         int day = DateUtils.getCurrentDay(context);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        dateStringFormat = DateUtils.getTimeFormat(preferences.getString(SettingsActivity.TIME_FORMAT,"24"));
+        dateStringFormat = DateUtils.getTimeFormat(preferences.getString(SettingsActivity.TIME_FORMAT, "24"));
 
         CharSequence widgetText;
 
@@ -91,13 +97,16 @@ public class ScheduleWidget extends AppWidgetProvider {
 
         //Reset the widget views to empty since the next refresh may include a new empty slot which won't get updated.
         for (int x = 0; x < 7; x++) {
-            widgetText = "";
+            widgetText = "stage closed";
             views.setTextViewText(artist_array[x], widgetText);
 
             widgetText = "";
             views.setTextViewText(time_array[x], widgetText);
-
             views.setImageViewResource(like_array[x], R.drawable.new_favourite_border);
+            views.setViewVisibility(like_array[x], View.INVISIBLE);
+            views.setInt(widget_array[x], "setBackgroundColor", ContextCompat.getColor(context, ColorUtil.getLightStageColors()[x]));
+            views.setTextColor(artist_array[x], ContextCompat.getColor(context, R.color.noArtistTextColorWidgetDay));
+            views.setTextColor(stage_title_array[x], ContextCompat.getColor(context, R.color.noArtistTextColorWidgetDay));
         }
 
         if (!DateUtils.isPrePostFestival(context)) {
@@ -106,14 +115,19 @@ public class ScheduleWidget extends AppWidgetProvider {
 
             for (Artist artist : artistList) {
 
+
                 int artistStage = artist.getStage();
+
+                views.setInt(widget_array[artistStage], "setBackgroundColor", ContextCompat.getColor(context, ColorUtil.getStageColors()[artistStage]));
+                views.setTextColor(artist_array[artistStage], ContextCompat.getColor(context, R.color.white));
+                views.setTextColor(stage_title_array[artistStage], ContextCompat.getColor(context, R.color.white));
+                views.setViewVisibility(like_array[artistStage], View.VISIBLE);
 
                 widgetText = "" + artist.getAristName();
                 views.setTextViewText(artist_array[artistStage], widgetText);
 
-                widgetText = "" + DateUtils.formatTime(dateStringFormat,artist.getStartTimeString()) + " - " + DateUtils.formatTime(dateStringFormat,artist.getEndTimeString());
+                widgetText = "" + DateUtils.formatTime(dateStringFormat, artist.getStartTimeString()) + " - " + DateUtils.formatTime(dateStringFormat, artist.getEndTimeString());
                 views.setTextViewText(time_array[artistStage], widgetText);
-
 
                 if (artist.isFavorite()) {
                     views.setImageViewResource(like_array[artistStage], R.drawable.new_favourite);

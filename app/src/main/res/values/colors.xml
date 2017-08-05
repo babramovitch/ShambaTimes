@@ -91,6 +91,8 @@
 
     <color name="noArtistTextColor">#d9d9d9</color>
 
+    <color name="noArtistTextColorWidgetDay">#d9d9d9</color> <!-- duplicated because widgets don't play nice with day/night themes and it pulls wrong color -->
+
     <color name="primaryTextColorWhite">@color/white</color>
     <color name="primaryTextColor">@color/black</color>
     <color name="genreTextColor">@color/black</color>
