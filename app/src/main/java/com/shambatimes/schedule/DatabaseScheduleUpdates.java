@@ -315,6 +315,7 @@ public class DatabaseScheduleUpdates {
             prefs.edit().putBoolean("2017_loaded", true).apply();
             prefs.edit().putBoolean("update_one_complete_2017", true).apply();
             prefs.edit().putBoolean("update_two_complete_2017", true).apply();
+            prefs.edit().putBoolean("update_three_complete_2017", true).apply();
         }
     }
 
@@ -726,6 +727,40 @@ public class DatabaseScheduleUpdates {
                 }
 
                 prefs.edit().putBoolean("update_two_complete_2017", true).apply();
+
+                AlarmHelper.recalculateAllAlarmTimes(context);
+
+            } catch (Exception e) {
+                Log.e("UpdateDatabase", "Error Updating", e);
+            }
+        }
+    }
+
+    public static void scheduleUpdateThree2017(Context context) {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (!prefs.contains("update_three_complete_2017")) {
+
+            try {
+                ArrayList<Artist> artists;
+
+                String[] query1 = {"nicola cruz", "2", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query1, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    artists.get(0).delete();
+                }
+
+                String[] query2 = {"nicola cruz", "3", "2017"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and day = ? and year = ?", query2, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    artists.get(0).delete();
+                }
+
+                new Artist(2017,Constants.LIVINGROOM,3,"21:30","22:30","Flamingosis","its a groovy thing").save();
+                new Artist(2017,Constants.GROVE,2,"22:30","23:30","El Papachango","bass,electronica,hip-hop,tropical").save();
+
+                prefs.edit().putBoolean("update_three_complete_2017", true).apply();
 
                 AlarmHelper.recalculateAllAlarmTimes(context);
 

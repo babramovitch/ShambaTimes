@@ -239,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
                     DatabaseScheduleUpdates.load2017Database(MainActivity.this);
                     DatabaseScheduleUpdates.scheduleUpdateOne2017(MainActivity.this);
                     DatabaseScheduleUpdates.scheduleUpdateTwo2017(MainActivity.this);
+                    DatabaseScheduleUpdates.scheduleUpdateThree2017(MainActivity.this);
 
                     fetchAllArtistsForYear(festivalYear);
                 }
@@ -260,6 +261,7 @@ public class MainActivity extends AppCompatActivity {
                     prefs.edit().putBoolean("2017_loaded", true).apply();
                     prefs.edit().putBoolean("update_one_complete_2017", true).apply();
                     prefs.edit().putBoolean("update_two_complete_2017", true).apply();
+                    prefs.edit().putBoolean("update_three_complete_2017", true).apply();
                     prefs.edit().putString(SettingsActivity.FESTIVAL_YEAR, "2017").apply();
                     fetchAllArtistsForYear(festivalYear);
 

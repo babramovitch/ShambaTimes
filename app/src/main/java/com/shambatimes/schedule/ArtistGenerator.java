@@ -731,7 +731,7 @@ public class ArtistGenerator {
         artistList.add(new Artist(2017,Constants.LIVINGROOM,3,"16:30","18:30","Adham Shaikh",""));
         artistList.add(new Artist(2017,Constants.LIVINGROOM,3,"18:30","20:00","DJ Olive","roof music"));
         artistList.add(new Artist(2017,Constants.LIVINGROOM,3,"20:00","21:30","The Orb","ambient,house,techno,electronica"));
-        artistList.add(new Artist(2017,Constants.LIVINGROOM,3,"21:30","22:30","Nicola Cruz","electronica"));
+        artistList.add(new Artist(2017,Constants.LIVINGROOM,3,"21:30","22:30","Flamingosis","its a groovy thing"));
         artistList.add(new Artist(2017,Constants.LIVINGROOM,3,"22:30","00:30","El Papachango","bass,electronica,hip hop,tropical"));
         artistList.add(new Artist(2017,Constants.LIVINGROOM,3,"00:30","02:30","KMLN",""));
         artistList.add(new Artist(2017,Constants.LIVINGROOM,3,"02:30","04:30","MA/AM","house,live vocal"));
@@ -818,7 +818,7 @@ public class ArtistGenerator {
         artistList.add(new Artist(2017,Constants.GROVE,2,"19:30","21:00","Vokab Kompany","hip hop,soul,electronic & funk"));
         artistList.add(new Artist(2017,Constants.GROVE,2,"21:00","22:00","Charlesthefirst","downtempo,bass,ambient"));
         artistList.add(new Artist(2017,Constants.GROVE,2,"22:00","22:30","Omnika","theatrical dance and circus"));
-        artistList.add(new Artist(2017,Constants.GROVE,2,"22:30","23:30","Nicola Cruz","electronica"));
+        artistList.add(new Artist(2017,Constants.GROVE,2,"22:30","23:30","El Papachango","bass,electronica,hip-hop,tropical"));
         artistList.add(new Artist(2017,Constants.GROVE,2,"23:30","01:00","The Polish Ambassador","electronic"));
         artistList.add(new Artist(2017,Constants.GROVE,2,"01:00","02:30","CloZee","world bass"));
         artistList.add(new Artist(2017,Constants.GROVE,2,"02:30","04:00","Fixate","bass,footwork,jungle"));
