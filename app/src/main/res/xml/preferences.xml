@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
-        android:defaultValue="2017"
+        android:defaultValue="2018"
         android:dialogTitle="Choose year"
         android:entries="@array/ScheduleYears"
         android:entryValues="@array/ScheduleYears"

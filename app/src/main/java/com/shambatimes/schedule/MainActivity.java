@@ -172,8 +172,8 @@ public class MainActivity extends AppCompatActivity {
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (!prefs.contains("2017_loaded")) {
-            prefs.edit().putString(SettingsActivity.FESTIVAL_YEAR, "2017").apply();
+        if (!prefs.contains("2018_loaded")) {
+            prefs.edit().putString(SettingsActivity.FESTIVAL_YEAR, "2018").apply();
         }
 
         timeFormatPreference = prefs.getString(SettingsActivity.TIME_FORMAT, "24");
@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (prefs.contains("database_loaded")) {
 
-            if (!prefs.contains("update_two_complete_2017")) {
+            if (!prefs.contains("2018_loaded")) {
                 Toast.makeText(this, "Updating Database", Toast.LENGTH_LONG).show();
             }
 
@@ -241,6 +241,9 @@ public class MainActivity extends AppCompatActivity {
                     DatabaseScheduleUpdates.scheduleUpdateTwo2017(MainActivity.this);
                     DatabaseScheduleUpdates.scheduleUpdateThree2017(MainActivity.this);
 
+                    //2018 updates
+                    DatabaseScheduleUpdates.load2018Database(MainActivity.this);
+
                     fetchAllArtistsForYear(festivalYear);
                 }
             }).start();
@@ -256,16 +259,22 @@ public class MainActivity extends AppCompatActivity {
                     prefs.edit().putBoolean("database_load_started", true).apply();
                     ArtistGenerator artistGenerator = new ArtistGenerator(MainActivity.this);
 
-                    //2017 loaded first so app is quick
+                    //2018  loaded first so app is quick
+                    artistGenerator.get2018Artists();
+                    prefs.edit().putBoolean("2018_loaded", true).apply();
+                    prefs.edit().putString(SettingsActivity.FESTIVAL_YEAR, "2018").apply();
+                    fetchAllArtistsForYear(festivalYear);
+
+                    //Historical data loaded later
+
+                    //2017
                     artistGenerator.get2017Artists();
                     prefs.edit().putBoolean("2017_loaded", true).apply();
                     prefs.edit().putBoolean("update_one_complete_2017", true).apply();
                     prefs.edit().putBoolean("update_two_complete_2017", true).apply();
                     prefs.edit().putBoolean("update_three_complete_2017", true).apply();
-                    prefs.edit().putString(SettingsActivity.FESTIVAL_YEAR, "2017").apply();
-                    fetchAllArtistsForYear(festivalYear);
 
-                    //Historical data loaded later
+
                     //2015
                     artistGenerator.get2015Artists();
                     prefs.edit().putBoolean("update_one_complete", true).apply();
@@ -390,38 +399,51 @@ public class MainActivity extends AppCompatActivity {
     private void showTips() {
         if (!DateUtils.isPrePostFestival(this)) {
             if (!prefs.getBoolean("tapTargetNowSeen", false)) {
+                try {
+                    TapTargetView.showFor(MainActivity.this,
+                            TapTarget.forToolbarMenuItem(toolbar, R.id.now_playing, getString(R.string.tap_target_now_title), getString(R.string.tap_target_now_description))
+                                    .outerCircleColorInt(ColorUtil.themedGray(this))
+                                    .outerCircleAlpha(0.96f)            // Specify the alpha amount for the outer circle
+                                    .targetCircleColor(R.color.white)   // Specify a color for the target circle
+                                    .titleTextSize(20)                  // Specify the size (in sp) of the title text
+                                    .titleTextColor(R.color.white)      // Specify the color of the title text
+                                    .descriptionTextSize(16)            // Specify the size (in sp) of the description text
+                                    .descriptionTextColor(R.color.primaryTextColorWhite)  // Specify the color of the description text
+                                    .textColor(R.color.primaryTextColorWhite)            // Specify a color for both the title and description text
+                                    .textTypeface(Typeface.SANS_SERIF)  // Specify a typeface for the text
+                                    .dimColor(R.color.black)            // If set, will dim behind the view with 30% opacity of the given color
+                                    .drawShadow(true)                   // Whether to draw a drop shadow or not
+                                    .cancelable(true)                   // Whether tapping outside the outer circle dismisses the view
+                                    .tintTarget(true)                   // Whether to tint the target view's color
+                                    .transparentTarget(false)           // Specify whether the target is transparent (displays the content underneath)
+                                    .targetRadius(60),                  // Specify the target radius (in dp)
+                            new TapTargetView.Listener() {              // The listener can listen for regular clicks, long clicks or cancels
 
-                TapTargetView.showFor(MainActivity.this,
-                        TapTarget.forToolbarMenuItem(toolbar, R.id.now_playing, getString(R.string.tap_target_now_title), getString(R.string.tap_target_now_description))
-                                .outerCircleColorInt(ColorUtil.themedGray(this))
-                                .outerCircleAlpha(0.96f)            // Specify the alpha amount for the outer circle
-                                .targetCircleColor(R.color.white)   // Specify a color for the target circle
-                                .titleTextSize(20)                  // Specify the size (in sp) of the title text
-                                .titleTextColor(R.color.white)      // Specify the color of the title text
-                                .descriptionTextSize(16)            // Specify the size (in sp) of the description text
-                                .descriptionTextColor(R.color.primaryTextColorWhite)  // Specify the color of the description text
-                                .textColor(R.color.primaryTextColorWhite)            // Specify a color for both the title and description text
-                                .textTypeface(Typeface.SANS_SERIF)  // Specify a typeface for the text
-                                .dimColor(R.color.black)            // If set, will dim behind the view with 30% opacity of the given color
-                                .drawShadow(true)                   // Whether to draw a drop shadow or not
-                                .cancelable(true)                   // Whether tapping outside the outer circle dismisses the view
-                                .tintTarget(true)                   // Whether to tint the target view's color
-                                .transparentTarget(false)           // Specify whether the target is transparent (displays the content underneath)
-                                .targetRadius(60),                  // Specify the target radius (in dp)
-                        new TapTargetView.Listener() {              // The listener can listen for regular clicks, long clicks or cancels
+                                @Override
+                                public void onTargetDismissed(TapTargetView view, boolean userInitiated) {
+                                    prefs.edit().putBoolean("tapTargetNowSeen", true).apply();
+                                    super.onTargetDismissed(view, userInitiated);
+                                }
 
-                            @Override
-                            public void onTargetDismissed(TapTargetView view, boolean userInitiated) {
-                                prefs.edit().putBoolean("tapTargetNowSeen", true).apply();
-                                super.onTargetDismissed(view, userInitiated);
-                            }
+                                @Override
+                                public void onTargetClick(TapTargetView view) {
+                                    gotoNow();
+                                    super.onTargetClick(view);          // This call is optional
+                                }
+                            });
+                } catch (Exception ignored) {
+                    if (!prefs.getBoolean("tapTargetFailReCreate", false)) {
+                        prefs.edit().putBoolean("tapTargetFailReCreate", true).apply();
 
-                            @Override
-                            public void onTargetClick(TapTargetView view) {
-                                gotoNow();
-                                super.onTargetClick(view);          // This call is optional
-                            }
-                        });
+                        Intent intent = getIntent();
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+                        finish();
+                        overridePendingTransition(0, 0);
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                    }
+                }
             } else if (!prefs.getBoolean("SawSeenDialog", false)) {
                 AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this, R.style.AppCompatAlertDialogStyle).create();
                 alertDialog.setTitle("Who have you seen?");
@@ -1452,6 +1474,7 @@ public class MainActivity extends AppCompatActivity {
             title.setText(scheduleBy);
 
             if (!Shambhala.getFestivalYear(MainActivity.this).equals(Shambhala.CURRENT_YEAR)) {
+                String test = Shambhala.getFestivalYear(MainActivity.this);
                 subtitle.setText(data[position] + " - " + Shambhala.getFestivalYear(MainActivity.this));
             } else {
                 subtitle.setText(data[position]);

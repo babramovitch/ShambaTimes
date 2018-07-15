@@ -301,7 +301,7 @@ public class TimeCardScheduleFragment extends Fragment {
         if (event.getPosition() != date) {
 
             //Adjust position based off shifted schedule
-            if (Shambhala.getFestivalYear(getActivity()).equals("2015")) {
+            if (Shambhala.getFestivalYear(getActivity()).equals("2015") || Shambhala.getFestivalYear(getActivity()).equals("2018")) {
                 if (date == 3 && event.getPosition() != 3) {
                     timePosition = timePosition + 2;
                 } else if (date != 3 && event.getPosition() == 3) {

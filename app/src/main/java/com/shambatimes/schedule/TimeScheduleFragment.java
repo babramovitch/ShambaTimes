@@ -288,7 +288,7 @@ public class TimeScheduleFragment extends Fragment {
         //The genreAdapter needs to be reset when we change to/from Sunday due to the page counts differing
         //What happens if I just try to change the content is the first page looks good, but then
         //as you page, the content becomes wrong until it properly refreshes.
-        if (Shambhala.getFestivalYear(getActivity()).equals("2015")) {
+        if (Shambhala.getFestivalYear(getActivity()).equals("2015") || Shambhala.getFestivalYear(getActivity()).equals("2018")) {
             if (date == 3 && event.getPosition() != 3) {
                 date = event.getPosition();
                 int currentPage = pager.getCurrentItem();
@@ -301,6 +301,8 @@ public class TimeScheduleFragment extends Fragment {
                 pager.setCurrentItem(currentPage - 2);
             }
         }
+
+        DateUtils.setReferenceTime(getContext(), date);
 
         date = event.getPosition();
 

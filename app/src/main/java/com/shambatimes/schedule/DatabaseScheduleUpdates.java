@@ -769,4 +769,15 @@ public class DatabaseScheduleUpdates {
             }
         }
     }
+
+    public static void load2018Database(Context context) {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (!prefs.contains("2018_loaded")) {
+            ArtistGenerator artistGenerator = new ArtistGenerator(context);
+            artistGenerator.get2018Artists();
+            prefs.edit().putBoolean("2018_loaded", true).apply();
+        }
+    }
 }
