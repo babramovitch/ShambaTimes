@@ -315,7 +315,14 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
     final View.OnClickListener snackBarClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-            EventBus.getDefault().post(new ToggleToTimeEvent(snackbarArtist.getStartPosition()));
+
+            int positionOffset = 0;
+
+            if(currentDate == 3 && Shambhala.getFestivalYear(getContext()).equals("2018")){
+                positionOffset = 2;
+            }
+
+            EventBus.getDefault().post(new ToggleToTimeEvent(snackbarArtist.getStartPosition() + positionOffset));
         }
     };
 
@@ -423,6 +430,9 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
                 }
             });
         }
+
+        DateUtils.setReferenceTime(getContext(), currentDate);
+        setupWeekView();
 
         mWeekView.invalidate();
     }
