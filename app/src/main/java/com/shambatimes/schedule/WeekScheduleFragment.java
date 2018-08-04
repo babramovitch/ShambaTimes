@@ -81,6 +81,7 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         alarmHelper = new AlarmHelper(getActivity(), rootView);
 
 
+
         setupWeekView();
         setupDateTimeInterpreter(true);
 
@@ -210,6 +211,10 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
 
         Log.i("TAG", "Starting hour: " + startingHourHeight);
         mWeekView.setHourHeight((int) startingHourHeight);
+
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        boolean isFreeScrolling = prefs.getBoolean("GRID_VIEW_SCROLLING", false);
+        mWeekView.setFreeScrolling(isFreeScrolling);
 
     }
 
@@ -402,7 +407,10 @@ public class WeekScheduleFragment extends Fragment implements WeekView.EventClic
         float[] hsvColor = new float[3];
         Color.colorToHSV(color, hsvColor);
 
-        hsvColor[1] = hsvColor[1] - (hsvColor[1] * 0.35f);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        float brightness = Float.valueOf(prefs.getString("GRID_VIEW_BRIGHTNESS_DIFFERENCE", "0.35"));
+
+        hsvColor[1] = hsvColor[1] - (hsvColor[1] * brightness);
         hsvColor[2] = hsvColor[2] + 0.05f;
         color = Color.HSVToColor(hsvColor);
         return color;

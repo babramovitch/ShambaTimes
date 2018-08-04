@@ -18,6 +18,24 @@
         android:key="TIME_FORMAT"
         android:title="Schedule Time Format" />
 
+    <PreferenceCategory android:title="Grid View">
+
+        <CheckBoxPreference
+            android:key="GRID_VIEW_SCROLLING"
+            android:summary="Allows you to scroll diagonally freely on the grid without any delay"
+            android:title="Free scrolling" />
+
+        <ListPreference
+            android:defaultValue="0.35"
+            android:dialogTitle="Darken Non Favourites By"
+            android:entries="@array/GridViewColorDifferenceDisplayed"
+            android:entryValues="@array/GridViewColorDifferenceValue"
+            android:key="GRID_VIEW_BRIGHTNESS_DIFFERENCE"
+            android:title="Color Adjustments"
+            android:summary="Darkens the non favourite artists on the Grid View" />
+
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="Night Mode">
 
         <CheckBoxPreference

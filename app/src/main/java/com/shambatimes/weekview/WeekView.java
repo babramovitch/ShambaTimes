@@ -64,6 +64,7 @@ import static com.shambatimes.weekview.WeekViewUtil.*;
  */
 public class WeekView extends View {
 
+    private boolean isFreeScrolling = false;
     private boolean favouritesOnly = false;
     private boolean nowOnly = false;
 
@@ -106,6 +107,10 @@ public class WeekView extends View {
 
     public void setScheduleScrollingEnabled(boolean scheduleScrollingEnabled) {
         this.scheduleScrollingEnabled = scheduleScrollingEnabled;
+    }
+
+    public void setFreeScrolling(boolean isFreeScrolling){
+        this.isFreeScrolling = isFreeScrolling;
     }
 
     private enum Direction {
@@ -257,13 +262,13 @@ public class WeekView extends View {
             //This allows for a smoother up/down or left/right scrolling if you aren't intentionally trying to pan diagonally.
             if (Math.abs(distanceX) > Math.abs(distanceY)) {
                 mCurrentScrollDirection = Direction.NONE;
-                if (Math.abs(distanceY) < 11) {
+                if (Math.abs(distanceY) < 11 && !isFreeScrolling) {
                     distanceY = 0;
                 }
             }
             if (Math.abs(distanceY) > Math.abs(distanceX)) {
                 mCurrentScrollDirection = Direction.VERTICAL;
-                if (Math.abs(distanceX) < 11) {
+                if (Math.abs(distanceX) < 11 && !isFreeScrolling) {
                     distanceX = 0;
                 }
             }
