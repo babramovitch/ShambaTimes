@@ -7,7 +7,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.shambatimes.Alarms.AlarmHelper;
-import com.shambatimes.schedule.Settings.SettingsActivity;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,7 +24,7 @@ public class DatabaseScheduleUpdates {
 
             try {
 
-                String[] query0 = {"JoaqoPelli", "0"};
+                String[]          query0  = {"JoaqoPelli", "0"};
                 ArrayList<Artist> artists = (ArrayList<Artist>) Artist.find(Artist.class, "artist_Name = ? and day = ?", query0, null, "day ASC, start_Position ASC", null);
                 if (artists.size() > 0) {
                     Artist artist = artists.get(0);
@@ -561,7 +560,7 @@ public class DatabaseScheduleUpdates {
                 }
 
                 //Special case for Marten Hoger and Deekline which have been separated
-                boolean alarm = false;
+                boolean alarm     = false;
                 boolean favourite = false;
 
                 String[] query17 = {"marten hørger b2b deekline", "3", "2017"};
@@ -757,8 +756,8 @@ public class DatabaseScheduleUpdates {
                     artists.get(0).delete();
                 }
 
-                new Artist(2017,Constants.LIVINGROOM,3,"21:30","22:30","Flamingosis","its a groovy thing").save();
-                new Artist(2017,Constants.GROVE,2,"22:30","23:30","El Papachango","bass,electronica,hip-hop,tropical").save();
+                new Artist(2017, Constants.LIVINGROOM, 3, "21:30", "22:30", "Flamingosis", "its a groovy thing").save();
+                new Artist(2017, Constants.GROVE, 2, "22:30", "23:30", "El Papachango", "bass,electronica,hip-hop,tropical").save();
 
                 prefs.edit().putBoolean("update_three_complete_2017", true).apply();
 
@@ -778,6 +777,270 @@ public class DatabaseScheduleUpdates {
             ArtistGenerator artistGenerator = new ArtistGenerator(context);
             artistGenerator.get2018Artists();
             prefs.edit().putBoolean("2018_loaded", true).apply();
+        }
+    }
+
+    public static void scheduleUpdateOne2018(Context context) {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (!prefs.contains("update_one_complete_2018")) {
+
+            try {
+                ArrayList<Artist> artists;
+
+                String[] query1 = {"liquid stranger", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query1, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("19:00");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("20:30");
+                    artist.updateEndPosition();
+                    artist.save();
+                }
+
+
+                String[] query2 = {"whipped cream", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query2, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("03:00");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("04:00");
+                    artist.updateEndPosition();
+                    artist.save();
+                }
+
+                String[] query3 = {"protohype", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query3, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    artists.get(0).delete();
+                }
+
+                 new Artist(2018, Constants.VILLAGE, 2, "22:00", "23:00", "Big B with Secret Headliner Guest", "").save();
+
+
+                String[] query4 = {"subvert", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query4, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("23:00");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("00:00");
+                    artist.updateEndPosition();
+                    artist.save();
+                }
+
+                String[] query5 = {"d double e", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query5, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setArtistName("D Double E with Greazus");
+                    artist.save();
+                }
+
+                String[] query6 = {"chord marauders", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query6, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setArtistName("Chord Marauders with FLO");
+                    artist.save();
+                }
+
+                String[] query7 = {"10sui", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query7, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    artists.get(0).delete();
+                }
+
+                        new Artist(2018,Constants.LIVINGROOM,3,"13:30","14:30","TBA","").save();
+
+
+                String[] query8 = {"smalltown djs", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query8, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setArtistName("Smalltown DJs with Lisa Lobsinger and Shad");
+                    artist.save();
+                }
+
+
+                String[] query9 = {"synkro", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query9, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    artists.get(0).delete();
+                }
+
+                   new Artist(2018,Constants.GROVE,2,"02:30","04:00","TBA","").save();
+
+                String[] query10 = {"dimond saints", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query10, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setArtistName("Dimond Saints Live");
+                    artist.save();
+                }
+
+                String[] query11 = {"cain.1", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query11, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setArtistName("CAIN.1 with Special Guest");
+                    artist.save();
+                }
+
+                String[] query12 = {"monty", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query12, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+                    artist.setArtistName("1985 Showcase Label - Monty");
+                    artist.save();
+                }
+
+                String[] query13 = {"logan hart", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query13, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setEndTimeString("17:00");
+                    artist.updateEndPosition();
+                    artist.save();
+                }
+
+                String[] query14 = {"deblock", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query14, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("17:00");
+                    artist.updateStartPosition();
+                    artist.save();
+                }
+
+//
+//            //Village Shift
+//
+
+                String[] query15 = {"sub theory", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query15, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("17:30");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("18:30");
+                    artist.updateEndPosition();
+                    artist.save();
+                }
+
+                String[] query16 = {"triple xl", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query16, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("18:30");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("19:30");
+                    artist.updateEndPosition();
+                    artist.save();
+                }
+
+                String[] query17 = {"dlb", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query17, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("19:30");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("20:30");
+                    artist.updateEndPosition();
+                    artist.save();
+                }
+
+                String[] query18 = {"abstrakt sonance", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query18, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("20:30");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("21:30");
+                    artist.updateEndPosition();
+                    artist.save();
+                }
+
+                String[] query19 = {"perkulat0r", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query19, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("21:30");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("22:30");
+                    artist.updateEndPosition();
+                    artist.save();
+                }
+
+                String[] query20 = {"ill.gates", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query20, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("22:30");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("23:30");
+                    artist.updateEndPosition();
+                    artist.save();
+                }
+
+                String[] query21 = {"dizzee rascal", "2018"};
+                artists = (ArrayList<Artist>) Artist.find(Artist.class, "lower(artist_Name) = ? and year = ?", query21, null, "day ASC, start_Position ASC", null);
+                if (artists.size() > 0) {
+                    Artist artist = artists.get(0);
+
+                    artist.setStartTimeString("23:30");
+                    artist.updateStartPosition();
+
+                    artist.setEndTimeString("00:30");
+                    artist.updateEndPosition();
+                    artist.save();
+                }
+
+                prefs.edit().putBoolean("update_one_complete_2018", true).apply();
+
+                AlarmHelper.recalculateAllAlarmTimes(context);
+
+            } catch (Exception e) {
+                Log.e("UpdateDatabase", "Error Updating", e);
+            }
+        }
+    }
+
+    public static void load2018CedarLoungeUpdate(Context context) {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (!prefs.contains("cedar_lounge_update_loaded_2018")) {
+            try {
+                ArtistGenerator artistGenerator = new ArtistGenerator(context);
+                artistGenerator.get2018CedarLoungeArtistsUpdate();
+                prefs.edit().putBoolean("cedar_lounge_update_loaded_2018", true).apply();
+            } catch (Exception e) {
+                Toast.makeText(context, "Error Loading 2018 Schedule", Toast.LENGTH_LONG).show();
+            }
         }
     }
 }

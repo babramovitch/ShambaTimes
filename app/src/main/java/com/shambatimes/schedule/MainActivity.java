@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (prefs.contains("database_loaded")) {
 
-            if (!prefs.contains("2018_loaded")) {
+            if (!prefs.contains("update_one_complete_2018")) {
                 Toast.makeText(this, "Updating Database", Toast.LENGTH_LONG).show();
             }
 
@@ -243,6 +243,8 @@ public class MainActivity extends AppCompatActivity {
 
                     //2018 updates
                     DatabaseScheduleUpdates.load2018Database(MainActivity.this);
+                    DatabaseScheduleUpdates.load2018CedarLoungeUpdate(MainActivity.this);
+                    DatabaseScheduleUpdates.scheduleUpdateOne2018(MainActivity.this);
 
                     fetchAllArtistsForYear(festivalYear);
                 }
@@ -261,7 +263,10 @@ public class MainActivity extends AppCompatActivity {
 
                     //2018  loaded first so app is quick
                     artistGenerator.get2018Artists();
+                    artistGenerator.get2018CedarLoungeArtistsUpdate();
                     prefs.edit().putBoolean("2018_loaded", true).apply();
+                    prefs.edit().putBoolean("cedar_lounge_update_loaded_2018", true).apply();
+                    prefs.edit().putBoolean("update_one_complete_2018", true).apply();
                     prefs.edit().putString(SettingsActivity.FESTIVAL_YEAR, "2018").apply();
                     fetchAllArtistsForYear(festivalYear);
 
