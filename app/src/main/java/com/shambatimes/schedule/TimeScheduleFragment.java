@@ -86,7 +86,7 @@ public class TimeScheduleFragment extends Fragment {
             selectedPosition = time;
         } else {
             if (DateUtils.isPrePostFestival(getActivity())) {
-                time = Shambhala.getFestivalYear(getActivity()).equals("2017") ? 1 : 0;
+                time = Shambhala.getFestivalYear(getActivity()).equals("2019") ? 2 : 0;
                 selectedPosition = time;
                 date = 0;
             } else {

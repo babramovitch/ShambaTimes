@@ -1271,5 +1271,300 @@ public class ArtistGenerator {
 
         return artistList;
     }
+
+    public ArrayList<Artist> get2019Artists() {
+
+        ArrayList<Artist> artistList = new ArrayList<>();
+
+        artistList.add(new Artist(2019,AMPHITHEATER,0,"12:00","13:30","The Trifinity (Yheti, Toadface & Mt.Analogue)","bass"));
+        artistList.add(new Artist(2019,AMPHITHEATER,0,"13:30","14:30","Raze The Dead","future space rap"));
+        artistList.add(new Artist(2019,AMPHITHEATER,0,"14:30","16:00","Pigeon Hole","hip hop,bass"));
+        artistList.add(new Artist(2019,AMPHITHEATER,0,"16:00","17:30","SkiiTour","house"));
+        artistList.add(new Artist(2019,AMPHITHEATER,0,"17:30","18:30","Woodhead","house"));
+        artistList.add(new Artist(2019,AMPHITHEATER,0,"18:30","19:30","Hoola",""));
+        artistList.add(new Artist(2019,AMPHITHEATER,0,"19:30","20:30","Manatee Commune","electronica,chill wave"));
+        artistList.add(new Artist(2019,AMPHITHEATER,0,"20:30","21:30","S2","emo bap,world bass,psy jersey"));
+        artistList.add(new Artist(2019,AMPHITHEATER,0,"21:30","23:00","Greazus W/Sammy Rich",""));
+        artistList.add(new Artist(2019,AMPHITHEATER,0,"23:00","00:00","Ableation","bass"));
+        artistList.add(new Artist(2019,AMPHITHEATER,0,"00:00","01:30","Tynan","bass"));
+        artistList.add(new Artist(2019,AMPHITHEATER,0,"01:30","03:00","Longwalkshortdock","live pa,eclectic,electro,midtempo,drum & bass"));
+
+        artistList.add(new Artist(2019,AMPHITHEATER,1,"17:00","18:00","Rachel Geek","pop,dubstep,live looping"));
+        artistList.add(new Artist(2019,AMPHITHEATER,1,"18:00","19:00","Looting","club,dancehall,footwork,wave,reggaeton,uk funky,jungle,future garage,2step,experimental electronic"));
+        artistList.add(new Artist(2019,AMPHITHEATER,1,"19:00","20:00","Homesick","footwork,jungle"));
+        artistList.add(new Artist(2019,AMPHITHEATER,1,"20:00","21:00","Little Snake","experimental bass"));
+        artistList.add(new Artist(2019,AMPHITHEATER,1,"21:00","22:00","Distinct Motive","dubstep,bass,hip hop"));
+        artistList.add(new Artist(2019,AMPHITHEATER,1,"22:00","23:00","Khiva","dubstep"));
+        artistList.add(new Artist(2019,AMPHITHEATER,1,"23:00","00:30","Truth","dubstep"));
+        artistList.add(new Artist(2019,AMPHITHEATER,1,"00:30","02:00","Alix Perez","drum & bass,half time"));
+        artistList.add(new Artist(2019,AMPHITHEATER,1,"02:00","03:30","The Librarian","bass"));
+        artistList.add(new Artist(2019,AMPHITHEATER,1,"03:30","04:30","Abstrakt Sonance feat. Vandull","deep dubstep,grime,half time"));
+
+        artistList.add(new Artist(2019,AMPHITHEATER,2,"17:30","18:30","Jodie B","electronic,blues,hip hop"));
+        artistList.add(new Artist(2019,AMPHITHEATER,2,"18:30","19:30","Chané","house,tech house"));
+        artistList.add(new Artist(2019,AMPHITHEATER,2,"19:30","20:30","Keegan Jaymes","deep tech,melodic house"));
+        artistList.add(new Artist(2019,AMPHITHEATER,2,"20:30","21:30","Lorne B","underground dance"));
+        artistList.add(new Artist(2019,AMPHITHEATER,2,"21:30","23:00","Chuurch","lean bass"));
+        artistList.add(new Artist(2019,AMPHITHEATER,2,"23:00","00:30","T. Williams","house"));
+        artistList.add(new Artist(2019,AMPHITHEATER,2,"00:30","02:00","Mija","electronic"));
+        artistList.add(new Artist(2019,AMPHITHEATER,2,"02:00","03:30","Billy Kenny","garage,house,drum & bass,techno"));
+        artistList.add(new Artist(2019,AMPHITHEATER,2,"03:30","04:30","Left/Right","house,bass"));
+
+        artistList.add(new Artist(2019,AMPHITHEATER,3,"18:00","19:00","Marin Patenaude","confessional folk"));
+        artistList.add(new Artist(2019,AMPHITHEATER,3,"19:00","20:00","Milano","experimental bass"));
+        artistList.add(new Artist(2019,AMPHITHEATER,3,"20:00","21:30","Mersiv",""));
+        artistList.add(new Artist(2019,AMPHITHEATER,3,"21:30","23:00","Minnesota","dubstep,future bass"));
+        artistList.add(new Artist(2019,AMPHITHEATER,3,"23:00","00:00","1000volts (Redman & Jayceeoh)","hip hop"));
+        artistList.add(new Artist(2019,AMPHITHEATER,3,"00:00","01:30","TroyBoi","v!bez"));
+        artistList.add(new Artist(2019,AMPHITHEATER,3,"01:30","03:00","A Tribe Called Red","electronic"));
+        artistList.add(new Artist(2019,AMPHITHEATER,3,"03:00","04:30","kLL sMTH","fusion of glitch,drum & bass,hip hop,with a sprinke of loveland"));
+
+        artistList.add(new Artist(2019,LIVINGROOM,0,"12:00","13:00","JoaqoPelli & Danni G","double native american flutes on tribal bass trap music"));
+        artistList.add(new Artist(2019,LIVINGROOM,0,"13:00","15:00","Hoolandthegang",""));
+        artistList.add(new Artist(2019,LIVINGROOM,0,"15:00","17:00","Poolside DJ Set","alternative,electronic,indie,jam"));
+        artistList.add(new Artist(2019,LIVINGROOM,0,"17:00","19:00","Footprints",""));
+        artistList.add(new Artist(2019,LIVINGROOM,0,"19:00","21:00","Meowmix",""));
+        artistList.add(new Artist(2019,LIVINGROOM,0,"21:00","23:00","Naturalist","space disco"));
+        artistList.add(new Artist(2019,LIVINGROOM,0,"23:00","00:30","The Invisible People",""));
+        artistList.add(new Artist(2019,LIVINGROOM,0,"00:30","02:00","DJ Laura Low","bass,hip hop,deep techno"));
+
+        artistList.add(new Artist(2019,LIVINGROOM,1,"12:00","13:00","Heather Craig, Booty Luv Fitness","body positive movement"));
+        artistList.add(new Artist(2019,LIVINGROOM,1,"13:00","14:15","Journeymann Trax","ambient techno,house"));
+        artistList.add(new Artist(2019,LIVINGROOM,1,"14:15","15:30","K-Tel",""));
+        artistList.add(new Artist(2019,LIVINGROOM,1,"15:30","17:00","Hubbz","funk,latin,breaks"));
+        artistList.add(new Artist(2019,LIVINGROOM,1,"17:00","18:00","Mat the Alien","multigenre dj"));
+        artistList.add(new Artist(2019,LIVINGROOM,1,"18:00","19:30","Z-TRIP","bass,hip hop,turntablism"));
+        artistList.add(new Artist(2019,LIVINGROOM,1,"19:30","21:00","Pleasensations (Neon Steve)",""));
+        artistList.add(new Artist(2019,LIVINGROOM,1,"21:00","23:00","Niki Sadeki","deep house"));
+        artistList.add(new Artist(2019,LIVINGROOM,1,"23:00","01:00","Marques Wyatt","deep house"));
+        artistList.add(new Artist(2019,LIVINGROOM,1,"01:00","03:00","Be Svendsen LIVE","electronic,downbeat deephouse"));
+        artistList.add(new Artist(2019,LIVINGROOM,1,"03:00","07:00","Sabo","mystic music,deep tribal,playa tech,tropical rhythms,afro dub,latin disco,cumbia organica"));
+
+        artistList.add(new Artist(2019,LIVINGROOM,2,"12:00","13:00","Marty Carter","spiritual funky jazz folk fusion reggae spontaneous jam improve"));
+        artistList.add(new Artist(2019,LIVINGROOM,2,"13:00","14:00","Birdriot","future pop"));
+        artistList.add(new Artist(2019,LIVINGROOM,2,"14:00","14:30","EVeryman","the brighter side of glitch hop,funk,house,breaks,drum & bass"));
+        artistList.add(new Artist(2019,LIVINGROOM,2,"14:30","16:00","Dubconscious",""));
+        artistList.add(new Artist(2019,LIVINGROOM,2,"16:00","17:30","Alter Echo & E3","dub,dubstep"));
+        artistList.add(new Artist(2019,LIVINGROOM,2,"17:30","19:30","Rob Paine",""));
+        artistList.add(new Artist(2019,LIVINGROOM,2,"19:30","21:00","Breakfluid",""));
+        artistList.add(new Artist(2019,LIVINGROOM,2,"21:00","22:30","S2","emo bap,world bass,psy jersey"));
+        artistList.add(new Artist(2019,LIVINGROOM,2,"22:30","00:00","Danny Corn","bass"));
+        artistList.add(new Artist(2019,LIVINGROOM,2,"00:00","01:30","DnA","leftfield bass,half time,drum & bass"));
+        artistList.add(new Artist(2019,LIVINGROOM,2,"01:30","03:00","OAKK","bass,electronic"));
+        artistList.add(new Artist(2019,LIVINGROOM,2,"03:00","04:30","El Papachango & Dakini Star","tropical bass,latin dance hall,world bass"));
+        artistList.add(new Artist(2019,LIVINGROOM,2,"04:30","06:00","Sweet Anomaly","electronic"));
+        artistList.add(new Artist(2019,LIVINGROOM,2,"06:00","07:00","Sijay",""));
+
+        artistList.add(new Artist(2019,LIVINGROOM,3,"12:00","12:30","Clasical Moment",""));
+        artistList.add(new Artist(2019,LIVINGROOM,3,"12:30","14:00","MATTHEW1626","soul,gospel,tribal,tech,house"));
+        artistList.add(new Artist(2019,LIVINGROOM,3,"14:00","16:00","Adham Shaikh","global"));
+        artistList.add(new Artist(2019,LIVINGROOM,3,"16:00","17:30","Michael Red","bass,lyrics,sunshine"));
+        artistList.add(new Artist(2019,LIVINGROOM,3,"17:30","19:00","FRASE (live) ft. Embody MVMT & Wen Rock","future soul,dub house"));
+        artistList.add(new Artist(2019,LIVINGROOM,3,"19:00","19:30","EVeryman","glitch hop,bass funk,house"));
+        artistList.add(new Artist(2019,LIVINGROOM,3,"19:30","21:00","Moontricks","folk electronic"));
+        artistList.add(new Artist(2019,LIVINGROOM,3,"21:00","23:00","Fred Everything",""));
+        artistList.add(new Artist(2019,LIVINGROOM,3,"23:00","01:00","Rennie Foster","underground,house,techno,breaks,electro,acid"));
+        artistList.add(new Artist(2019,LIVINGROOM,3,"01:00","04:00","Doc Martin Live","sublevel live"));
+        artistList.add(new Artist(2019,LIVINGROOM,3,"04:00","06:00","Sonosfera",""));
+        artistList.add(new Artist(2019,LIVINGROOM,3,"06:00","08:00","Max Ulis","house,techno"));
+        artistList.add(new Artist(2019,LIVINGROOM,3,"08:00","09:30","The Pride (Lion-S/Hoola)",""));
+        artistList.add(new Artist(2019,LIVINGROOM,3,"09:30","10:00","JoaqoPelli & Danni G","double native american flutes on tribal bass trap music"));
+
+        artistList.add(new Artist(2019,FOREST,1,"14:00","15:00","Freddy J","bassline party funk"));
+        artistList.add(new Artist(2019,FOREST,1,"15:00","16:00","Wes Please","all genres"));
+        artistList.add(new Artist(2019,FOREST,1,"16:00","17:00","Diligent",""));
+        artistList.add(new Artist(2019,FOREST,1,"17:00","18:00","JGirl & Manousos","house"));
+        artistList.add(new Artist(2019,FOREST,1,"18:00","19:00","Molly Fi","breaks"));
+        artistList.add(new Artist(2019,FOREST,1,"19:00","20:00","Lefy","dub,dubstep"));
+        artistList.add(new Artist(2019,FOREST,1,"20:00","21:00","JPOD","melodic bass,glitch hop,funk,breaks,hip hop,world fusion,swing"));
+        artistList.add(new Artist(2019,FOREST,1,"21:00","22:00","Slynk (Westwood Recordings Forest Takeover)","ghetto funk,glitch hop,hip hop,funk,bboy breaks,bootleg,drum & bass"));
+        artistList.add(new Artist(2019,FOREST,1,"22:00","23:00","Defunk (Westwood Recordings Forest Takeover)","bass"));
+        artistList.add(new Artist(2019,FOREST,1,"23:00","00:00","K+Lab (Westwood Recordings Forest Takeover)","electronic"));
+        artistList.add(new Artist(2019,FOREST,1,"00:00","01:00","Stickybuds (Westwood Recordings Forest Takeover)","electronic"));
+        artistList.add(new Artist(2019,FOREST,1,"01:00","02:00","The Funk Hunters (Westwood Recordings Forest Takeover)","glitch hop,bass"));
+        artistList.add(new Artist(2019,FOREST,1,"02:00","02:30","Chali 2na (Westwood Recordings Forest Takeover)","hip hop,electronic"));
+        artistList.add(new Artist(2019,FOREST,1,"02:30","03:30","Krafty Kuts (Westwood Recordings Forest Takeover)","bass,breaks,funk,hip hop"));
+        artistList.add(new Artist(2019,FOREST,1,"03:30","04:30","WBBL",""));
+        artistList.add(new Artist(2019,FOREST,1,"04:30","06:00","Joseph Martin","disco house"));
+
+        artistList.add(new Artist(2019,FOREST,2,"16:00","17:00","Dan Solo","hip hop,dance"));
+        artistList.add(new Artist(2019,FOREST,2,"17:00","18:00","Mista Savona","bass,reggae,tropical bass,jungle"));
+        artistList.add(new Artist(2019,FOREST,2,"18:00","19:00","THE GAFF","future funk,dope beats,skratchin,world,global bass,soul food"));
+        artistList.add(new Artist(2019,FOREST,2,"19:00","20:00","SkiiTour","house"));
+        artistList.add(new Artist(2019,FOREST,2,"20:00","21:00","Smalltown DJs",""));
+        artistList.add(new Artist(2019,FOREST,2,"21:00","22:00","DJ Jazzy Jeff","hip hop"));
+        artistList.add(new Artist(2019,FOREST,2,"22:00","23:00","Skratch Bastid","open format dj"));
+        artistList.add(new Artist(2019,FOREST,2,"23:00","00:00","Z-TRIP","bass,hip hop,turntablism"));
+        artistList.add(new Artist(2019,FOREST,2,"00:00","01:00","A. Skillz","bass,breaks,funk"));
+        artistList.add(new Artist(2019,FOREST,2,"01:00","02:00","GRIZ","electronic"));
+        artistList.add(new Artist(2019,FOREST,2,"02:00","03:00","JFB","turntablist"));
+        artistList.add(new Artist(2019,FOREST,2,"03:00","04:00","Fort Knox Five & Qdup","electronic"));
+        artistList.add(new Artist(2019,FOREST,2,"04:00","05:00","Father Funk","bass,funk,mashup"));
+        artistList.add(new Artist(2019,FOREST,2,"05:00","06:30","Neighbour","disco,deep house"));
+
+        artistList.add(new Artist(2019,FOREST,3,"14:00","19:00","Smalltown DJs (Fractal Forest Funk Jam)","house"));
+        artistList.add(new Artist(2019,FOREST,3,"19:00","20:00","Rumpus","funky tech house"));
+        artistList.add(new Artist(2019,FOREST,3,"20:00","21:00","NEON STEVE","house"));
+        artistList.add(new Artist(2019,FOREST,3,"21:00","22:00","Goldfish","organic house"));
+        artistList.add(new Artist(2019,FOREST,3,"22:00","23:00","Cazztek","house"));
+        artistList.add(new Artist(2019,FOREST,3,"23:00","00:00","SNBRN","house"));
+        artistList.add(new Artist(2019,FOREST,3,"00:00","01:30","Silk CIty (Displo + Mark Ronson)","house"));
+        artistList.add(new Artist(2019,FOREST,3,"01:30","02:30","Jack Beats","house"));
+        artistList.add(new Artist(2019,FOREST,3,"02:30","03:30","Volac","deep house,bass house,g-house"));
+        artistList.add(new Artist(2019,FOREST,3,"03:30","04:30","Tony Romera","house"));
+        artistList.add(new Artist(2019,FOREST,3,"04:30","05:30","Robb G","funky house,brouse,disco,bass"));
+        artistList.add(new Artist(2019,FOREST,3,"05:30","06:30","Chuck Love","funky house (live insturmentation)"));
+        artistList.add(new Artist(2019,FOREST,3,"06:30","08:00","Justin Hale","house"));
+        artistList.add(new Artist(2019,FOREST,3,"08:00","12:00","Rich E Rich",""));
+
+        artistList.add(new Artist(2019,GROVE,1,"13:00","14:00","Opening Ceremony",""));
+        artistList.add(new Artist(2019,GROVE,1,"14:00","15:00","Melo.Nade","heavy chill,melodic bass"));
+        artistList.add(new Artist(2019,GROVE,1,"15:00","16:00","Carissa Gem","bass,rap,dubstep,half time"));
+        artistList.add(new Artist(2019,GROVE,1,"16:00","17:00","Intersect","bass,dub,half time"));
+        artistList.add(new Artist(2019,GROVE,1,"17:00","18:00","Kousk","melodic downtempo"));
+        artistList.add(new Artist(2019,GROVE,1,"18:00","19:15","Friend","blues,glitch hop (folk inspired)"));
+        artistList.add(new Artist(2019,GROVE,1,"19:15","21:00","Leland River","bass"));
+        artistList.add(new Artist(2019,GROVE,1,"21:00","21:15","Circus Acts Insomniacs","performance troupe"));
+        artistList.add(new Artist(2019,GROVE,1,"21:15","22:30","PRSN","bass"));
+        artistList.add(new Artist(2019,GROVE,1,"22:30","23:45","Andre Power","future soul,r&b,hip hop,house party,soulection"));
+        artistList.add(new Artist(2019,GROVE,1,"23:45","01:15","Ivy Lab","half time,future beats"));
+        artistList.add(new Artist(2019,GROVE,1,"01:15","01:30","Subscura","performance art"));
+        artistList.add(new Artist(2019,GROVE,1,"01:30","02:45","MALA","dubstep"));
+        artistList.add(new Artist(2019,GROVE,1,"02:45","04:00","Commodo","dubstep,bass"));
+        artistList.add(new Artist(2019,GROVE,1,"04:00","05:30","Westerley","dubstep"));
+        artistList.add(new Artist(2019,GROVE,1,"05:30","06:30","AtYYA",""));
+
+        artistList.add(new Artist(2019,GROVE,2,"16:30","18:00","Lazy Syrup Orchestra","hip hop,world,boogie"));
+        artistList.add(new Artist(2019,GROVE,2,"18:00","19:00","Def3","hip hop,electronic"));
+        artistList.add(new Artist(2019,GROVE,2,"19:00","20:00","Handsome Tiger","bass,dubstep,rap"));
+        artistList.add(new Artist(2019,GROVE,2,"20:00","21:00","Shiny Things",""));
+        artistList.add(new Artist(2019,GROVE,2,"21:00","21:15","Omnika In Motion","performance art"));
+        artistList.add(new Artist(2019,GROVE,2,"21:15","22:30","Mat the Alien","multigenre dj"));
+        artistList.add(new Artist(2019,GROVE,2,"22:30","22:45","Ouro Collective","dance"));
+        artistList.add(new Artist(2019,GROVE,2,"22:45","00:00","Hannah Faith","eclectic soul,jazz funk,afro house"));
+        artistList.add(new Artist(2019,GROVE,2,"00:00","01:00","Earthgang","hip hop"));
+        artistList.add(new Artist(2019,GROVE,2,"01:00","02:15","Om Unit","electronic,drum & bass"));
+        artistList.add(new Artist(2019,GROVE,2,"02:15","03:30","Danny Scrilla","bass,dub,jungle"));
+        artistList.add(new Artist(2019,GROVE,2,"03:30","05:00","DJ Madd",""));
+        artistList.add(new Artist(2019,GROVE,2,"05:00","06:30","Barisone","hip hop,dancehall,bass"));
+
+        artistList.add(new Artist(2019,GROVE,3,"18:00","19:00","Nasko","deep"));
+        artistList.add(new Artist(2019,GROVE,3,"19:00","20:00","Lion S",""));
+        artistList.add(new Artist(2019,GROVE,3,"20:00","21:00","Footprints",""));
+        artistList.add(new Artist(2019,GROVE,3,"21:00","22:00","Goopsteppa","gangster ambient"));
+        artistList.add(new Artist(2019,GROVE,3,"22:00","22:30","(((O)))","r&b,soul,experimental"));
+        artistList.add(new Artist(2019,GROVE,3,"23:00","00:00","FKJ","nu jazz,electronic,rhythm and blues,french house"));
+        artistList.add(new Artist(2019,GROVE,3,"00:00","01:30","Bonobo DJ Set","trip hop,downtempo,nu jazz"));
+        artistList.add(new Artist(2019,GROVE,3,"01:30","03:00","Catching Flies","trip hop,downtempo"));
+        artistList.add(new Artist(2019,GROVE,3,"03:00","04:15","Kromestar","dubstep,bass"));
+        artistList.add(new Artist(2019,GROVE,3,"04:15","05:30","Stray",""));
+        artistList.add(new Artist(2019,GROVE,3,"05:30","07:00","Tor","downtempo"));
+
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,1,"15:00","16:30","Church of Festival Freaks",""));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,1,"16:30","18:00","Acro Yoga w/Momentom Collective","circus,yoga,digital nomad culture"));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,1,"20:00","21:00","Ol' Molasses","vinyl"));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,1,"21:00","22:30","J Jonah",""));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,1,"22:30","00:00","Rango","house,funky,tech house,techno,deep house"));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,1,"00:00","01:30","DasBooty","chill,lounge,reggae,deep dub,house,breaks,glitch,drum & bass"));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,1,"01:30","03:00","Mihajic Touch","bass house,tech house"));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,1,"03:00","04:30","Esette","house,tech house,techno"));
+
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,2,"11:00","12:30","Cody Crawford","acro workshop"));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,2,"12:30","14:00","Art of Play",""));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,2,"14:00","15:30","Adam One",""));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,2,"15:30","17:00","Pyschedelics and Intimate Relationships",""));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,2,"17:00","18:30","Awakening the Primordial Self",""));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,2,"20:00","21:00","Lost Paradise",""));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,2,"21:00","22:30","Puar",""));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,2,"22:30","00:00","Ocea Sasa","g-house,downtempo,floorfillers,bass,melodic,world"));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,2,"00:00","01:30","Garneau","house,ghetto house,b-more"));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,2,"01:30","03:00","Ghostwhip",""));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,2,"03:00","04:30","Application",""));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,2,"04:30","05:45","MorelikeSpace","downtempo,psychedelic,dreamy,experimental,space bass"));
+
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,3,"11:00","12:30","Momentom Collective","circus,yoga,digital nomad culture"));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,3,"12:30","14:00","Breath Work Circle",""));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,3,"14:00","16:00","Soul Speak",""));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,3,"16:00","17:30","Joey Rootman",""));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,3,"17:30","19:00","Riddim Fernandez","reggae influrnced music,dancehall,dub,dubstep,hip hop,jungle"));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,3,"20:00","21:15","Diggler",""));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,3,"21:15","22:30","Illustrator",""));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,3,"22:30","23:45","Bete Moss","bass"));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,3,"23:45","01:00","Illi",""));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,3,"01:00","02:30","TUCK IN TYLER",""));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,3,"02:30","03:30","Willa",""));
+        artistList.add(new Artist(2019,CEDAR_LOUNGE,3,"03:30","04:30","The Alchemystics",""));
+
+        artistList.add(new Artist(2019,PAGODA,1,"16:30","18:00","Logan Hart",""));
+        artistList.add(new Artist(2019,PAGODA,1,"18:00","19:30","DeBlock","house"));
+        artistList.add(new Artist(2019,PAGODA,1,"19:30","21:00","NOIZU",""));
+        artistList.add(new Artist(2019,PAGODA,1,"21:00","22:30","Anna Lunoe","dance,house"));
+        artistList.add(new Artist(2019,PAGODA,1,"22:30","00:30","Justin Martin","house"));
+        artistList.add(new Artist(2019,PAGODA,1,"00:30","01:45","ZHU","electronic"));
+        artistList.add(new Artist(2019,PAGODA,1,"01:45","02:45","Anti-Up (Chris Lake & Chris Lorenzo)","house"));
+        artistList.add(new Artist(2019,PAGODA,1,"02:45","04:00","AC Slater","bass,house,night bass"));
+        artistList.add(new Artist(2019,PAGODA,1,"04:00","06:00","DJ Soup",""));
+
+        artistList.add(new Artist(2019,PAGODA,2,"17:00","18:00","SLAMIN","drum & bass"));
+        artistList.add(new Artist(2019,PAGODA,2,"18:00","19:00","DJ Just-B","aprochable,house,music that suits the time place and occasion"));
+        artistList.add(new Artist(2019,PAGODA,2,"19:00","20:00","Kali Yuga & the Genesa Project",""));
+        artistList.add(new Artist(2019,PAGODA,2,"20:00","21:00","STRIPES",""));
+        artistList.add(new Artist(2019,PAGODA,2,"21:00","22:00","CharlestheFirst","storytelling"));
+        artistList.add(new Artist(2019,PAGODA,2,"22:00","23:30","Grandtheft","electronic"));
+        artistList.add(new Artist(2019,PAGODA,2,"23:30","01:00","Dr. Fresch","electronic,dance"));
+        artistList.add(new Artist(2019,PAGODA,2,"01:00","02:30","Kaskade","house,progressive,electro,deep"));
+        artistList.add(new Artist(2019,PAGODA,2,"02:30","04:00","Paul Oakenfold","trance"));
+        artistList.add(new Artist(2019,PAGODA,2,"04:00","06:00","Ben Fox","house"));
+
+        artistList.add(new Artist(2019,PAGODA,3,"17:00","18:00","Zbit",""));
+        artistList.add(new Artist(2019,PAGODA,3,"18:00","19:00","Cut la Whut","funk,hip hop,soul,house"));
+        artistList.add(new Artist(2019,PAGODA,3,"19:00","20:00","Khanvict","bollywood,sufi and panjabi music with bass,moombahton,trap"));
+        artistList.add(new Artist(2019,PAGODA,3,"20:00","21:00","Kermode","bass house"));
+        artistList.add(new Artist(2019,PAGODA,3,"21:00","22:30","Subtronics",""));
+        artistList.add(new Artist(2019,PAGODA,3,"22:30","00:00","Black Tiger Sex Machine","electro,dubstep"));
+        artistList.add(new Artist(2019,PAGODA,3,"00:00","01:00","Deathpact",""));
+        artistList.add(new Artist(2019,PAGODA,3,"01:00","02:30","Zeds Dead","dubstep,bass,house"));
+        artistList.add(new Artist(2019,PAGODA,3,"02:30","04:00","Boogie T","dubstep,funk"));
+        artistList.add(new Artist(2019,PAGODA,3,"04:00","05:15","LSDREAM","cosmic bass"));
+        artistList.add(new Artist(2019,PAGODA,3,"05:15","06:30","Trip A",""));
+
+        artistList.add(new Artist(2019,VILLAGE,1,"15:00","19:30","Ragga Jungle Rinse Out",""));
+        artistList.add(new Artist(2019,VILLAGE,1,"19:30","20:30","Big B",""));
+        artistList.add(new Artist(2019,VILLAGE,1,"20:30","21:30","Stylust","dubstep,bass,hip hop"));
+        artistList.add(new Artist(2019,VILLAGE,1,"21:30","22:30","KJ Sawka","bass"));
+        artistList.add(new Artist(2019,VILLAGE,1,"22:30","00:00","Excision","bass,dubstep"));
+        artistList.add(new Artist(2019,VILLAGE,1,"00:00","01:30","Ganja White Night","dubstep"));
+        artistList.add(new Artist(2019,VILLAGE,1,"01:30","02:30","Spag Heddy","dubstep,bass"));
+        artistList.add(new Artist(2019,VILLAGE,1,"02:30","03:30","Downlink","dubstep"));
+        artistList.add(new Artist(2019,VILLAGE,1,"03:30","04:30","Woofax",""));
+        artistList.add(new Artist(2019,VILLAGE,1,"04:30","06:00","Mr. B",""));
+
+        artistList.add(new Artist(2019,VILLAGE,2,"18:00","19:00","Trevor Galore",""));
+        artistList.add(new Artist(2019,VILLAGE,2,"19:00","20:00","Crystal Fresh","bass,drum & bass,trap,house"));
+        artistList.add(new Artist(2019,VILLAGE,2,"20:00","21:00","Triple XL","electronic"));
+        artistList.add(new Artist(2019,VILLAGE,2,"21:00","22:00","Ill.Gates","electronic"));
+        artistList.add(new Artist(2019,VILLAGE,2,"22:00","23:00","Reid Speed","drum & bass,heavy bass"));
+        artistList.add(new Artist(2019,VILLAGE,2,"23:00","00:00","Subvert",""));
+        artistList.add(new Artist(2019,VILLAGE,2,"00:00","01:30","Jauz","trap,bass,dubstep,edm,future bass"));
+        artistList.add(new Artist(2019,VILLAGE,2,"01:30","03:00","Nero DJ Set","electronic"));
+        artistList.add(new Artist(2019,VILLAGE,2,"03:00","04:30","Phibes","drum & bass,glitch hop,twerk,swing,breaks,reggae,hip hop"));
+        artistList.add(new Artist(2019,VILLAGE,2,"04:30","07:00","Sunrise Sessions",""));
+
+        artistList.add(new Artist(2019,VILLAGE,3,"18:00","19:15","DLB",""));
+        artistList.add(new Artist(2019,VILLAGE,3,"19:15","20:30","Audiowrx and Dua","bass"));
+        artistList.add(new Artist(2019,VILLAGE,3,"20:30","22:45","Waakan Takeover w/Liquid Stranger, Champagne Drip & G-REX (and Mad Twinz 10:30-10:45)",""));
+        artistList.add(new Artist(2019,VILLAGE,3,"22:45","23:45","Beats Antique ","Experimental world fusion"));
+        artistList.add(new Artist(2019,VILLAGE,3,"23:45","00:00","Mad Twinz","trap,house,drum & bass,hip hop,dubstep"));
+        artistList.add(new Artist(2019,VILLAGE,3,"00:00","01:30","Rusko","dubstep,drum & bass"));
+        artistList.add(new Artist(2019,VILLAGE,3,"01:30","03:00","Chase and Status DJ Set","drum & bass"));
+        artistList.add(new Artist(2019,VILLAGE,3,"03:00","05:00","Jungle Cakes Takeover w/Ed Solo, Deekline & Benny Page",""));
+        artistList.add(new Artist(2019,VILLAGE,3,"05:00","06:00","The Funk Junkie",""));
+
+        for (Artist artist : artistList) {
+            artist.save();
+        }
+
+        return artistList;
+    }
 }
 

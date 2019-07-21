@@ -34,4 +34,6 @@ public class Constants {
 
     public static DateTimeZone timeZone = DateTimeZone.forID("America/Los_Angeles");
 
+    public static final String CHANNEL_ID = "1251258";
+
 }

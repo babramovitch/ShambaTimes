@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.shambatimes.schedule.Artist;
+import com.shambatimes.schedule.Constants;
 import com.shambatimes.schedule.Settings.SettingsActivity;
 import com.shambatimes.schedule.Util.ColorUtil;
 import com.shambatimes.schedule.events.DataChangedEvent;
@@ -249,6 +250,7 @@ public class AlarmActivity extends Activity {
         PendingIntent pendingIntentDismiss = PendingIntent.getBroadcast(this, alarmNotificationId, dismissReceive, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification notification = new NotificationCompat.Builder(this)
+                .setChannelId(Constants.CHANNEL_ID)
                 .addAction(R.drawable.ic_alarm_black_18dp, getString(R.string.dismiss_button), pendingIntentDismiss)
                 .setSmallIcon(R.drawable.ic_alarm_black_18dp)
                 .setContentTitle(artist.getArtistName())

@@ -16,7 +16,7 @@ import java.util.Comparator;
  */
 public class Shambhala {
 
-    public final static String CURRENT_YEAR = "2018";
+    public final static String CURRENT_YEAR = "2019";
 
     ArrayList<Artist> artists = new ArrayList<Artist>();
     private final String TAG = "Shambhala";

@@ -780,6 +780,18 @@ public class DatabaseScheduleUpdates {
         }
     }
 
+    public static void load2019Database(Context context) {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (!prefs.contains("2019_loaded")) {
+            ArtistGenerator artistGenerator = new ArtistGenerator(context);
+            artistGenerator.get2019Artists();
+            prefs.edit().putBoolean("2019_loaded", true).apply();
+        }
+    }
+
+
     public static void scheduleUpdateOne2018(Context context) {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);

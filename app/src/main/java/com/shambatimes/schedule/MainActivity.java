@@ -1,5 +1,7 @@
 package com.shambatimes.schedule;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +11,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -169,11 +172,12 @@ public class MainActivity extends AppCompatActivity {
 //        // Start the thread
 //        t.start();
 
+        createNotificationChannel();
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (!prefs.contains("2018_loaded")) {
-            prefs.edit().putString(SettingsActivity.FESTIVAL_YEAR, "2018").apply();
+        if (!prefs.contains("2019_loaded")) {
+            prefs.edit().putString(SettingsActivity.FESTIVAL_YEAR, "2019").apply();
         }
 
         timeFormatPreference = prefs.getString(SettingsActivity.TIME_FORMAT, "24");
@@ -215,36 +219,55 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Alarms";
+            String description = "Shambhala Scheduled Alarms";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(Constants.CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+
     private void prepareAndLoadDatabase() {
 
         if (prefs.contains("database_loaded")) {
 
-            if (!prefs.contains("update_one_complete_2018")) {
+            if (!prefs.contains("2019_loaded")) {
                 Toast.makeText(this, "Updating Database", Toast.LENGTH_LONG).show();
             }
 
             new Thread(new Runnable() {
                 public void run() {
                     //2015 updates
-                    DatabaseScheduleUpdates.scheduleUpdateOne2015(MainActivity.this);
-                    DatabaseScheduleUpdates.scheduleUpdateTwo2015(MainActivity.this);
+                   // DatabaseScheduleUpdates.scheduleUpdateOne2015(MainActivity.this);
+                   // DatabaseScheduleUpdates.scheduleUpdateTwo2015(MainActivity.this);
 
                     //2016 updates
-                    DatabaseScheduleUpdates.load2016Database(MainActivity.this);
-                    DatabaseScheduleUpdates.load2016CedarLounge(MainActivity.this);
-                    DatabaseScheduleUpdates.scheduleUpdateOne2016(MainActivity.this);
-                    DatabaseScheduleUpdates.scheduleUpdateTwo2016(MainActivity.this);
+                   // DatabaseScheduleUpdates.load2016Database(MainActivity.this);
+                   // DatabaseScheduleUpdates.load2016CedarLounge(MainActivity.this);
+                   // DatabaseScheduleUpdates.scheduleUpdateOne2016(MainActivity.this);
+                   // DatabaseScheduleUpdates.scheduleUpdateTwo2016(MainActivity.this);
 
                     //2017 updates
-                    DatabaseScheduleUpdates.load2017Database(MainActivity.this);
-                    DatabaseScheduleUpdates.scheduleUpdateOne2017(MainActivity.this);
-                    DatabaseScheduleUpdates.scheduleUpdateTwo2017(MainActivity.this);
-                    DatabaseScheduleUpdates.scheduleUpdateThree2017(MainActivity.this);
+                   // DatabaseScheduleUpdates.load2017Database(MainActivity.this);
+                  //  DatabaseScheduleUpdates.scheduleUpdateOne2017(MainActivity.this);
+                   // DatabaseScheduleUpdates.scheduleUpdateTwo2017(MainActivity.this);
+                   // DatabaseScheduleUpdates.scheduleUpdateThree2017(MainActivity.this);
 
                     //2018 updates
-                    DatabaseScheduleUpdates.load2018Database(MainActivity.this);
-                    DatabaseScheduleUpdates.load2018CedarLoungeUpdate(MainActivity.this);
-                    DatabaseScheduleUpdates.scheduleUpdateOne2018(MainActivity.this);
+                   // DatabaseScheduleUpdates.load2018Database(MainActivity.this);
+                   // DatabaseScheduleUpdates.load2018CedarLoungeUpdate(MainActivity.this);
+                   // DatabaseScheduleUpdates.scheduleUpdateOne2018(MainActivity.this);
+
+                    DatabaseScheduleUpdates.load2019Database(MainActivity.this);
 
                     fetchAllArtistsForYear(festivalYear);
                 }
@@ -261,16 +284,18 @@ public class MainActivity extends AppCompatActivity {
                     prefs.edit().putBoolean("database_load_started", true).apply();
                     ArtistGenerator artistGenerator = new ArtistGenerator(MainActivity.this);
 
-                    //2018  loaded first so app is quick
+                    artistGenerator.get2019Artists();
+                    prefs.edit().putBoolean("2019_loaded", true).apply();
+                    prefs.edit().putString(SettingsActivity.FESTIVAL_YEAR, "2019").apply();
+                    fetchAllArtistsForYear(festivalYear);
+                    //Historical data loaded later
+
+                    //2018
                     artistGenerator.get2018Artists();
                     artistGenerator.get2018CedarLoungeArtistsUpdate();
                     prefs.edit().putBoolean("2018_loaded", true).apply();
                     prefs.edit().putBoolean("cedar_lounge_update_loaded_2018", true).apply();
                     prefs.edit().putBoolean("update_one_complete_2018", true).apply();
-                    prefs.edit().putString(SettingsActivity.FESTIVAL_YEAR, "2018").apply();
-                    fetchAllArtistsForYear(festivalYear);
-
-                    //Historical data loaded later
 
                     //2017
                     artistGenerator.get2017Artists();
@@ -278,7 +303,6 @@ public class MainActivity extends AppCompatActivity {
                     prefs.edit().putBoolean("update_one_complete_2017", true).apply();
                     prefs.edit().putBoolean("update_two_complete_2017", true).apply();
                     prefs.edit().putBoolean("update_three_complete_2017", true).apply();
-
 
                     //2015
                     artistGenerator.get2015Artists();
@@ -1034,7 +1058,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void shareFavourites() {
 
-        String message = "Here's my schedule for Shambhala 2017\n\n";
+        String message = "Here's my schedule for Shambhala 2019\n\n";
         String title = "My Personalized Shambhala Schedule";
 
         String bulletPoint = "\u2022";
