@@ -1,3 +1,6 @@
+# Please Note
+The 2022 version of ShambaTimes is no longer open source.
+
 # ShambaTimes
 A scheduling app for Shambhala Music Festival, available on the play store - https://play.google.com/store/apps/details?id=com.shambatimes.schedule
 
