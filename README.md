@@ -11,7 +11,7 @@ In addition to making a cool scheduling app for Shambhala, ShambaTimes was a way
 A longterm goal I have for the app is to try and make it festival neutral, so anyone could easily upload a schedule into it for whichever festival they like.
 
 License
-Copyright 2015 Benjamin Abramovitch
+Copyright 2015-2020 Benjamin Abramovitch
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
