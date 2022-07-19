@@ -4,7 +4,7 @@ ShambaTimes Uses Firebase (A Google Product) to collect crash reports using a se
 
 Firebase is also providing additional basic analytics like daily active users and which kinds of phones are being used.  In the future aggregate anonymous analytics on things like what screens people use most may be collected to help guide features, but that is not done today.
 
-ShambaTimes has the ability to log into user accounts although this is currently not used by anyone but myself to update schedule content, but technically it is there.
+ShambaTimes has the ability to log into user accounts although this is currently not used by anyone but myself to update schedule content, but technically it is there.  Users accounts may be used in the future to things like saving favorites to the cloud so you can download them on a new device.
 
 This data collected by Google's Firebase helps ensure the app runs smoothly so bugs can be fixed as they happen.  
 
