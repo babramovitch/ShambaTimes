@@ -1,11 +1,11 @@
 Privacy Policy
 
-ShambaTimes Uses Firebase (A Google Product) to collect crash reports using a service called Crashlytics.
+Dancing Decibels (previously ShambaTimes)  Uses Firebase (A Google Product) to collect crash reports using a service called Crashlytics.
 
-Firebase is also providing additional basic analytics like daily active users and which kinds of phones are being used.  In the future aggregate anonymous analytics on things like what screens people use most may be collected to help guide features, but that is not done today.
+Firebase is also providing additional basic analytics like daily active users, which kinds of phones are being used.  It also colletions some basic anonymous analytics on things like what screens people goto and which events are joined to help guide features.
 
-ShambaTimes has the ability to log into user accounts although this is currently not used by anyone but myself to update schedule content, but technically it is there.  Users accounts may be used in the future to things like saving favorites to the cloud so you can download them on a new device.
+Dancing Decibels has the ability to log into user accounts for administrators so they can create events where data for the event data is saved in Firebase to later be published for their users. Users can also log into a demo account, where the content they add is saved locally and is not transmitted to Dancing Decibels.
 
 This data collected by Google's Firebase helps ensure the app runs smoothly so bugs can be fixed as they happen.  
 
-ShambaTimes does not sell any data to 3rd party advertisers 
+Dancing Decibels does not sell any data to 3rd party advertisers 
