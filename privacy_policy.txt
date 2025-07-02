@@ -4,7 +4,7 @@ Dancing Decibels (previously ShambaTimes)  Uses Firebase (A Google Product) to c
 
 Firebase is also providing additional basic analytics like daily active users and which kinds of phones are being used.  It also collects some basic anonymous analytics on things like what screens people goto and which events are joined to help guide features.
 
-Dancing Decibels has the ability to log into user accounts for administrators so they can create events where data for the event is saved in Firebase to later be published for their users at their discretion. Users can also log into a demo account, where the content they add is saved locally and is not transmitted to Dancing Decibels.
+Dancing Decibels has the ability to log into user accounts for administrators so they can create events where data for the event is saved in Firebase to later be published for their users at their discretion. Users can also open a demo account, where the content they add is saved locally and is not transmitted to Dancing Decibels.
 
 This data collected by Google's Firebase helps ensure the app runs smoothly so bugs can be fixed as they happen.  
 
