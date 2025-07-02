@@ -6,6 +6,6 @@ Firebase is also providing additional basic analytics like daily active users an
 
 Dancing Decibels has the ability to log into user accounts for administrators so they can create events where data for the event is saved in Firebase to later be published for their users at their discretion. Users can also open a demo account, where the content they add is saved locally and is not transmitted to Dancing Decibels.
 
-This data collected by Google's Firebase helps ensure the app runs smoothly so bugs can be fixed as they happen.  
+This data collected by Google's Firebase helps ensure the app runs smoothly so bugs can be fixed as they happen, and to help guide feature development. 
 
 Dancing Decibels does not sell any data to 3rd party advertisers 
